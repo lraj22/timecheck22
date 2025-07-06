@@ -1,0 +1,37 @@
+{
+	"name": "timecheck22",
+	"version": "0.1.0",
+	"private": true,
+	"description": "",
+	"homepage": "https://github.com/lraj22/timecheck22#readme",
+	"bugs": {
+		"url": "https://github.com/lraj22/timecheck22/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/lraj22/timecheck22.git"
+	},
+	"license": "MIT",
+	"author": "Lakshya Raj",
+	"type": "module",
+	"main": "index.html",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"esbuild": "^0.25.5",
+		"fdir": "^6.4.6",
+		"nanoid": "^3.3.11",
+		"picocolors": "^1.1.1",
+		"picomatch": "^4.0.2",
+		"postcss": "^8.5.6",
+		"rollup": "^4.44.2",
+		"source-map-js": "^1.2.1",
+		"tinyglobby": "^0.2.14"
+	},
+	"devDependencies": {
+		"vite": "^7.0.0"
+	}
+}
