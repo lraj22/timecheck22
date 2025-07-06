@@ -4,14 +4,52 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>TimeCheck 22</title>
+		
+		<!-- favicons -->
 		<link rel="icon" href="./favicon.ico" sizes="32x32">
 		<link rel="icon" type="image/svg+xml" href="./favicons/favicon-vector.svg">
 		<link rel="apple-touch-icon" sizes="180x180" href="./favicons/favicon-180-maskable.png">
+		
+		<!-- pwa -->
 		<meta name="theme-color" content="#117711">
 		<link rel="manifest" href="./manifest.webmanifest">
+		
+		<!-- fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Rampart+One&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
 	</head>
 	<body>
-		<div id="app"></div>
+		<div id="app">
+			<!-- this is where announcements appear -->
+			<div id="announcements">announcements here</div>
+			
+			<!-- main area (sidebar + main view) -->
+			<div id="colFlexMain">
+				<!-- sidebar -->
+				<aside>
+					<span>sidebar content</span>
+				</aside>
+				
+				<!-- main view -->
+				<main>
+					<div id="buttonsBar">
+						<span>buttons go here</span>
+					</div>
+					<div id="time">--:--</div>
+					<div id="period">period name</div>
+				</main>
+			</div>
+			
+			<!-- status bar for general info -->
+			<div id="statusBar">
+				<span id="statusLeft">TimeCheck 22</span>
+				<span id="statusMiddle">school name</span>
+				<span id="date"></span>
+			</div>
+		</div>
+		
+		<!-- scripts -->
 		<script type="module" src="/src/main.js"></script>
 		<script type="module" src="/src/helper.js"></script>
 	</body>

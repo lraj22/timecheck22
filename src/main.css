@@ -1,16 +1,96 @@
 :root {
-	font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+	font-family: Rubik, Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 	line-height: 1.5;
 	font-weight: 400;
 
 	color-scheme: light dark;
 	color: #e4e4e4;
-	background-color: #222222;
+	background-color: oklch(0.20 0.015 270);
 
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+}
+
+body {
+	margin: 0;
+}
+
+#app {
+	display: flex;
+	flex-flow: column;
+	width: 100vw;
+	height: 100vh;
+}
+
+#announcements {
+	background-color: oklch(0.80 0.1 270);
+	color: #222222;
+	padding: 0.2rem 0.5rem;
+	text-align: center;
+	font-size: 1.25rem;
+}
+
+#colFlexMain {
+	flex-grow: 1;
+	display: flex;
+	flex-flow: row;
+}
+
+aside {
+	width: 400px;
+	background-color: oklch(0.23 0.015 270);
+	z-index: 1234569;
+	padding: 1rem;
+}
+
+@media (max-width: 900px) {
+	aside {
+		position: absolute;
+		height: 100vh;
+	}
+}
+
+@media (max-width: 400px) {
+	aside {
+		position: absolute;
+		width: 100vw;
+		height: 100vh;
+	}
+}
+
+main {
+	flex-grow: 1;
+	display: flex;
+	flex-flow: column;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+}
+
+#buttonsBar {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	padding: 0.5rem;
+	box-sizing: border-box;
+}
+
+#time {
+	font-size: 15vw;
+	font-family: "Rampart One";
+}
+
+#statusBar {
+	background-color: oklch(0.25 0.015 270);
+	padding: 0.2rem 0.5rem;
+	text-align: center;
+	font-size: 1rem;
+	display: flex;
+	flex-flow: row;
+	justify-content: space-between;
 }
 
 @media (prefers-color-scheme: light) {
