@@ -1,6 +1,6 @@
 ---
 name: User Story
-about: This template is for creating user stories
+about: Add a user story for the product backlog
 title: ''
 labels: ''
 assignees: lraj22
