@@ -2,6 +2,11 @@
 
 export const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
+// generic helpers
+export function pad0 (string, length) {
+	return string.toString().padStart(length, "0");
+}
+
 // keeps track of when page is fully loaded
 let loadFlags = 0;
 export function loaded () {

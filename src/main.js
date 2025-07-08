@@ -1,4 +1,4 @@
-import { loaded, months } from "./helper";
+import { loaded, months, pad0 } from "./helper";
 import "./main.css";
 
 // import all DOM elements by [id]
@@ -10,7 +10,7 @@ function tick () {
 	let now = new Date();
 	
 	// update clock
-	dom.time.textContent = "" + ((now.getHours() % 12) || 12) + ":" + now.getMinutes();
+	dom.time.textContent = "" + ((now.getHours() % 12) || 12) + ":" + pad0(now.getMinutes(), 2);
 	dom.date.textContent = "" + months[now.getMonth()] + " " + now.getDate() + ", " + now.getFullYear();
 	
 	// request next tick
