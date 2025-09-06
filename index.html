@@ -19,17 +19,26 @@
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Rampart+One&display=swap&text=0123456789%3A" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+		
+		<!-- basic styles (should not require anything to have loaded prior) -->
+		<style>
+			#announcements {
+				display: none;
+			}
+		</style>
 	</head>
 	<body>
 		<div id="app">
 			<!-- this is where announcements appear -->
-			<div id="announcements">announcements here</div>
+			<div id="announcements">
+				Hello folks! Welcome to TimeCheck 22. - TC22 Staff
+			</div>
 			
 			<!-- main area (sidebar + main view) -->
 			<div id="colFlexMain">
 				<!-- sidebar -->
 				<aside>
-					<span>sidebar content</span>
+					<span>Sidebar content appears here!</span>
 				</aside>
 				
 				<!-- main view -->
@@ -39,6 +48,8 @@
 					</div>
 					<div id="time">--:--</div>
 					<div id="period">period name</div>
+					<div id="timeOver">time over</div>
+					<div id="timeLeft">time left</div>
 				</main>
 			</div>
 			

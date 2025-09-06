@@ -30,6 +30,13 @@ body {
 	padding: 0.2rem 0.5rem;
 	text-align: center;
 	font-size: 1.25rem;
+	display: none;
+	align-items: center;
+	justify-content: center;
+}
+
+#announcements:not(:empty) {
+	display: flex;
 }
 
 #colFlexMain {
@@ -81,6 +88,16 @@ main {
 #time {
 	font-size: 15vw;
 	font-family: "Rampart One";
+}
+
+#timeOver {
+	position: absolute;
+	left: 0.5rem;
+}
+
+#timeLeft {
+	position: absolute;
+	right: 0.5rem;
 }
 
 #statusBar {
