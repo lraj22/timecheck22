@@ -136,6 +136,9 @@ aside.sidebarVisible {
 		width: 100vw;
 		height: 100vh;
 	}
+	#statusLeft {
+		display: none;
+	}
 }
 
 main {

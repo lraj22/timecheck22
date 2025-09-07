@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# timecheck 22 specific
+clockdata
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

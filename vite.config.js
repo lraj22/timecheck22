@@ -1,4 +1,5 @@
 export default {
+	"base": "/timecheck22/",
 	"build": {
 		"rollupOptions": {
 			"output": {

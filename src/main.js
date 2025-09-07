@@ -1,4 +1,4 @@
-import { loaded, months, dom, pad0 } from "./helper";
+import { loaded, months, dom, pad0, clockdata } from "./helper";
 import "./sidebar";
 import "./main.css";
 
@@ -9,6 +9,11 @@ function tick () {
 	// update clock
 	dom.time.textContent = "" + ((now.getHours() % 12) || 12) + ":" + pad0(now.getMinutes(), 2);
 	dom.date.textContent = "" + months[now.getMonth()] + " " + now.getDate() + ", " + now.getFullYear();
+	
+	// if clockdata has loaded
+	if ("version" in clockdata) {
+		dom.statusMiddle.textContent = (window.innerWidth > 500) ? clockdata.metadata.school : clockdata.metadata.shortName;
+	}
 	
 	// request next tick
 	requestAnimationFrame(tick);
