@@ -1,6 +1,8 @@
-import { loaded, months, dom, pad0, clockdata } from "./helper";
-import "./sidebar";
+import { loaded, months, dom, pad0, clockdata, settings, updateSettings } from "./helper";
+import activateSidebar from "./sidebar";
 import "./main.css";
+
+activateSidebar(dom, settings, updateSettings); // runs sidebar component w/ necessary dependencies (the dom tree)
 
 // this function runs all the time
 function tick () {
@@ -13,6 +15,9 @@ function tick () {
 	// if clockdata has loaded
 	if ("version" in clockdata) {
 		dom.statusMiddle.textContent = (window.innerWidth > 500) ? clockdata.metadata.school : clockdata.metadata.shortName;
+		// if page has loaded, but no school is selected, dom.statusMiddle should show a "link" that will open the school page in the sidebar to set the school
+	} else {
+		dom.statusMiddle.textContent = "";
 	}
 	
 	// request next tick

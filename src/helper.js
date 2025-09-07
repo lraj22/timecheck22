@@ -1,36 +1,192 @@
 // helper.js - provides helpful things to other files!
 
 export const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const schools = {
+	"-1": {
+		"name": "None",
+		"repo": "",
+	},
+	"1": {
+		"name": "Chino Hills High School",
+		"repo": "lraj22/chhs-clockdata",
+	},
+};
+
+var consoleId = 1;
+/*
+ * localStorage 'env' usually does not exist,
+ * but can indicate the dev environment if set manually.
+ * This is to prevent regular users from running into unexpected errors.
+ */
+export var ENVIRONMENT = localStorage.getItem("env");
+export function log(m, override) {
+	if (override || (ENVIRONMENT === "dev")) {
+		consoleView.textContent = "[" + (consoleId++) + "] " + m;
+	} else {
+		console.log.apply(this, arguments);
+	}
+}
 
 // import all DOM elements by [id]
 export var dom = {};
 document.querySelectorAll("[id]").forEach(element => dom[element.id] = element);
 
+// create school options in sidebar
+Object.entries(schools).forEach(([schoolId, info]) => {
+	let option = document.createElement("option");
+	option.value = info.repo;
+	option.setAttribute("data-school-id", schoolId);
+	option.textContent = info.name;
+	dom.schoolSelect.appendChild(option);
+});
+
+// retrieve state from localforage
+const defaultState = {
+	"lastApiRequest": 0,
+};
+var state = await localforage.getItem("state");
+if (!state) {
+	await localforage.setItem("state", defaultState);
+	state = cloneObj(defaultState);
+} else {
+	state = addObj(defaultState, state);
+	await localforage.setItem("state", state);
+}
+
+async function updateState (updatedState) {
+	if (updatedState) state = cloneObj(updatedState);
+	await localforage.setItem("state", state);
+}
+
+// localforage store
+const defaultSettings = {
+	"schoolId": -1,
+};
+export var settings = await localforage.getItem("settings");
+if (!settings) {
+	await localforage.setItem("settings", defaultSettings);
+	settings = cloneObj(defaultSettings);
+} else {
+	settings = addObj(defaultSettings, settings);
+	await localforage.setItem("settings", settings);
+}
+
+function applySettings () {
+	document.querySelector(`[data-school-id="${settings.schoolId}"]`).selected = true;
+	fetchContext();
+}
+export async function updateSettings (updatedSettings) {
+	if (updatedSettings) settings = cloneObj(updateSettings);
+	await localforage.setItem("settings", settings);
+	applySettings();
+}
+
+applySettings();
+
 // fetch context
 export var clockdata = {};
-function fetchContext () {
-	return; // not ready yet!
+async function fetchContext (options) {
+	let targetUrl = null;
+	let usingApi = false;
+	if (typeof options !== "object") options = {};
 	
-	fetch("./clockdata/chhs-clockdata/context.json")
+	// figure out which context to find
+	if ("targetUrl" in options) { // options override
+		targetUrl = options.targetUrl;
+	} else if ((ENVIRONMENT === "dev") && (localStorage.getItem("contextUrl"))) { // dev override
+		targetUrl = localStorage.getItem("contextUrl");
+	} else if (("schoolId" in settings) && (settings.schoolId in schools)) { // use school context url
+		if (settings.schoolId.toString() === "-1") {
+			clockdata = {};
+			return;
+		}
+		targetUrl = `https://raw.githubusercontent.com/${schools[settings.schoolId].repo}/refs/heads/main/context.json`;
+		usingApi = true;
+	}
+	console.log("target:", targetUrl);
+	console.log("current data:", clockdata);
+	if (!targetUrl) return;
+	
+	// ensure we're not overdoing this api thing
+	let savedContexts = await localforage.getItem("savedContexts");
+	if (!savedContexts) {
+		await localforage.setItem("savedContexts", {});
+		savedContexts = {};
+	}
+	if (usingApi && !options.ignoreRateLimits) {
+		// TODO: save schedules for caching
+		/*
+		 * additional info: save school contexts to localforage, maybe under a 'contexts' key?
+		 * if a repo is requested but it's within the rate limits, just use the saved one!
+		 * if a new repo is requested that is not currently saved in 'contexts', it will ignore rate limits
+		 */
+		let lastRequest = state.lastApiRequest;
+		let now = Date.now();
+		if (now < (lastRequest + 10 * 60e3)) { // ten minutes
+			if (settings.schoolId in savedContexts) {
+				clockdata = savedContexts[settings.schoolId];
+				console.info("Loaded context from cache: it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString(), clockdata);
+				return;
+			} else {
+				console.info("Fetching context regardless of rate limit: it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString());
+			}
+		}
+		state.lastApiRequest = now;
+		await updateState();
+	}
+	
+	fetch(targetUrl)
 		.then(res => res.json())
-		.then(function (rawContext) {
+		.then(async function (rawContext) {
 			// we will use context later on
+			console.log("received new context!", rawContext);
 			clockdata = rawContext;
-			
-			loaded(); // add a loaded flag
+			if (usingApi) {
+				savedContexts[settings.schoolId] = rawContext;
+				await localforage.setItem("savedContexts", savedContexts);
+			}
 		});
 }
-fetchContext();
 
 // generic helpers
 export function pad0 (string, length) {
 	return string.toString().padStart(length, "0");
 }
 
+// cloneObj function taken & modified from https://stackoverflow.com/a/7574273
+// WARNING: cloneObj does not support cloning native objects like Date, Map, Set, etc. unless explicitly defined.
+function cloneObj (obj) {
+	if (obj == null || typeof (obj) != 'object') {
+		return obj;
+	}
+	if (obj instanceof Date) {
+		return obj;
+	}
+
+	var clone = new obj.constructor();
+	for (var key in obj) {
+		if (obj.hasOwnProperty(key)) {
+			clone[key] = cloneObj(obj[key]);
+		}
+	}
+
+	return clone;
+}
+function addObj (original, addme) {
+	var combined = cloneObj(original);
+	if (typeof addme !== "object") return combined;
+	for (var key in addme) {
+		if (addme.hasOwnProperty(key)) {
+			combined[key] = addme[key];
+		}
+	}
+	return combined;
+}
+
 // keeps track of when page is fully loaded
 let loadFlags = 0;
 export function loaded () {
-	var threshold = 2; // waiting for 2 flags: window.onload & context loading
+	var threshold = 1; // waiting for 2 flags: window.onload
 	if (!navigator.onLine) threshold = 1; // just wait for load
 	loadFlags++;
 	if (loadFlags >= threshold) {
