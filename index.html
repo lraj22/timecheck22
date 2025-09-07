@@ -19,6 +19,7 @@
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Rampart+One&display=swap&text=0123456789%3A" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 		
 		<!-- basic styles (should not require anything to have loaded prior) -->
 		<style>
@@ -31,20 +32,39 @@
 		<div id="app">
 			<!-- this is where announcements appear -->
 			<div id="announcements">
-				Hello folks! Welcome to TimeCheck 22. - TC22 Staff
+				Hey there! Welcome to TimeCheck 22. - TC22 Staff
 			</div>
 			
 			<!-- main area (sidebar + main view) -->
 			<div id="colFlexMain">
 				<!-- sidebar -->
-				<aside>
-					<span>Sidebar content appears here!</span>
+				<aside id="sidebar">
+					<div id="sidebarNavigation">
+						<button type="button" id="sbBack">arrow_back</button>
+						<p id="sidebarLocation">Home</p>
+						<button type="button" id="sbClose">close</button>
+					</div>
+					<hr>
+					<div id="sidebarContent">
+						<div class="sbPage" data-page-name="home" id="currentSidebarPage">
+							<div class="sbOption" data-navigate-to="settings">Settings</div>
+							<div class="sbOption" data-navigate-to="school">Set school</div>
+						</div>
+						<div class="sbPage" data-page-name="settings">
+							Hi! You're in settings right now.
+						</div>
+						<div class="sbPage" data-page-name="school">
+							Hi! You're in the school picking page right now.
+						</div>
+					</div>
 				</aside>
 				
 				<!-- main view -->
 				<main>
 					<div id="buttonsBar">
-						<span>buttons go here</span>
+						<!-- in reality, the sidebar "button" will be a hoverable section on the left side of the screen and not a traditional button in the buttons bar. (concerns w/ this on small screen size?) -->
+						<!-- the available real buttons will likely be settings, stopwatch, and timer -->
+						<button type="button" class="flatBtn" id="toggleSidebar" data-icon="left_panel_open"></button>
 					</div>
 					<div id="time">--:--</div>
 					<div id="period">period name</div>
@@ -62,7 +82,7 @@
 		</div>
 		
 		<!-- scripts -->
-		<script type="module" src="/src/main.js"></script>
-		<script type="module" src="/src/helper.js"></script>
+		<script type="module" defer src="/src/main.js"></script>
+		<script type="module" defer src="/src/helper.js"></script>
 	</body>
 </html>

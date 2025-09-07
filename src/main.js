@@ -1,9 +1,6 @@
-import { loaded, months, pad0 } from "./helper";
+import { loaded, months, dom, pad0 } from "./helper";
+import "./sidebar";
 import "./main.css";
-
-// import all DOM elements by [id]
-var dom = {};
-document.querySelectorAll("[id]").forEach(element => dom[element.id] = element);
 
 // this function runs all the time
 function tick () {
@@ -21,6 +18,7 @@ requestAnimationFrame(tick);
 
 // on page load
 window.addEventListener("load", () => loaded());
+dom.toggleSidebar.click();
 
 // set up sw.js if supported
 if ("serviceWorker" in navigator) {
