@@ -108,26 +108,20 @@ async function fetchContext (options) {
 	if (!targetUrl) return;
 	
 	// ensure we're not overdoing this api thing
-	let savedContexts = await localforage.getItem("savedContexts");
+	let savedContexts = await localforage.getItem("savedContexts"); // get cache
 	if (!savedContexts) {
 		await localforage.setItem("savedContexts", {});
 		savedContexts = {};
 	}
 	if (usingApi && !options.ignoreRateLimits) {
-		// TODO: save schedules for caching
-		/*
-		 * additional info: save school contexts to localforage, maybe under a 'contexts' key?
-		 * if a repo is requested but it's within the rate limits, just use the saved one!
-		 * if a new repo is requested that is not currently saved in 'contexts', it will ignore rate limits
-		 */
 		let lastRequest = state.lastApiRequest;
 		let now = Date.now();
-		if (now < (lastRequest + 10 * 60e3)) { // ten minutes
-			if (settings.schoolId in savedContexts) {
+		if (now < (lastRequest + 10 * 60e3)) { // preferably, don't rerequest within ten minutes
+			if (settings.schoolId in savedContexts) { // we don't need to rerequest! It's in the cache :D
 				clockdata = savedContexts[settings.schoolId];
 				console.info("Loaded context from cache: it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString(), clockdata);
 				return;
-			} else {
+			} else { // not in cache, rerequest (and then save in cache lol)
 				console.info("Fetching context regardless of rate limit: it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString());
 			}
 		}
@@ -135,10 +129,10 @@ async function fetchContext (options) {
 		await updateState();
 	}
 	
+	// let's go!
 	fetch(targetUrl)
 		.then(res => res.json())
 		.then(async function (rawContext) {
-			// we will use context later on
 			console.log("received new context!", rawContext);
 			clockdata = rawContext;
 			if (usingApi) {
