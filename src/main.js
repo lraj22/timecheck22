@@ -1,4 +1,13 @@
-import { loaded, months, dom, pad0, clockdata, settings, updateSettings } from "./helper";
+import {
+	loaded,
+	months,
+	dom,
+	pad0,
+	msToTimeDiff,
+	clockdata,
+	settings,
+	updateSettings
+} from "./helper";
 import activateSidebar from "./sidebar";
 import "./main.css";
 
@@ -20,6 +29,27 @@ function tick () {
 		dom.statusMiddle.textContent = "";
 	}
 	
+	// TODO: let's fill with false information for now to get a sense of layout. fix this soon!
+	if ("version" in clockdata) {
+		let fakePeriodNumber = (now.getHours() % 6) + 1;
+		dom.period.textContent = "" + fakePeriodNumber +
+			((fakePeriodNumber === 1) ? "st" : (
+				(fakePeriodNumber === 2) ? "nd" : (
+					(fakePeriodNumber === 3) ? "rd" : "th"
+				)
+			)) + " period (simulated)";
+		let startOfPeriod = new Date(now);
+		startOfPeriod.setHours(startOfPeriod.getHours(), 0, 0, 0);
+		let endOfPeriod = new Date(now);
+		endOfPeriod.setHours(endOfPeriod.getHours() + 1, 0, 0, 0);
+		dom.timeLeft.textContent = msToTimeDiff(endOfPeriod - now) + " left";
+		dom.timeOver.textContent = msToTimeDiff(now - startOfPeriod) + " over";
+	} else {
+		dom.period.textContent = "";
+		dom.timeLeft.textContent = "";
+		dom.timeOver.textContent = "";
+	}
+	
 	// request next tick
 	requestAnimationFrame(tick);
 }
@@ -28,7 +58,7 @@ requestAnimationFrame(tick);
 
 // on page load
 window.addEventListener("load", () => loaded());
-dom.toggleSidebar.click();
+// dom.toggleSidebar.click();
 
 // set up sw.js if supported
 if ("serviceWorker" in navigator) {

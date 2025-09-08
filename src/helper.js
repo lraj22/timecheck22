@@ -147,6 +147,34 @@ export function pad0 (string, length) {
 	return string.toString().padStart(length, "0");
 }
 
+// Convert number of milliseconds to human-readable string
+export function msToTimeDiff (ms, f) {
+	var timeSeconds = (f ? f : Math.round)(ms / 1000);
+	var outComponents = [];
+	var forceAllNext = false;
+	if (forceAllNext || (timeSeconds >= 3600)) {
+		outComponents.push(Math.floor(timeSeconds / 3600).toString());
+		timeSeconds %= 3600;
+		forceAllNext = true;
+	}
+	if (forceAllNext || (timeSeconds >= 60)) {
+		outComponents.push(Math.floor(timeSeconds / 60).toString());
+		timeSeconds %= 60;
+		forceAllNext = true;
+	}
+	outComponents.push(timeSeconds.toString());
+	if (outComponents.length > 2) {
+		outComponents[1] = outComponents[1].padStart(2, "0");
+	}
+	if (outComponents.length > 1) {
+		let lastIndex = outComponents.length - 1;
+		outComponents[lastIndex] = outComponents[lastIndex].padStart(2, "0");
+		return outComponents.join(":");
+	} else {
+		return outComponents[0] + "s";
+	}
+}
+
 // cloneObj function taken & modified from https://stackoverflow.com/a/7574273
 // WARNING: cloneObj does not support cloning native objects like Date, Map, Set, etc. unless explicitly defined.
 function cloneObj (obj) {
