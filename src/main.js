@@ -90,6 +90,7 @@ function tick () {
 		dom.timeLeft.textContent = msToTimeDiff(endOfPeriod - now) + " left";
 		dom.timeOver.textContent = msToTimeDiff(now - startOfPeriod) + " over";
 	} else {
+		dom.announcements.innerHTML = "";
 		dom.period.textContent = "";
 		dom.timeLeft.textContent = "";
 		dom.timeOver.textContent = "";
