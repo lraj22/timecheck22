@@ -4,21 +4,26 @@
 import { DateTime, Interval } from "luxon";
 
 export const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-const schools = {
-	"-1": {
+const schools = [
+	{
+		"id": -1,
 		"name": "None",
 		"repo": "",
 	},
-	"1": {
+	{
+		"id": 1,
 		"name": "Chino Hills High School (real school)",
 		"repo": "lraj22/chhs-clockdata",
 	},
-	"-2": {
+	{
+		"id": -2,
 		"name": "Always High School (fake school that is always doing something!)",
 		"repo": "lraj22/alwayshs-clockdata",
 	},
 	// TODO: add some more fake schools for testing purposes
-};
+];
+const schoolIdMappings = Object.fromEntries(schools.map((school, index) => [school.id, index]));
+console.log(schoolIdMappings);
 
 var logIdNumber = 1;
 /*
@@ -40,11 +45,11 @@ export var dom = {};
 document.querySelectorAll("[id]").forEach(element => dom[element.id] = element);
 
 // create school options in sidebar
-Object.entries(schools).forEach(([schoolId, info]) => {
+schools.forEach(({ id, name, repo }) => {
 	let option = document.createElement("option");
-	option.value = info.repo;
-	option.setAttribute("data-school-id", schoolId);
-	option.textContent = info.name;
+	option.value = repo;
+	option.setAttribute("data-school-id", id);
+	option.textContent = name;
 	dom.schoolSelect.appendChild(option);
 });
 
@@ -103,12 +108,12 @@ async function fetchContext (options) {
 		targetUrl = options.targetUrl;
 	} else if ((ENVIRONMENT === "dev") && (localStorage.getItem("contextUrl"))) { // dev override
 		targetUrl = localStorage.getItem("contextUrl");
-	} else if (("schoolId" in settings) && (settings.schoolId in schools)) { // use school context url
+	} else if (("schoolId" in settings) && (settings.schoolId in schoolIdMappings)) { // use school context url
 		if (settings.schoolId.toString() === "-1") {
 			clockdata = {};
 			return;
 		}
-		targetUrl = `https://raw.githubusercontent.com/${schools[settings.schoolId].repo}/refs/heads/main/context.json`;
+		targetUrl = `https://raw.githubusercontent.com/${schools[schoolIdMappings[settings.schoolId]].repo}/refs/heads/main/context.json`;
 		usingApi = true;
 	}
 	// console.log("target:", targetUrl);
@@ -127,10 +132,10 @@ async function fetchContext (options) {
 		if (now < (lastRequest + 10 * 60e3)) { // preferably, don't rerequest within ten minutes
 			if (settings.schoolId in savedContexts) { // we don't need to rerequest! It's in the cache :D
 				clockdata = savedContexts[settings.schoolId];
-				// console.info("Loaded context from cache: it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString(), clockdata);
+				console.info("Loaded context from cache: it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString(), clockdata);
 				return;
 			} else { // not in cache, rerequest (and then save in cache lol)
-				// console.info("Fetching context regardless of rate limit: it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString());
+				console.info("Fetching context regardless of rate limit: it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString());
 			}
 		}
 		state.lastApiRequest = now;
