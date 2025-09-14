@@ -24,7 +24,7 @@ body {
 	height: 100vh;
 }
 
-#announcements {
+.announcement {
 	background-color: oklch(0.80 0.1 270);
 	color: #222222;
 	padding: 0.2rem 0.5rem;
@@ -33,9 +33,10 @@ body {
 	display: none;
 	align-items: center;
 	justify-content: center;
+	border-bottom: 2px solid oklch(0.90 0.2 90); /* oklch(0.90, double, +180) */
 }
 
-#announcements:not(:empty) {
+.announcement:not(:empty) {
 	display: flex;
 }
 

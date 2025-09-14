@@ -1,5 +1,8 @@
 // helper.js - provides helpful things to other files!
 
+// imports
+import { DateTime, Interval } from "luxon";
+
 export const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const schools = {
 	"-1": {
@@ -103,8 +106,8 @@ async function fetchContext (options) {
 		targetUrl = `https://raw.githubusercontent.com/${schools[settings.schoolId].repo}/refs/heads/main/context.json`;
 		usingApi = true;
 	}
-	console.log("target:", targetUrl);
-	console.log("current data:", clockdata);
+	// console.log("target:", targetUrl);
+	// console.log("current data:", clockdata);
 	if (!targetUrl) return;
 	
 	// ensure we're not overdoing this api thing
@@ -119,10 +122,10 @@ async function fetchContext (options) {
 		if (now < (lastRequest + 10 * 60e3)) { // preferably, don't rerequest within ten minutes
 			if (settings.schoolId in savedContexts) { // we don't need to rerequest! It's in the cache :D
 				clockdata = savedContexts[settings.schoolId];
-				console.info("Loaded context from cache: it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString(), clockdata);
+				// console.info("Loaded context from cache: it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString(), clockdata);
 				return;
 			} else { // not in cache, rerequest (and then save in cache lol)
-				console.info("Fetching context regardless of rate limit: it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString());
+				// console.info("Fetching context regardless of rate limit: it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString());
 			}
 		}
 		state.lastApiRequest = now;
@@ -143,9 +146,123 @@ async function fetchContext (options) {
 }
 
 // generic helpers
+export function luxonDate (dateObj, timezone) {
+	dateObj = dateObj || new Date();
+	timezone = timezone || (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined);
+	return DateTime.fromObject({
+		"year": dateObj.getFullYear(),
+		"month": dateObj.getMonth() + 1,
+		"day": dateObj.getDate(),
+		"hour": dateObj.getHours(),
+		"minute": dateObj.getMinutes(),
+		"second": dateObj.getSeconds(),
+		"millisecond": dateObj.getMilliseconds(),
+	}, {
+		"zone": timezone,
+	});
+}
+
+export function getDate () {
+	// WARNING: doesn't work yet. this is supposed to get the date in the user's school's timezone, and fallback to local time if not available
+	let options = {};
+	if ("metadata" in clockdata) {
+		options.timeZone = clockdata.metadata.timezone;
+	}
+	let d = new Date(new Date().toLocaleString("en-US", options));
+	return d;
+}
 export function pad0 (string, length) {
 	return string.toString().padStart(length, "0");
 }
+
+const allPartNames = ["year", "month", "day", "hour", "minute", "second", "millisecond"];
+
+export function stringToLuxonDuration (durationString, timezone) {
+	durationString = durationString || "";
+	durationString = durationString.trim();
+	let separated = durationString.split("--");
+	let impliedEnd = false;
+	
+	if (separated.length === 1) {
+		separated[1] = separated[0]; // if only start specified, end will be implied by how specific the start is
+		impliedEnd = true;
+	}
+	
+	// calculate the start time & specificity
+	let startTimeParts = stringToLuxonTime(separated[0], undefined, true);
+	let startLeastSignificant = allPartNames.filter(partName => partName in startTimeParts).slice(-1)[0];
+	let startTime = DateTime.fromObject(startTimeParts, {
+		"zone": timezone || (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined)
+	});
+	
+	// calculate the end time & specificity
+	let endTimeParts = stringToLuxonTime(separated[1], undefined, true);
+	let endLeastSignificant = allPartNames.filter(partName => partName in endTimeParts).slice(-1)[0];
+	let endTime = DateTime.fromObject(endTimeParts, {
+		"zone": timezone || (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined)
+	});
+	
+	// construct an interval
+	return Interval.fromDateTimes(startTime.startOf(startLeastSignificant), endTime[impliedEnd ? "endOf" : "startOf"](endLeastSignificant));
+}
+window.d = stringToLuxonDuration; // testing
+
+export function stringToLuxonTime (time, timezone, onlyParsedInfo) {
+	// something like "2025-09-13/06:07 AM" but with any amount of information included
+	time = time || "";
+	time = time.trim();
+	
+	let separated = time.split("/").map(part => part.trim().toUpperCase());
+	let dateString = null;
+	let timeString = null;
+	let parsedInfo = {};
+	
+	if (separated.length > 1) { // both date & time parts exist
+		[dateString, timeString] = separated;
+	} else if (time.includes("-") || /^[0-9]{4}$/.test(time)) { // only date part (includes date separator '-' or is just year 'yyyy')
+		dateString = separated[0];
+	} else { // must be the time part
+		parsedInfo.year = undefined;
+		parsedInfo.month = undefined;
+		parsedInfo.day = undefined;
+		timeString = separated[0];
+	}
+	
+	// parse the date part if not already done
+	if (dateString) {
+		let dateParts = dateString.split("-");
+		let datePartNames = ["year", "month", "day"];
+		dateParts.forEach((part, index) => {
+			if (index >= 3) return; // we only have 3 parts...
+			parsedInfo[datePartNames[index]] = parseInt(part);
+		});
+	}
+	
+	// parse the time part if not already done
+	if (timeString) {
+		let timeParts = timeString.split(/[:\.]/);
+		let timePartNames = ["hour", "minute", "second", "millisecond"];
+		timeParts.forEach((part, index) => {
+			if (index >= 4) return; // 4 parts max lol
+			if (index === 0) { // hour, in case of AM/PM
+				let partValue = parseInt(part);
+				if (timeString.includes("M")) partValue %= 12; // AM/PM are %= 12
+				if (timeString.includes("PM")) partValue += 12; // add 12 for PM
+				parsedInfo[timePartNames[index]] = partValue;
+			} else {
+				parsedInfo[timePartNames[index]] = parseInt(part);
+			}
+		});
+	}
+	
+	// get timezone
+	timezone = timezone || (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined);
+	
+	return onlyParsedInfo ? parsedInfo : DateTime.fromObject(parsedInfo, {
+		"zone": timezone,
+	});
+}
+window.p = stringToLuxonTime; // testing
 
 // Convert number of milliseconds to human-readable string
 export function msToTimeDiff (ms, f) {

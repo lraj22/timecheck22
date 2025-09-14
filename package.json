@@ -23,6 +23,7 @@
 	"dependencies": {
 		"esbuild": "^0.25.5",
 		"fdir": "^6.4.6",
+		"luxon": "^3.7.2",
 		"nanoid": "^3.3.11",
 		"picocolors": "^1.1.1",
 		"picomatch": "^4.0.2",

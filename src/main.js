@@ -6,42 +6,87 @@ import {
 	msToTimeDiff,
 	clockdata,
 	settings,
-	updateSettings
+	updateSettings,
+	stringToLuxonDuration
 } from "./helper";
 import activateSidebar from "./sidebar";
 import "./main.css";
+import { DateTime } from "luxon";
 
 activateSidebar(dom, settings, updateSettings); // runs sidebar component w/ necessary dependencies (the dom tree)
 
 // this function runs all the time
+let oldAnnouncements = [];
 function tick () {
-	let now = new Date();
+	let now = DateTime.local({
+		"zone": (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined),
+	});
+	let isSmallScreen = (window.innerWidth <= 500);
 	
 	// update clock
-	dom.time.textContent = "" + ((now.getHours() % 12) || 12) + ":" + pad0(now.getMinutes(), 2);
-	dom.date.textContent = "" + months[now.getMonth()] + " " + now.getDate() + ", " + now.getFullYear();
+	dom.time.textContent = now.toFormat("h:mm");
+	dom.date.textContent = now.toFormat((isSmallScreen ? "LLL" : "LLLL") + " d, yyyy");
 	
 	// if clockdata has loaded
 	if ("version" in clockdata) {
-		dom.statusMiddle.textContent = (window.innerWidth > 500) ? clockdata.metadata.school : clockdata.metadata.shortName;
+		dom.statusMiddle.textContent = (isSmallScreen) ? clockdata.metadata.shortName : clockdata.metadata.school;
 		// if page has loaded, but no school is selected, dom.statusMiddle should show a "link" that will open the school page in the sidebar to set the school
 	} else {
 		dom.statusMiddle.textContent = "";
 	}
 	
-	// TODO: let's fill with false information for now to get a sense of layout. fix this soon!
 	if ("version" in clockdata) {
-		let fakePeriodNumber = (now.getHours() % 6) + 1;
+		// handle announcements
+		let currentAnnouncements = [];
+		clockdata.announcements.forEach(announcement => {
+			// check if announcement is valid right now
+			let appliesAtAll = announcement.applies.some(range => {
+				let duration = stringToLuxonDuration(range);
+				return duration.contains(now)
+			});
+			if (appliesAtAll) currentAnnouncements.push(announcement.message);
+			
+		});
+		
+		if (currentAnnouncements.join("") !== oldAnnouncements.join("")) { // check if any updates (probably not honestly)
+			dom.announcements.innerHTML = "";
+			
+			// add announcements
+			currentAnnouncements.forEach((announcement) => {
+				let el = document.createElement("div");
+				el.className = "announcement";
+				el.innerHTML = announcement;
+				dom.announcements.appendChild(el);
+			});
+			
+			console.groupCollapsed("Updating announcements");
+			console.log("old", oldAnnouncements);
+			console.log("new", currentAnnouncements);
+			console.groupEnd("updating announcements");
+			
+			oldAnnouncements = currentAnnouncements;
+		}
+		
+		
+		
+		
+		
+		
+		
+		// TODO: let's fill with false information for now to get a sense of layout. fix this soon!
+		let fakePeriodNumber = (now.hour % 6) + 1;
 		dom.period.textContent = "" + fakePeriodNumber +
 			((fakePeriodNumber === 1) ? "st" : (
 				(fakePeriodNumber === 2) ? "nd" : (
 					(fakePeriodNumber === 3) ? "rd" : "th"
 				)
 			)) + " period (simulated)";
-		let startOfPeriod = new Date(now);
-		startOfPeriod.setHours(startOfPeriod.getHours(), 0, 0, 0);
-		let endOfPeriod = new Date(now);
-		endOfPeriod.setHours(endOfPeriod.getHours() + 1, 0, 0, 0);
+		// let startOfPeriod = new Date(now);
+		let startOfPeriod = now.startOf("hour");
+		// startOfPeriod.setHours(startOfPeriod.hour, 0, 0, 0);
+		// let endOfPeriod = new Date(now);
+		let endOfPeriod = now.endOf("hour");
+		// endOfPeriod.setHours(endOfPeriod.hour + 1, 0, 0, 0);
 		dom.timeLeft.textContent = msToTimeDiff(endOfPeriod - now) + " left";
 		dom.timeOver.textContent = msToTimeDiff(now - startOfPeriod) + " over";
 	} else {
