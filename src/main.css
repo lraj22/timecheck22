@@ -24,6 +24,14 @@ body {
 	height: 100vh;
 }
 
+#consoleView {
+	position: fixed;
+	top: 0%;
+	left: 50%;
+	transform: translate(-50%, 50%);
+	z-index: 1000;
+}
+
 .announcement {
 	background-color: oklch(0.80 0.1 270);
 	color: #222222;

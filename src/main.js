@@ -91,6 +91,7 @@ function tick () {
 		dom.timeOver.textContent = msToTimeDiff(now - startOfPeriod) + " over";
 	} else {
 		dom.announcements.innerHTML = "";
+		oldAnnouncements = [];
 		dom.period.textContent = "";
 		dom.timeLeft.textContent = "";
 		dom.timeOver.textContent = "";

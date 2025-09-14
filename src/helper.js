@@ -15,7 +15,7 @@ const schools = {
 	},
 };
 
-var consoleId = 1;
+var logIdNumber = 1;
 /*
  * localStorage 'env' usually does not exist,
  * but can indicate the dev environment if set manually.
@@ -24,7 +24,7 @@ var consoleId = 1;
 export var ENVIRONMENT = localStorage.getItem("env");
 export function log(m, override) {
 	if (override || (ENVIRONMENT === "dev")) {
-		consoleView.textContent = "[" + (consoleId++) + "] " + m;
+		dom.consoleView.textContent = "[" + (logIdNumber++) + "] " + m;
 	} else {
 		console.log.apply(this, arguments);
 	}
@@ -138,6 +138,7 @@ async function fetchContext (options) {
 		.then(async function (rawContext) {
 			console.log("received new context!", rawContext);
 			clockdata = rawContext;
+			console.log("current schedule", getSchedule()); // testing
 			if (usingApi) {
 				savedContexts[settings.schoolId] = rawContext;
 				await localforage.setItem("savedContexts", savedContexts);
@@ -263,6 +264,32 @@ export function stringToLuxonTime (time, timezone, onlyParsedInfo) {
 	});
 }
 window.p = stringToLuxonTime; // testing
+
+function getSchedule () {
+	if (!("schedules" in clockdata)) return {};
+	let schedule = {};
+	let now = DateTime.local({
+		"zone": (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined),
+	});
+	let dayOfWeek = now.weekday;
+	for (let rule of clockdata.schedulingRules) {
+		if (rule.match === "dayOfTheWeek") {
+			let ruleParts = rule.pattern.split("--").map(part => part.trim());
+			if (ruleParts.length > 1) { // something like 2 -- 5 (Tuesday - Friday inclusive)
+				if ((parseInt(ruleParts[0]) <= dayOfWeek) && (dayOfWeek <= parseInt(ruleParts[1]))) {
+					return clockdata.schedules[rule.schedule] || {};
+				}
+			} else { // something like 1 (Monday)
+				if (parseInt(ruleParts[0]) === dayOfWeek) {
+					return clockdata.schedules[rule.schedule] || {};
+				}
+			}
+		} else {
+			// this rule doesn't follow any of the supported matching patterns
+		}
+	}
+	return schedule;
+}
 
 // Convert number of milliseconds to human-readable string
 export function msToTimeDiff (ms, f) {
