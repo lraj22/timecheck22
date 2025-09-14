@@ -10,10 +10,14 @@ const schools = {
 		"repo": "",
 	},
 	"1": {
-		"name": "Chino Hills High School",
+		"name": "Chino Hills High School (real school)",
 		"repo": "lraj22/chhs-clockdata",
 	},
-	// TODO: add some fake schools for testing purposes
+	"-2": {
+		"name": "Always High School (fake school that is always doing something!)",
+		"repo": "lraj22/alwayshs-clockdata",
+	},
+	// TODO: add some more fake schools for testing purposes
 };
 
 var logIdNumber = 1;
