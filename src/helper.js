@@ -13,6 +13,7 @@ const schools = {
 		"name": "Chino Hills High School",
 		"repo": "lraj22/chhs-clockdata",
 	},
+	// TODO: add some fake schools for testing purposes
 };
 
 var logIdNumber = 1;
@@ -265,13 +266,16 @@ export function stringToLuxonTime (time, timezone, onlyParsedInfo) {
 }
 window.p = stringToLuxonTime; // testing
 
-function getSchedule () {
+export function getSchedule () {
 	if (!("schedules" in clockdata)) return {};
 	let schedule = {};
 	let now = DateTime.local({
 		"zone": (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined),
 	});
 	let dayOfWeek = now.weekday;
+	
+	// TODO: full day overrides
+	
 	for (let rule of clockdata.schedulingRules) {
 		if (rule.match === "dayOfTheWeek") {
 			let ruleParts = rule.pattern.split("--").map(part => part.trim());

@@ -7,7 +7,8 @@ import {
 	clockdata,
 	settings,
 	updateSettings,
-	stringToLuxonDuration
+	stringToLuxonDuration,
+	getSchedule
 } from "./helper";
 import activateSidebar from "./sidebar";
 import "./main.css";
@@ -67,28 +68,66 @@ function tick () {
 			oldAnnouncements = currentAnnouncements;
 		}
 		
+		let timeframeOverrides = clockdata.timeframe_overrides.map(tfo => {
+			tfo.isOverride = true; // add override metadata
+			return tfo;
+		});
+		let currentSchedule = Object.entries(getSchedule()).map(([name, applies]) => {
+			return { // same data, in different format to make it easier to parse
+				"applies": applies,
+				"description": name,
+				"isOverride": false,
+			};
+		});
+		let timesToday = [
+			...timeframeOverrides,
+			...currentSchedule,
+		];
+		
+		let timeFound = false;
+		for (const time of timesToday) {
+			for (const duration of time.applies) {
+				let appliesDuration = stringToLuxonDuration(duration);
+				let doesApply = appliesDuration.contains(now);
+				if (!doesApply) continue; // doesn't apply, continue
+				
+				timeFound = true;
+				// TODO: if override (time.isOverride), make sure to let user know
+				dom.period.textContent = time.description;
+				dom.timeOver.textContent = msToTimeDiff(-appliesDuration.start.diffNow()) + " over";
+				dom.timeLeft.textContent = msToTimeDiff(+appliesDuration.end.diffNow()) + " left";
+				break;
+			}
+			if (timeFound) break;
+		}
+		if (!timeFound) {
+			dom.period.textContent = "";
+			dom.timeLeft.textContent = "";
+			dom.timeOver.textContent = "";
+		}
 		
 		
 		
 		
 		
 		
-		// TODO: let's fill with false information for now to get a sense of layout. fix this soon!
-		let fakePeriodNumber = (now.hour % 6) + 1;
-		dom.period.textContent = "" + fakePeriodNumber +
-			((fakePeriodNumber === 1) ? "st" : (
-				(fakePeriodNumber === 2) ? "nd" : (
-					(fakePeriodNumber === 3) ? "rd" : "th"
-				)
-			)) + " period (simulated)";
-		// let startOfPeriod = new Date(now);
-		let startOfPeriod = now.startOf("hour");
-		// startOfPeriod.setHours(startOfPeriod.hour, 0, 0, 0);
-		// let endOfPeriod = new Date(now);
-		let endOfPeriod = now.endOf("hour");
-		// endOfPeriod.setHours(endOfPeriod.hour + 1, 0, 0, 0);
-		dom.timeLeft.textContent = msToTimeDiff(endOfPeriod - now) + " left";
-		dom.timeOver.textContent = msToTimeDiff(now - startOfPeriod) + " over";
+		
+		// // let's fill with false information for now to get a sense of layout. fix this soon!
+		// let fakePeriodNumber = (now.hour % 6) + 1;
+		// dom.period.textContent = "" + fakePeriodNumber +
+		// 	((fakePeriodNumber === 1) ? "st" : (
+		// 		(fakePeriodNumber === 2) ? "nd" : (
+		// 			(fakePeriodNumber === 3) ? "rd" : "th"
+		// 		)
+		// 	)) + " period (simulated)";
+		// // let startOfPeriod = new Date(now);
+		// let startOfPeriod = now.startOf("hour");
+		// // startOfPeriod.setHours(startOfPeriod.hour, 0, 0, 0);
+		// // let endOfPeriod = new Date(now);
+		// let endOfPeriod = now.endOf("hour");
+		// // endOfPeriod.setHours(endOfPeriod.hour + 1, 0, 0, 0);
+		// dom.timeLeft.textContent = msToTimeDiff(endOfPeriod - now) + " left";
+		// dom.timeOver.textContent = msToTimeDiff(now - startOfPeriod) + " over";
 	} else {
 		dom.announcements.innerHTML = "";
 		oldAnnouncements = [];
