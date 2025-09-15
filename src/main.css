@@ -140,6 +140,11 @@ select {
     font-size: 1rem;
 }
 
+.linklike {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
 table {
 	width: 100%;
 	border-collapse: collapse;
@@ -155,6 +160,19 @@ th, td {
 
 thead tr, tr:nth-child(even) {
 	background-color: oklch(0.33 0.015 270);
+}
+
+table:has(tbody:empty) thead th {
+	width: 50%;
+}
+
+tbody:empty {
+	display: block;
+	padding: 1rem;
+}
+
+tbody:empty::after {
+	content: "(Empty schedule)";
 }
 
 @media (max-width: 900px) {

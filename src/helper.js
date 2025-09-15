@@ -128,9 +128,12 @@ dom.scheduleSelect.addEventListener("change", function () {
 });
 
 function applyNewClockdata () { // when context is fetched, the new clockdata is applied!
+	let data = cloneObj(clockdata || {});
+	if (!("version" in clockdata)) {
+		data.schedules = [];
+	}
 	// update the schedules
-	let schedules = cloneObj(clockdata.schedules);
-	console.log(schedules);
+	let schedules = data.schedules;
 	schedules.push(noneSchedule);
 	let currentScheduleId = getSchedule().id;
 	
@@ -159,6 +162,7 @@ async function fetchContext (options) {
 	} else if (("schoolId" in settings) && (settings.schoolId in schoolIdMappings)) { // use school context url
 		if (settings.schoolId.toString() === "-1") {
 			clockdata = {};
+			applyNewClockdata();
 			return;
 		}
 		targetUrl = `https://raw.githubusercontent.com/${schools[schoolIdMappings[settings.schoolId]].repo}/refs/heads/main/context.json`;
@@ -180,6 +184,7 @@ async function fetchContext (options) {
 		if (now < (lastRequest + 10 * 60e3)) { // preferably, don't rerequest within ten minutes
 			if (settings.schoolId in savedContexts) { // we don't need to rerequest! It's in the cache :D
 				clockdata = savedContexts[settings.schoolId];
+				applyNewClockdata();
 				console.info("Loaded context from cache: it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString(), clockdata);
 				return;
 			} else { // not in cache, rerequest (and then save in cache lol)
@@ -324,7 +329,6 @@ export function stringToLuxonTime (time, timezone, onlyParsedInfo) {
 window.p = stringToLuxonTime; // testing
 
 function getScheduleById (id) {
-	console.log(clockdata.schedules, id);
 	return clockdata.schedules.find(schedule => schedule.id === id) || noneSchedule;
 }
 
