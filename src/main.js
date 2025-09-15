@@ -72,7 +72,7 @@ function tick () {
 			tfo.isOverride = true; // add override metadata
 			return tfo;
 		});
-		let currentSchedule = Object.entries(getSchedule()).map(([name, applies]) => {
+		let currentSchedule = Object.entries(getSchedule().timings).map(([name, applies]) => {
 			return { // same data, in different format to make it easier to parse
 				"applies": applies,
 				"description": name,

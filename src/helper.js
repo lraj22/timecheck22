@@ -23,7 +23,11 @@ const schools = [
 	// TODO: add some more fake schools for testing purposes
 ];
 const schoolIdMappings = Object.fromEntries(schools.map((school, index) => [school.id, index]));
-console.log(schoolIdMappings);
+const noneSchedule = {
+	"id": "none",
+	"label": "<None>",
+	"timings": {},
+};
 
 var logIdNumber = 1;
 /*
@@ -96,6 +100,50 @@ export async function updateSettings (updatedSettings) {
 
 applySettings();
 
+// schedules page
+dom.scheduleSelect.addEventListener("change", function () {
+	let schedule = getScheduleById(this.value).timings;
+	let scheduleParts = [];
+	Object.entries(schedule).forEach((period) => { // [name, appliesArray]
+		for (const appliesBlock of period[1]) {
+			scheduleParts.push({
+				"name": period[0],
+				"applies": stringToLuxonDuration(appliesBlock),
+			});
+		}
+	});
+	scheduleParts = scheduleParts.sort((period1, period2) => period1.applies.start - period2.applies.start); // sort by starting time
+	
+	dom.scheduleTableBody.innerHTML = "";
+	scheduleParts.forEach(part => {
+		let tr = document.createElement("tr");
+		let tdPeriod = document.createElement("td");
+		tdPeriod.textContent = part.name;
+		let tdWhen = document.createElement("td");
+		tdWhen.textContent = part.applies.start.toFormat("h:mm a") + " to " + part.applies.end.toFormat("h:mm a");
+		tr.appendChild(tdPeriod);
+		tr.appendChild(tdWhen);
+		dom.scheduleTableBody.appendChild(tr);
+	});
+});
+
+function applyNewClockdata () { // when context is fetched, the new clockdata is applied!
+	// update the schedules
+	let schedules = cloneObj(clockdata.schedules);
+	console.log(schedules);
+	schedules.push(noneSchedule);
+	let currentScheduleId = getSchedule().id;
+	
+	dom.scheduleSelect.innerHTML = "";
+	schedules.forEach(schedule => {
+		let option = document.createElement("option");
+		option.textContent = schedule.label;
+		option.value = schedule.id;
+		if (schedule.id === currentScheduleId) option.selected = true;
+		dom.scheduleSelect.appendChild(option);
+	});
+}
+
 // fetch context
 export var clockdata = {};
 async function fetchContext (options) {
@@ -148,7 +196,7 @@ async function fetchContext (options) {
 		.then(async function (rawContext) {
 			console.log("received new context!", rawContext);
 			clockdata = rawContext;
-			console.log("current schedule", getSchedule()); // testing
+			applyNewClockdata();
 			if (usingApi) {
 				savedContexts[settings.schoolId] = rawContext;
 				await localforage.setItem("savedContexts", savedContexts);
@@ -275,9 +323,14 @@ export function stringToLuxonTime (time, timezone, onlyParsedInfo) {
 }
 window.p = stringToLuxonTime; // testing
 
+function getScheduleById (id) {
+	console.log(clockdata.schedules, id);
+	return clockdata.schedules.find(schedule => schedule.id === id) || noneSchedule;
+}
+
 export function getSchedule () {
-	if (!("schedules" in clockdata)) return {};
-	let schedule = {};
+	if (!("schedules" in clockdata)) return noneSchedule;
+	let schedule = noneSchedule;
 	let now = DateTime.local({
 		"zone": (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined),
 	});
@@ -290,11 +343,11 @@ export function getSchedule () {
 			let ruleParts = rule.pattern.split("--").map(part => part.trim());
 			if (ruleParts.length > 1) { // something like 2 -- 5 (Tuesday - Friday inclusive)
 				if ((parseInt(ruleParts[0]) <= dayOfWeek) && (dayOfWeek <= parseInt(ruleParts[1]))) {
-					return clockdata.schedules[rule.schedule] || {};
+					return getScheduleById(rule.schedule);
 				}
 			} else { // something like 1 (Monday)
 				if (parseInt(ruleParts[0]) === dayOfWeek) {
-					return clockdata.schedules[rule.schedule] || {};
+					return getScheduleById(rule.schedule);
 				}
 			}
 		} else {

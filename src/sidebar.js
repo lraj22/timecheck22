@@ -3,6 +3,7 @@ export default function (dom, settings, updateSettings) {
 		"home": "Home",
 		"settings": "Settings",
 		"school": "School",
+		"schedules": "Schedules",
 	};
 	let currentPage = null;
 

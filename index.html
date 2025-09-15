@@ -18,7 +18,7 @@
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Rampart+One&display=swap&text=0123456789%3A" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400..700&display=swap" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=block" rel="stylesheet" />
 		
 		<!-- basic styles (should not require anything to have loaded prior) -->
@@ -47,6 +47,7 @@
 						<div class="sbPage" data-page-name="home" id="currentSidebarPage">
 							<div class="sbOption" data-navigate-to="settings">Settings</div>
 							<div class="sbOption" data-navigate-to="school">Set school</div>
+							<div class="sbOption" data-navigate-to="schedules">View schedules</div>
 						</div>
 						<div class="sbPage" data-page-name="settings">
 							<p>Hi! You're in settings right now. There aren't any right now, but that will change soon.</p>
@@ -57,6 +58,24 @@
 							<select name="school" id="schoolSelect">
 								<!-- List of schools will be added here programmatically -->
 							</select>
+						</div>
+						<div class="sbPage" data-page-name="schedules">
+							<p>View your school's schedules here.</p>
+							<select name="schedule" id="scheduleSelect">
+								<!-- List of schedules will be added here programmatically -->
+							</select>
+							<br><br>
+							<table>
+								<thead>
+									<tr>
+										<th>Period</th>
+										<th>When</th>
+									</tr>
+								</thead>
+								<tbody id="scheduleTableBody">
+									<!-- Schedule added here programmatically -->
+								</tbody>
+							</table>
 						</div>
 					</div>
 				</aside>

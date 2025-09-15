@@ -52,6 +52,7 @@ body {
 	flex-grow: 1;
 	display: flex;
 	flex-flow: row;
+	overflow: hidden;
 }
 
 aside {
@@ -60,6 +61,7 @@ aside {
 	z-index: 1234569;
 	padding: 1rem;
 	display: none;
+	overflow: auto;
 }
 
 aside.sidebarVisible {
@@ -136,6 +138,23 @@ select {
 	width: 100%;
     padding: 0.5rem;
     font-size: 1rem;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+table, th, td {
+	border: 1px solid oklch(0.5 0 270);
+}
+
+th, td {
+	padding: 0.5rem;
+}
+
+thead tr, tr:nth-child(even) {
+	background-color: oklch(0.33 0.015 270);
 }
 
 @media (max-width: 900px) {
