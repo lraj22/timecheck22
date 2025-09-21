@@ -3,6 +3,7 @@
 // imports
 import { DateTime, Interval } from "luxon";
 
+export var clockdata = {};
 export const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const schools = [
 	{
@@ -101,8 +102,8 @@ export async function updateSettings (updatedSettings) {
 applySettings();
 
 // schedules page
-dom.scheduleSelect.addEventListener("change", function () {
-	let schedule = getScheduleById(this.value).timings;
+export function updateTimingsTable () {
+	let schedule = ((dom.scheduleSelect.selectedIndex === 0) ? getSchedule() : getScheduleById(dom.scheduleSelect.value)).timings; // index 0 = current schedule
 	let scheduleParts = [];
 	Object.entries(schedule).forEach((period) => { // [name, appliesArray]
 		for (const appliesBlock of period[1]) {
@@ -125,7 +126,8 @@ dom.scheduleSelect.addEventListener("change", function () {
 		tr.appendChild(tdWhen);
 		dom.scheduleTableBody.appendChild(tr);
 	});
-});
+}
+dom.scheduleSelect.addEventListener("change", updateTimingsTable);
 
 function applyNewClockdata () { // when context is fetched, the new clockdata is applied!
 	let data = cloneObj(clockdata || {});
@@ -135,20 +137,18 @@ function applyNewClockdata () { // when context is fetched, the new clockdata is
 	// update the schedules
 	let schedules = data.schedules;
 	schedules.push(noneSchedule);
-	let currentScheduleId = getSchedule().id;
 	
-	dom.scheduleSelect.innerHTML = "";
+	dom.scheduleSelect.innerHTML = `<option>Current schedule</option>`;
 	schedules.forEach(schedule => {
 		let option = document.createElement("option");
 		option.textContent = schedule.label;
 		option.value = schedule.id;
-		if (schedule.id === currentScheduleId) option.selected = true;
 		dom.scheduleSelect.appendChild(option);
 	});
+	updateTimingsTable();
 }
 
 // fetch context
-export var clockdata = {};
 async function fetchContext (options) {
 	let targetUrl = null;
 	let usingApi = false;
@@ -161,7 +161,9 @@ async function fetchContext (options) {
 		targetUrl = localStorage.getItem("contextUrl");
 	} else if (("schoolId" in settings) && (settings.schoolId in schoolIdMappings)) { // use school context url
 		if (settings.schoolId.toString() === "-1") {
-			clockdata = {};
+			clockdata = {
+				"hasNothing": true,
+			};
 			applyNewClockdata();
 			return;
 		}
@@ -269,12 +271,18 @@ export function stringToLuxonDuration (durationString, timezone) {
 	// construct an interval
 	return Interval.fromDateTimes(startTime.startOf(startLeastSignificant), endTime[impliedEnd ? "endOf" : "startOf"](endLeastSignificant));
 }
-window.d = stringToLuxonDuration; // testing
 
 export function stringToLuxonTime (time, timezone, onlyParsedInfo) {
-	// something like "2025-09-13/06:07 AM" but with any amount of information included
+	// something like "2025-09-13/06:07:41.123 AM | e" but with any amount of information included
 	time = time || "";
+	
+	let flags = [];
+	let flagParts = time.split("|");
+	time = flagParts[0];
 	time = time.trim();
+	if (flagParts[1]) {
+		flags = flagParts[1].split(",").map(part => part.trim());
+	}
 	
 	let separated = time.split("/").map(part => part.trim().toUpperCase());
 	let dateString = null;
@@ -319,46 +327,91 @@ export function stringToLuxonTime (time, timezone, onlyParsedInfo) {
 		});
 	}
 	
-	// get timezone
+	// get timezone & create object
 	timezone = timezone || (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined);
-	
-	return onlyParsedInfo ? parsedInfo : DateTime.fromObject(parsedInfo, {
+	let luxonTime = DateTime.fromObject(parsedInfo, {
 		"zone": timezone,
 	});
+	
+	let didAnythingChange = false;
+	
+	// process flags
+	if (flags.includes("e") || flags.includes("end")) {
+		let leastSignificant = allPartNames.filter(partName => partName in parsedInfo).slice(-1)[0]; // get least significant item
+		let plusOptions = {};
+		plusOptions[leastSignificant] = 1; // for example, if least significant is day, add one day
+		luxonTime = luxonTime.plus(plusOptions);
+		didAnythingChange = true;
+	}
+	
+	if (didAnythingChange) {
+		Object.keys(parsedInfo).forEach(part => parsedInfo[part] = luxonTime[part]); // update parts accordingly
+	}
+	
+	return onlyParsedInfo ? parsedInfo : luxonTime;
 }
-window.p = stringToLuxonTime; // testing
 
 function getScheduleById (id) {
 	return clockdata.schedules.find(schedule => schedule.id === id) || noneSchedule;
 }
 
 export function getSchedule () {
-	if (!("schedules" in clockdata)) return noneSchedule;
-	let schedule = noneSchedule;
+	if (!("schedules" in clockdata)) return {
+		...noneSchedule,
+		"isOverride": false,
+	};
 	let now = DateTime.local({
 		"zone": (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined),
 	});
 	let dayOfWeek = now.weekday;
 	
-	// TODO: full day overrides
+	for (let override of clockdata.full_day_overrides) {
+		for (let applyRule of override.applies) {
+			let appliesRange = stringToLuxonDuration(applyRule);
+			// console.log(override.name, appliesRange);
+			if (appliesRange.contains(now)) {
+				if (typeof override.schedule === "string") {
+					return {
+						...getScheduleById(override.schedule),
+						"isOverride": true,
+					};
+				} else {
+					return {
+						...override.schedule,
+						"label": override.name,
+						"isOverride": true,
+					};
+				}
+			}
+		}
+	}
 	
 	for (let rule of clockdata.schedulingRules) {
 		if (rule.match === "dayOfTheWeek") {
 			let ruleParts = rule.pattern.split("--").map(part => part.trim());
 			if (ruleParts.length > 1) { // something like 2 -- 5 (Tuesday - Friday inclusive)
 				if ((parseInt(ruleParts[0]) <= dayOfWeek) && (dayOfWeek <= parseInt(ruleParts[1]))) {
-					return getScheduleById(rule.schedule);
+					return {
+						...getScheduleById(rule.schedule),
+						"isOverride": false,
+					};
 				}
 			} else { // something like 1 (Monday)
 				if (parseInt(ruleParts[0]) === dayOfWeek) {
-					return getScheduleById(rule.schedule);
+					return {
+						...getScheduleById(rule.schedule),
+						"isOverride": false,
+					};
 				}
 			}
 		} else {
 			// this rule doesn't follow any of the supported matching patterns
 		}
 	}
-	return schedule;
+	return {
+		...noneSchedule,
+		"isOverride": false,
+	};
 }
 
 // Convert number of milliseconds to human-readable string
@@ -418,6 +471,14 @@ function addObj (original, addme) {
 	}
 	return combined;
 }
+export function escapeHtml (unsafe) {
+	return unsafe
+		.replaceAll("&", "&amp;")
+		.replaceAll("<", "&lt;")
+		.replaceAll(">", "&gt;")
+		.replaceAll('"', "&quot;")
+		.replaceAll("'", "&#039;");
+};
 
 // keeps track of when page is fully loaded
 let loadFlags = 0;

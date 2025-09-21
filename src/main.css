@@ -271,6 +271,10 @@ main {
 	justify-content: space-between;
 }
 
+#statusMiddle {
+	cursor: pointer;
+}
+
 .material-symbols-outlined, .flatBtn::after, .sbOption::after, #sidebarNavigation>button {
 	font-family: "Material Symbols Outlined", sans-serif;
 	font-variation-settings:

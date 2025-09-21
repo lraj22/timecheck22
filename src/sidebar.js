@@ -52,6 +52,13 @@ export default function (dom, settings, updateSettings) {
 		settings.schoolId = dom.schoolSelect.selectedOptions[0].getAttribute("data-school-id");
 		updateSettings();
 	});
+	
+	// enable clicking the middle status text
+	dom.statusMiddle.addEventListener("click", function () {
+		toggleSidebar(true);
+		navigateToSidebarPage("school");
+		dom.schoolSelect.focus();
+	});
 
 	navigateToSidebarPage("home");
 }

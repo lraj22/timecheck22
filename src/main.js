@@ -1,14 +1,14 @@
 import {
 	loaded,
-	months,
 	dom,
-	pad0,
 	msToTimeDiff,
 	clockdata,
 	settings,
 	updateSettings,
 	stringToLuxonDuration,
-	getSchedule
+	getSchedule,
+	updateTimingsTable,
+	escapeHtml
 } from "./helper";
 import activateSidebar from "./sidebar";
 import "./main.css";
@@ -18,6 +18,8 @@ activateSidebar(dom, settings, updateSettings); // runs sidebar component w/ nec
 
 // this function runs all the time
 let oldAnnouncements = [];
+let oldTimings = [];
+let oldScheduleMsg = "";
 function tick () {
 	let now = DateTime.local({
 		"zone": (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined),
@@ -31,7 +33,10 @@ function tick () {
 	// if clockdata has loaded
 	if ("version" in clockdata) {
 		dom.statusMiddle.textContent = (isSmallScreen) ? clockdata.metadata.shortName : clockdata.metadata.school;
-		// if page has loaded, but no school is selected, dom.statusMiddle should show a "link" that will open the school page in the sidebar to set the school
+	} else if (clockdata.hasNothing) {
+		if (dom.statusMiddle.textContent !== "Select school") {
+			dom.statusMiddle.innerHTML = `<a class="linklike">Select school</a>`;
+		}
 	} else {
 		dom.statusMiddle.textContent = "";
 	}
@@ -49,7 +54,7 @@ function tick () {
 			
 		});
 		
-		if (currentAnnouncements.join("") !== oldAnnouncements.join("")) { // check if any updates (probably not honestly)
+		if (currentAnnouncements.join("") !== oldAnnouncements.join("")) { // check if any updates to the announcements (probably not honestly)
 			dom.announcements.innerHTML = "";
 			
 			// add announcements
@@ -72,7 +77,9 @@ function tick () {
 			tfo.isOverride = true; // add override metadata
 			return tfo;
 		});
-		let currentSchedule = Object.entries(getSchedule().timings).map(([name, applies]) => {
+		let scheduleData = getSchedule();
+		let timings = Object.entries(scheduleData.timings);
+		let currentSchedule = timings.map(([name, applies]) => {
 			return { // same data, in different format to make it easier to parse
 				"applies": applies,
 				"description": name,
@@ -91,8 +98,10 @@ function tick () {
 				let doesApply = appliesDuration.contains(now);
 				if (!doesApply) continue; // doesn't apply, continue
 				
-				timeFound = true;
-				// TODO: if override (time.isOverride), make sure to let user know
+				timeFound = {
+					...time,
+					appliesDuration,
+				};
 				dom.period.textContent = time.description;
 				dom.timeOver.textContent = msToTimeDiff(-appliesDuration.start.diffNow()) + " over";
 				dom.timeLeft.textContent = msToTimeDiff(+appliesDuration.end.diffNow()) + " left";
@@ -104,6 +113,24 @@ function tick () {
 			dom.period.textContent = "";
 			dom.timeLeft.textContent = "";
 			dom.timeOver.textContent = "";
+		}
+		
+		// if new timings for the schedule - update table
+		let currentTimings = timings.flat();
+		if (oldTimings.join("\n") !== currentTimings.join("\n")) {
+			oldTimings = currentTimings;
+			updateTimingsTable();
+		}
+		
+		// write sidebar message
+		let currentScheduleMsg = `<p>Today, ${escapeHtml(clockdata.metadata.shortName)} is on <b>${escapeHtml(scheduleData.label)}</b> ${scheduleData.isOverride ? "override schedule" : "schedule"}.</p>`;
+		if (timeFound.isOverride) {
+			currentScheduleMsg += `<p>Currently, though, the schedule is on the following timeframe: <b>${escapeHtml(timeFound.name)}</b>. It lasts from ${timeFound.appliesDuration.toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)}.</p>`;
+		}
+		
+		if (oldScheduleMsg !== currentScheduleMsg) {
+			dom.scheduleMessage.innerHTML = currentScheduleMsg;
+			oldScheduleMsg = currentScheduleMsg;
 		}
 		
 		
