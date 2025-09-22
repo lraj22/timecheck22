@@ -79,6 +79,8 @@ async function updateState (updatedState) {
 // localforage store
 const defaultSettings = {
 	"schoolId": -1,
+	"hourFormat": "auto",
+	"colonBlinkEnabled": false,
 };
 export var settings = await localforage.getItem("settings");
 if (!settings) {
@@ -89,9 +91,20 @@ if (!settings) {
 	await localforage.setItem("settings", settings);
 }
 
-function applySettings () {
+function applySettings (fetchAfterwards) {
 	document.querySelector(`[data-school-id="${settings.schoolId}"]`).selected = true;
-	fetchContext();
+	
+	// apply setting states
+	document.querySelectorAll("[data-setting-name]").forEach(settingInput => {
+		let settingName = settingInput.getAttribute("data-setting-name");
+		if (settingInput.type === "checkbox") {
+			settingInput.checked = settings[settingName];
+		} else {
+			settingInput.value = settings[settingName];
+		}
+	});
+	
+	if (fetchAfterwards) fetchContext();
 }
 export async function updateSettings (updatedSettings) {
 	if (updatedSettings) settings = cloneObj(updateSettings);
@@ -99,7 +112,7 @@ export async function updateSettings (updatedSettings) {
 	applySettings();
 }
 
-applySettings();
+applySettings(true); // true = fetch context
 
 // schedules page
 export function updateTimingsTable () {

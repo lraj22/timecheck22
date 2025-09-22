@@ -59,6 +59,15 @@ export default function (dom, settings, updateSettings) {
 		navigateToSidebarPage("school");
 		dom.schoolSelect.focus();
 	});
-
+	
+	// settings
+	document.querySelectorAll("[data-setting-name]").forEach(settingInput => {
+		let settingName = settingInput.getAttribute("data-setting-name");
+		settingInput.addEventListener("change", _ => {
+			settings[settingName] = ((settingInput.type === "checkbox") ? settingInput.checked : settingInput.value);
+			updateSettings();
+		});
+	});
+	
 	navigateToSidebarPage("home");
 }

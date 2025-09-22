@@ -27,7 +27,21 @@ function tick () {
 	let isSmallScreen = (window.innerWidth <= 500);
 	
 	// update clock
-	dom.time.textContent = now.toFormat("h:mm");
+	let isColonOnBlink = ((now.ts % 2000) < 1000);
+	let formattedTime = now.toLocaleString({
+		"hour": "numeric",
+		"minute": "2-digit",
+		"hour12": ({
+			"auto": undefined,
+			"twentyFour": false,
+			"twelve": true,
+			"twelveAMPM": true,
+		}[settings.hourFormat]),
+	});
+	if (!(["auto", "twelveAMPM"].includes(settings.hourFormat))) formattedTime = formattedTime.split(" ")[0];
+	formattedTime = formattedTime.replaceAll(/( [AP]M)/g, `<span class="timeSmall">$1</span>`)
+	if (settings.colonBlinkEnabled && isColonOnBlink) formattedTime = formattedTime.replaceAll(":", `<span class="v-hidden">:</span>`)
+	dom.time.innerHTML = formattedTime;
 	dom.date.textContent = now.toFormat((isSmallScreen ? "LLL" : "LLLL") + " d, yyyy");
 	
 	// if clockdata has loaded
@@ -132,29 +146,6 @@ function tick () {
 			dom.scheduleMessage.innerHTML = currentScheduleMsg;
 			oldScheduleMsg = currentScheduleMsg;
 		}
-		
-		
-		
-		
-		
-		
-		
-		// // let's fill with false information for now to get a sense of layout. fix this soon!
-		// let fakePeriodNumber = (now.hour % 6) + 1;
-		// dom.period.textContent = "" + fakePeriodNumber +
-		// 	((fakePeriodNumber === 1) ? "st" : (
-		// 		(fakePeriodNumber === 2) ? "nd" : (
-		// 			(fakePeriodNumber === 3) ? "rd" : "th"
-		// 		)
-		// 	)) + " period (simulated)";
-		// // let startOfPeriod = new Date(now);
-		// let startOfPeriod = now.startOf("hour");
-		// // startOfPeriod.setHours(startOfPeriod.hour, 0, 0, 0);
-		// // let endOfPeriod = new Date(now);
-		// let endOfPeriod = now.endOf("hour");
-		// // endOfPeriod.setHours(endOfPeriod.hour + 1, 0, 0, 0);
-		// dom.timeLeft.textContent = msToTimeDiff(endOfPeriod - now) + " left";
-		// dom.timeOver.textContent = msToTimeDiff(now - startOfPeriod) + " over";
 	} else {
 		dom.announcements.innerHTML = "";
 		oldAnnouncements = [];
@@ -171,7 +162,6 @@ requestAnimationFrame(tick);
 
 // on page load
 window.addEventListener("load", () => loaded());
-// dom.toggleSidebar.click();
 
 // set up sw.js if supported
 if ("serviceWorker" in navigator) {

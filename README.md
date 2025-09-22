@@ -6,11 +6,12 @@ TimeCheck 22 is a clock website to enable students & teachers to easily and effe
 
 Current features:
 - See the time
+- Customize the time display in settings.
 - Select a school in the 'Schools' tab and follow its time!
 - Check out all of the schedules the school has in the 'Schedules' tab.
 
 Planned features:
-- Settings: customization & theme
+- Settings: MORE customization & themes
 - Timer/stopwatch
 - Going to add more schools!
 - You can suggest features in the Issues tab. :D

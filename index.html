@@ -17,7 +17,7 @@
 		<!-- fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Rampart+One&display=swap&text=0123456789%3A" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Rampart+One&display=swap&text=0123456789%20%3AAPM" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400..700&display=swap" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=block" rel="stylesheet" />
 		
@@ -50,8 +50,25 @@
 							<div class="sbOption" data-navigate-to="schedules">View schedules</div>
 						</div>
 						<div class="sbPage" data-page-name="settings">
-							<p>Hi! You're in settings right now. There aren't any right now, but that will change soon.</p>
-							<p>For now, head back to Home and select your current school! TC22 is intended for schools who are working directly with it, so if you don't see your school, that's okay! You can select a different one to test it out.</p>
+							<!-- TODO: Add settings -->
+							<p>Hi! You're in the settings right now.</p>
+							<hr>
+							<h2>Time display</h2>
+							
+							<!-- hour format (12/24 hour clock) -->
+							<label for="settingHourFormat" class="miniLabel">Hour format </label>
+							<select name="settingHourFormat" id="settingHourFormat" data-setting-name="hourFormat">
+								<option value="auto">Automatic (Default)</option>
+								<option value="twentyFour">24 hour clock (16:00)</option>
+								<option value="twelve">12 hour clock (4:00)</option>
+								<option value="twelveAMPM">12 hour clock with AM/PM (4:00 PM)</option>
+							</select><br><br>
+							
+							<!-- blinking colon -->
+							<input type="checkbox" id="settingColonBlinkEnabled" data-setting-name="colonBlinkEnabled"><label for="settingColonBlinkEnabled">Enable blinking colon (:)</label><br><br>
+							
+							<hr>
+							<p>Want to choose or change your school? Go to the <a class="linklike" data-navigate-to="school">Schools page</a>.</p>
 						</div>
 						<div class="sbPage" data-page-name="school">
 							<p>Welcome! Select your school here. This will set the clock to the current schedule.</p>
@@ -87,6 +104,7 @@
 						<!-- in reality, the sidebar "button" will be a hoverable section on the left side of the screen and not a traditional button in the buttons bar. (concerns w/ this on small screen size?) -->
 						<!-- the available real buttons will likely be settings, stopwatch, and timer -->
 						<button type="button" class="flatBtn" id="toggleSidebar" data-icon="left_panel_open"></button>
+						<!-- TODO: Add timer/stopwatch stuff -->
 					</div>
 					<div id="time">--:--</div>
 					<div id="period"></div>
