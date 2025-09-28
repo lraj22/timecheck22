@@ -81,6 +81,7 @@ const defaultSettings = {
 	"schoolId": -1,
 	"hourFormat": "auto",
 	"colonBlinkEnabled": false,
+	"backgroundTheme": "dark",
 };
 export var settings = await localforage.getItem("settings");
 if (!settings) {
@@ -90,6 +91,24 @@ if (!settings) {
 	settings = addObj(defaultSettings, settings);
 	await localforage.setItem("settings", settings);
 }
+
+let systemTheme = null;
+function updateDarkishLightish (matches) {
+	systemTheme = (matches ? "dark" : "light");
+	if (matches) { // dark theme; darkish
+		document.documentElement.classList.add("darkishBg");
+		document.documentElement.classList.remove("lightishBg");
+	} else { // light theme; lightish
+		document.documentElement.classList.add("lightishBg");
+		document.documentElement.classList.remove("darkishBg");
+	}
+}
+
+let schemeMedia = window.matchMedia("(prefers-color-scheme: dark)");
+updateDarkishLightish(schemeMedia.matches);
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", event => {
+	if (settings.backgroundTheme === "system") updateDarkishLightish(event.matches);
+});
 
 function applySettings (fetchAfterwards) {
 	document.querySelector(`[data-school-id="${settings.schoolId}"]`).selected = true;
@@ -102,7 +121,13 @@ function applySettings (fetchAfterwards) {
 		} else {
 			settingInput.value = settings[settingName];
 		}
+		document.documentElement.setAttribute("data-setting-" + settingName, settings[settingName]);
 	});
+	if (settings.backgroundTheme === "system") {
+		updateDarkishLightish(systemTheme);
+	} else {
+		updateDarkishLightish(["dark"].includes(settings.backgroundTheme));
+	}
 	
 	if (fetchAfterwards) fetchContext();
 }

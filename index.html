@@ -50,8 +50,8 @@
 							<div class="sbOption" data-navigate-to="schedules">View schedules</div>
 						</div>
 						<div class="sbPage" data-page-name="settings">
-							<!-- TODO: Add settings -->
 							<p>Hi! You're in the settings right now.</p>
+							
 							<hr>
 							<h2>Time display</h2>
 							
@@ -66,6 +66,27 @@
 							
 							<!-- blinking colon -->
 							<input type="checkbox" id="settingColonBlinkEnabled" data-setting-name="colonBlinkEnabled"><label for="settingColonBlinkEnabled">Enable blinking colon (:)</label><br><br>
+							
+							<hr>
+							<h2>Theme</h2>
+							
+							<!-- background theme -->
+							<label for="settingBackgroundTheme" class="miniLabel">Background theme </label>
+							<select name="settingBackgroundTheme" id="settingBackgroundTheme" data-setting-name="backgroundTheme">
+								<option value="dark">Dark (Default)</option>
+								<option value="light">Light</option>
+								<option value="system">System</option>
+								<option value="mistyRose">Misty rose</option>
+							</select><br><br>
+							
+							<!-- foreground theme -->
+							<label for="settingForegroundTheme" class="miniLabel">Text theme </label>
+							<select name="settingForegroundTheme" id="settingForegroundTheme" data-setting-name="foregroundTheme">
+								<option value="auto">Automatic (Default)</option>
+								<option value="relaxingBlue">Relaxing blue</option>
+								<option value="exoticPurple">Exotic purple</option>
+							</select>
+							<small>Automatic will use a dark color on a light background, or a light color on a dark background.</small><br><br>
 							
 							<hr>
 							<p>Want to choose or change your school? Go to the <a class="linklike" data-navigate-to="school">Schools page</a>.</p>
