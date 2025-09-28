@@ -106,10 +106,10 @@ function applySettings (fetchAfterwards) {
 	
 	if (fetchAfterwards) fetchContext();
 }
-export async function updateSettings (updatedSettings) {
+export async function updateSettings (fetchAfterwards, updatedSettings) {
 	if (updatedSettings) settings = cloneObj(updateSettings);
 	await localforage.setItem("settings", settings);
-	applySettings();
+	applySettings(fetchAfterwards);
 }
 
 applySettings(true); // true = fetch context

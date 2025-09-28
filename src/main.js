@@ -39,7 +39,7 @@ function tick () {
 		}[settings.hourFormat]),
 	});
 	if (!(["auto", "twelveAMPM"].includes(settings.hourFormat))) formattedTime = formattedTime.split(" ")[0];
-	formattedTime = formattedTime.replaceAll(/( [AP]M)/g, `<span class="timeSmall">$1</span>`)
+	formattedTime = formattedTime.replaceAll(/( [AP]M)/ig, `<span class="timeSmall">$1</span>`)
 	if (settings.colonBlinkEnabled && isColonOnBlink) formattedTime = formattedTime.replaceAll(":", `<span class="v-hidden">:</span>`)
 	dom.time.innerHTML = formattedTime;
 	dom.date.textContent = now.toFormat((isSmallScreen ? "LLL" : "LLLL") + " d, yyyy");

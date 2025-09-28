@@ -50,7 +50,7 @@ export default function (dom, settings, updateSettings) {
 	// school page
 	dom.schoolSelect.addEventListener("change", function () {
 		settings.schoolId = dom.schoolSelect.selectedOptions[0].getAttribute("data-school-id");
-		updateSettings();
+		updateSettings(true);
 	});
 	
 	// enable clicking the middle status text
