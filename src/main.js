@@ -16,6 +16,13 @@ import { DateTime } from "luxon";
 
 activateSidebar(dom, settings, updateSettings); // runs sidebar component w/ necessary dependencies (the dom tree)
 
+function setContent (id, content) {
+	if (dom[id].textContent !== content) dom[id].textContent = content;
+}
+function setHtml (id, html) {
+	if (dom[id].innerHTML !== html) dom[id].innerHTML = html;
+}
+
 // this function runs all the time
 let oldAnnouncements = [];
 let oldTimings = [];
@@ -41,18 +48,18 @@ function tick () {
 	if (!(["auto", "twelveAMPM"].includes(settings.hourFormat))) formattedTime = formattedTime.split(" ")[0];
 	formattedTime = formattedTime.replaceAll(/( [AP]M)/ig, `<span class="timeSmall">$1</span>`)
 	if (settings.colonBlinkEnabled && isColonOnBlink) formattedTime = formattedTime.replaceAll(":", `<span class="v-hidden">:</span>`)
-	dom.time.innerHTML = formattedTime;
-	dom.date.textContent = now.toFormat((isSmallScreen ? "LLL" : "LLLL") + " d, yyyy");
+	setHtml("time", formattedTime);
+	setContent("date", now.toFormat((isSmallScreen ? "LLL" : "LLLL") + " d, yyyy"));
 	
 	// if clockdata has loaded
 	if ("version" in clockdata) {
-		dom.statusMiddle.textContent = (isSmallScreen) ? clockdata.metadata.shortName : clockdata.metadata.school;
+		setContent("statusMiddle", (isSmallScreen) ? clockdata.metadata.shortName : clockdata.metadata.school);
 	} else if (clockdata.hasNothing) {
 		if (dom.statusMiddle.textContent !== "Select school") {
-			dom.statusMiddle.innerHTML = `<a class="linklike">Select school</a>`;
+			setHtml("statusMiddle", `<a class="linklike">Select school</a>`);
 		}
 	} else {
-		dom.statusMiddle.textContent = "";
+		setContent("statusMiddle", "");
 	}
 	
 	if ("version" in clockdata) {
@@ -116,17 +123,17 @@ function tick () {
 					...time,
 					appliesDuration,
 				};
-				dom.period.textContent = time.description;
-				dom.timeOver.textContent = msToTimeDiff(-appliesDuration.start.diffNow()) + " over";
-				dom.timeLeft.textContent = msToTimeDiff(+appliesDuration.end.diffNow()) + " left";
+				setContent("period", time.description);
+				setContent("timeOver", msToTimeDiff(-appliesDuration.start.diffNow()) + " over");
+				setContent("timeLeft", msToTimeDiff(+appliesDuration.end.diffNow()) + " left");
 				break;
 			}
 			if (timeFound) break;
 		}
 		if (!timeFound) {
-			dom.period.textContent = "";
-			dom.timeLeft.textContent = "";
-			dom.timeOver.textContent = "";
+			setContent("period", "");
+			setContent("timeLeft", "");
+			setContent("timeOver", "");
 		}
 		
 		// if new timings for the schedule - update table
@@ -143,15 +150,15 @@ function tick () {
 		}
 		
 		if (oldScheduleMsg !== currentScheduleMsg) {
-			dom.scheduleMessage.innerHTML = currentScheduleMsg;
+			setHtml("scheduleMessage", currentScheduleMsg);
 			oldScheduleMsg = currentScheduleMsg;
 		}
 	} else {
-		dom.announcements.innerHTML = "";
+		setHtml("announcements", "");
 		oldAnnouncements = [];
-		dom.period.textContent = "";
-		dom.timeLeft.textContent = "";
-		dom.timeOver.textContent = "";
+		setContent("period", "");
+		setContent("timeLeft", "");
+		setContent("timeOver", "");
 	}
 	
 	// request next tick
@@ -159,6 +166,25 @@ function tick () {
 }
 
 requestAnimationFrame(tick);
+
+document.querySelectorAll("[data-fullscreenable]").forEach(el => {
+	el.addEventListener("click", _ => {
+		let placeholder = document.getElementById("fullscreenPlaceholder");
+		if (placeholder) {
+			// move element back to placeholder
+			placeholder.before(el);
+			placeholder.remove();
+			dom.fullscreen.classList.remove("fullscreenPresent");
+		} else {
+			// add placeholder for element later, move element to fullscreening area
+			placeholder = document.createElement("div");
+			placeholder.id = "fullscreenPlaceholder";
+			el.after(placeholder);
+			dom.fullscreen.append(el);
+			dom.fullscreen.classList.add("fullscreenPresent");
+		}
+	});
+});
 
 // on page load
 window.addEventListener("load", () => loaded());

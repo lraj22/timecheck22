@@ -116,6 +116,7 @@ body {
 	overflow: hidden;
 }
 
+/* sidebar (aside) */
 aside {
 	width: 400px;
 	background-color: oklch(from var(--theme-bg) calc(l + calc(0.03 * var(--l-change-multiplier))) c h);
@@ -233,6 +234,7 @@ select {
 	cursor: pointer;
 }
 
+/* (timings) table */
 table {
 	width: 100%;
 	border-collapse: collapse;
@@ -290,6 +292,7 @@ main {
 	position: relative;
 }
 
+/* buttons! */
 #buttonsBar {
 	position: absolute;
 	left: 0;
@@ -334,6 +337,7 @@ main {
 	outline: 1px solid rgba(255, 255, 255, 0.525)!important;
 }
 
+/* time elements */
 #time {
 	font-size: 15vw;
 	font-family: "Rampart One";
@@ -369,6 +373,40 @@ main {
 
 #statusMiddle {
 	cursor: pointer;
+}
+
+/* fullscreener */
+#fullscreen.fullscreenPresent {
+	font-size: calc(10px + 10vw)!important;
+	z-index: 999!important;
+	width: 100vw!important;
+	height: 100vh!important;
+	display: flex!important;
+	justify-content: center!important;
+	align-items: center!important;
+	position: fixed!important;
+	top: 0!important;
+	left: 0!important;
+	line-height: 1!important;
+	background-color: var(--theme-bg)!important;
+	white-space: initial!important;
+	user-select: none!important;
+	padding: 0 5vw!important;
+	box-sizing: border-box!important;
+}
+
+#fullscreen.fullscreenPresent>* {
+	text-align: center!important;
+	position: static!important;
+}
+
+/* custom sizing */
+#fullscreen.fullscreenPresent #period {
+	font-size: calc(10px + 6.7vw)!important; /* heh, yeah */
+}
+
+#fullscreen.fullscreenPresent #time {
+	font-size: calc(10px + 20vw)!important; /* times usually are pretty short */
 }
 
 .material-symbols-outlined, .flatBtn::after, .sbOption::after, #sidebarNavigation>button {

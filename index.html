@@ -127,11 +127,10 @@
 						<button type="button" class="flatBtn" id="toggleSidebar" data-icon="left_panel_open"></button>
 						<!-- TODO: Add timer/stopwatch stuff -->
 					</div>
-					<div id="time">--:--</div>
-					<div id="period"></div>
-					<!-- TODO: Make things clickable to full-screen -->
-					<div id="timeOver"></div>
-					<div id="timeLeft"></div>
+					<div id="time" data-fullscreenable="true">--:--</div>
+					<div id="period" data-fullscreenable="true"></div>
+					<div id="timeOver" data-fullscreenable="true"></div>
+					<div id="timeLeft" data-fullscreenable="true"></div>
 				</main>
 			</div>
 			
@@ -139,9 +138,12 @@
 			<div id="statusBar">
 				<span id="statusLeft">TimeCheck 22</span>
 				<span id="statusMiddle"></span>
-				<span id="date"></span>
+				<span id="date" data-fullscreenable="true"></span>
 			</div>
 		</div>
+		
+		<!-- fullscreen area -->
+		<div id="fullscreen"></div>
 		
 		<!-- scripts -->
 		<script type="module" src="/lib/localforage.js"></script>
