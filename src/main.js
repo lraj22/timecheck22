@@ -8,11 +8,13 @@ import {
 	stringToLuxonDuration,
 	getSchedule,
 	updateTimingsTable,
-	escapeHtml
+	escapeHtml,
 } from "./helper";
 import activateSidebar from "./sidebar";
 import "./main.css";
 import { DateTime } from "luxon";
+import { audioPlay } from "./audio";
+import { stopwatchData, timerData } from "./widgets";
 
 activateSidebar(dom, settings, updateSettings); // runs sidebar component w/ necessary dependencies (the dom tree)
 
@@ -50,6 +52,37 @@ function tick () {
 	if (settings.colonBlinkEnabled && isColonOnBlink) formattedTime = formattedTime.replaceAll(":", `<span class="v-hidden">:</span>`)
 	setHtml("time", formattedTime);
 	setContent("date", now.toFormat((isSmallScreen ? "LLL" : "LLLL") + " d, yyyy"));
+	
+	// stopwatch & timer
+	if (stopwatchData.running) {
+		let timePassed = stopwatchData.total + (performance.now() - stopwatchData.startTime);
+		let timePassedStr = msToTimeDiff(Math.floor(timePassed), function (seconds) {
+			return parseFloat(seconds.toFixed(2));
+		}, 2);
+		stopwatchTime.textContent = timePassedStr;
+	}
+	if (timerData.running) {
+		let timeLeft = timerData.total - (performance.now() - timerData.startTime);
+		if (timeLeft <= 0) {
+			timeLeft = 0;
+			timerData.running = false;
+			timerData.total = 0;
+			timerTime.disabled = false;
+			timerBtnPlay.classList.toggle("hidden", true);
+			timerBtnPause.classList.toggle("hidden", true);
+			timerBtnRestart.classList.toggle("hidden", false);
+			if (!timerData.isMuted) audioPlay("timerRing");
+		}
+		timeLeft = Math.floor(timeLeft);
+		let afterDigits = 0;
+		if (timeLeft <= 10e3) afterDigits = 1;
+		if (timeLeft < 5e3) afterDigits = 2;
+		if (timeLeft === 0) afterDigits = 0;
+		let timeLeftStr = msToTimeDiff(Math.floor(timeLeft), function (seconds) {
+			return afterDigits ? parseFloat(seconds.toFixed(afterDigits)) : Math.ceil(seconds);
+		}, afterDigits).replace("s", "");
+		timerTime.value = timeLeftStr;
+	}
 	
 	// if clockdata has loaded
 	if ("version" in clockdata) {
@@ -167,6 +200,7 @@ function tick () {
 
 requestAnimationFrame(tick);
 
+// fullscreenable elements
 document.querySelectorAll("[data-fullscreenable]").forEach(el => {
 	el.addEventListener("click", _ => {
 		let placeholder = document.getElementById("fullscreenPlaceholder");

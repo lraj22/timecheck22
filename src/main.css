@@ -148,7 +148,7 @@ aside {
 	overflow: auto;
 }
 
-aside, aside select, aside button {
+aside, aside select, aside button, input {
 	color: var(--theme-fg-darklight);
 	font-family: var(--theme-font);
 }
@@ -333,6 +333,7 @@ main {
 	border: none;
 	border-radius: 0.15rem;
 	cursor: pointer;
+	margin-left: 0.5rem;
 	
 	/* these styles make it a "pressable" button */
 	padding: 0.4em 1em;
@@ -341,6 +342,10 @@ main {
 }
 
 .flatBtn:hover {
+	background-color: oklch(from var(--theme-bg) calc(l + calc(0.12 * var(--l-change-multiplier))) calc(c + 0.02) h);
+}
+
+.flatBtn.btnActive {
 	background-color: oklch(from var(--theme-bg) calc(l + calc(0.12 * var(--l-change-multiplier))) calc(c + 0.02) h);
 }
 
@@ -357,7 +362,7 @@ main {
 }
 
 .flatBtn:focus-visible {
-	outline: 1px solid rgba(255, 255, 255, 0.525)!important;
+	outline: 1px solid oklch(from var(--theme-fg) l c h / 0.525)!important;
 }
 
 /* time elements */
@@ -430,6 +435,128 @@ main {
 
 #fullscreen.fullscreenPresent #time {
 	font-size: calc(10px + 20vw)!important; /* times usually are pretty short */
+}
+
+/* stopwatch & timer */
+.widget {
+	background-color: var(--theme-bg);
+	border: 1px solid rgba(127, 127, 127, 0.5);
+	border-radius: 0.15rem;
+	padding: 0.5rem;
+	padding-top: 0;
+	position: fixed;
+	resize: both;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	min-width: 100px;
+	min-height: 50px;
+	width: 200px;
+}
+
+.widget:hover {
+	border-color: var(--theme-fg);
+}
+
+#stopwatch {
+	top: 10%;
+	right: 1rem;
+}
+
+#timer {
+	top: 30%;
+	right: 1rem;
+}
+
+#stopwatchDrag, #timerDrag {
+	font-size: 1rem;
+	text-align: center;
+	width: 100%;
+	cursor: grab;
+	user-select: none;
+}
+
+.dragging {
+	cursor: grabbing!important;
+}
+
+#stopwatchTime, #timerTime {
+	width: 100%;
+	background-color: oklch(from var(--theme-bg) calc(l + calc(0.03 * var(--l-change-multiplier))) c h);
+	color: var(--theme-contrasting-bg);
+	padding: 0.5rem;
+	box-sizing: border-box;
+	margin-top: 0;
+	margin-bottom: 8px;
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	text-align: center;
+}
+
+.widgetButtons {
+	display: flex;
+	gap: 0.5rem;
+}
+
+.widgetButtons button:active {
+	background-color: var(--theme-fg);
+	color: var(--theme-bg);
+}
+
+#timerMute {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 0.5rem;
+	font-size: 1.5rem;
+	border-radius: 50% 50% 50% 0;
+	background-color: oklch(from var(--theme-bg) calc(l + calc(0.03 * var(--l-change-multiplier))) c h);
+	color: var(--theme-fg);
+	margin: 0.2rem;
+	cursor: pointer;
+	user-select: none;
+}
+
+#timerMute:hover {
+	box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+}
+
+.widgetButtons button.btnClean {
+	flex: 1;
+	font-size: 1.25rem;
+	background-color: oklch(from var(--theme-bg) calc(l + calc(0.09 * var(--l-change-multiplier))) calc(c + 0.01) h);
+	color: var(--theme-fg-darklight);
+	border: none;
+	border-radius: 0.15rem;
+	cursor: pointer;
+	transition: all 100ms;
+	
+	/* these styles make it a "pressable" button */
+	padding: 0.4em 1em;
+	box-shadow: inset 0 -0.6rem 0 -0.3rem rgba(0, 0, 0, 0.2);
+	position: relative;
+}
+
+.widgetButtons button.btnClean:hover {
+	background-color: oklch(from var(--theme-bg) calc(l + calc(0.12 * var(--l-change-multiplier))) calc(c + 0.02) h);
+}
+
+.widgetButtons button.btnClean:active {
+	background-color: var(--theme-fg);
+	color: var(--theme-bg);
+	box-shadow: inset 0 -0.55rem 0 -0.3rem rgba(0, 0, 0, 0.2);
+	top: 0.1em;
+}
+
+.btnClean:focus-visible {
+	outline: 1px solid oklch(from var(--theme-fg) l c h / 0.525)!important;
+}
+
+.hidden {
+	display: none!important;
 }
 
 .material-symbols-outlined, .flatBtn::after, .sbOption::after, #sidebarNavigation>button {

@@ -133,9 +133,9 @@
 				<main>
 					<div id="buttonsBar">
 						<!-- in reality, the sidebar "button" will be a hoverable section on the left side of the screen and not a traditional button in the buttons bar. (concerns w/ this on small screen size?) -->
-						<!-- the available real buttons will likely be settings, stopwatch, and timer -->
+						<button type="button" class="flatBtn" id="toggleStopwatch" title="Open stopwatch" data-icon="timer"></button>
+						<button type="button" class="flatBtn" id="toggleTimer" title="Open timer" data-icon="alarm"></button>
 						<button type="button" class="flatBtn" id="toggleSidebar" data-icon="left_panel_open"></button>
-						<!-- TODO: Add timer/stopwatch stuff -->
 					</div>
 					<div id="time" data-fullscreenable="true">--:--</div>
 					<div id="period" data-fullscreenable="true"></div>
@@ -150,6 +150,28 @@
 				<span id="statusMiddle"></span>
 				<span id="date" data-fullscreenable="true"></span>
 			</div>
+		</div>
+		
+		<!-- stopwatch -->
+		<div id="stopwatch" class="widget hidden">
+			<div id="stopwatchDrag" class="material-symbols-outlined">drag_handle</div>
+			<div id="stopwatchTime">0.00</div>
+			<div class="widgetButtons">
+				<button type="button" id="stopwatchBtnPlay" title="Start/resume" class="btnClean material-symbols-outlined">play_arrow</button>
+				<button type="button" id="stopwatchBtnPause" title="Pause" class="btnClean material-symbols-outlined hidden">pause</button>
+				<button type="button" id="stopwatchBtnRestart" title="Reset" class="btnClean material-symbols-outlined hidden">replay</button>
+			</div>
+		</div>
+		<!-- timer -->
+		<div id="timer" class="widget hidden">
+			<div id="timerDrag" class="material-symbols-outlined">drag_handle</div>
+			<input id="timerTime" value="10:00" placeholder="00:00:00">
+			<div class="widgetButtons">
+				<button type="button" id="timerBtnPlay" title="Start/resume" class="btnClean material-symbols-outlined">play_arrow</button>
+				<button type="button" id="timerBtnPause" title="Pause" class="btnClean material-symbols-outlined hidden">pause</button>
+				<button type="button" id="timerBtnRestart" title="Reset" class="btnClean material-symbols-outlined hidden">replay</button>
+			</div>
+			<div id="timerMute" class="material-symbols-outlined" title="Click to mute the timer">volume_up</div>
 		</div>
 		
 		<!-- fullscreen area -->

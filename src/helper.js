@@ -82,6 +82,7 @@ const defaultSettings = {
 	"hourFormat": "auto",
 	"colonBlinkEnabled": false,
 	"backgroundTheme": "dark",
+	"foregroundTheme": "auto",
 	"font": "default",
 };
 export var settings = await localforage.getItem("settings");
@@ -391,7 +392,7 @@ export function stringToLuxonTime (time, timezone, onlyParsedInfo) {
 }
 
 function getScheduleById (id) {
-	return clockdata.schedules.find(schedule => schedule.id === id) || noneSchedule;
+	return ("schedules" in clockdata) ? (clockdata.schedules.find(schedule => schedule.id === id) || noneSchedule) : noneSchedule;
 }
 
 export function getSchedule () {
@@ -454,7 +455,7 @@ export function getSchedule () {
 }
 
 // Convert number of milliseconds to human-readable string
-export function msToTimeDiff (ms, f) {
+export function msToTimeDiff (ms, f, afterDigits) {
 	var timeSeconds = (f ? f : Math.round)(ms / 1000);
 	var outComponents = [];
 	var forceAllNext = false;
@@ -468,16 +469,16 @@ export function msToTimeDiff (ms, f) {
 		timeSeconds %= 60;
 		forceAllNext = true;
 	}
-	outComponents.push(timeSeconds.toString());
+	outComponents.push(afterDigits ? timeSeconds.toFixed(afterDigits) : timeSeconds.toString());
 	if (outComponents.length > 2) {
 		outComponents[1] = outComponents[1].padStart(2, "0");
 	}
 	if (outComponents.length > 1) {
 		let lastIndex = outComponents.length - 1;
-		outComponents[lastIndex] = outComponents[lastIndex].padStart(2, "0");
+		outComponents[lastIndex] = outComponents[lastIndex].padStart(afterDigits ? (3 + afterDigits) : 2, "0");
 		return outComponents.join(":");
 	} else {
-		return outComponents[0] + "s";
+		return outComponents[0] + (afterDigits ? "" : "s");
 	}
 }
 
