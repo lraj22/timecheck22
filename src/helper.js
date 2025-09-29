@@ -82,6 +82,7 @@ const defaultSettings = {
 	"hourFormat": "auto",
 	"colonBlinkEnabled": false,
 	"backgroundTheme": "dark",
+	"font": "default",
 };
 export var settings = await localforage.getItem("settings");
 if (!settings) {

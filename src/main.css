@@ -1,5 +1,4 @@
 :root {
-	font-family: Rubik, Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 	line-height: 1.5;
 	font-weight: 400;
 
@@ -9,6 +8,28 @@
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+}
+
+/* fonts */
+[data-setting-font="default"] {
+	--theme-font: Rubik, Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+[data-setting-font="rubik"] {
+	--theme-font: Rubik, sans-serif;
+}
+
+[data-setting-font="lucida"] {
+	--theme-font: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+
+[data-setting-font="cambria"] {
+	--theme-font: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+	font-size: large;
+}
+
+[data-setting-font="monospace"] {
+	--theme-font: "Courier New", Courier, monospace;
 }
 
 /* background themes */
@@ -68,6 +89,7 @@
 html {
 	background-color: var(--theme-bg);
 	color: var(--theme-fg);
+	font-family: var(--theme-font)
 }
 
 button {
@@ -120,7 +142,7 @@ body {
 aside {
 	width: 400px;
 	background-color: oklch(from var(--theme-bg) calc(l + calc(0.03 * var(--l-change-multiplier))) c h);
-	z-index: 1234569;
+	z-index: 1000;
 	padding: 1rem;
 	display: none;
 	overflow: auto;
@@ -128,6 +150,7 @@ aside {
 
 aside, aside select, aside button {
 	color: var(--theme-fg-darklight);
+	font-family: var(--theme-font);
 }
 
 aside.sidebarVisible {
@@ -378,7 +401,7 @@ main {
 /* fullscreener */
 #fullscreen.fullscreenPresent {
 	font-size: calc(10px + 10vw)!important;
-	z-index: 999!important;
+	z-index: 1234569!important;
 	width: 100vw!important;
 	height: 100vh!important;
 	display: flex!important;
