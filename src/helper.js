@@ -17,11 +17,15 @@ const schools = [
 		"repo": "lraj22/chhs-clockdata",
 	},
 	{
+		"id": 2,
+		"name": "Cal Aero Preserve Academy (real school)",
+		"repo": "lraj23/capa-clockdata",
+	},
+	{
 		"id": -2,
 		"name": "Always High School (fake school that is always doing something!)",
 		"repo": "lraj22/alwayshs-clockdata",
 	},
-	// TODO: add some more fake schools for testing purposes
 ];
 const schoolIdMappings = Object.fromEntries(schools.map((school, index) => [school.id, index]));
 const noneSchedule = {
