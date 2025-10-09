@@ -1,6 +1,6 @@
 // Establish a cache name
-const cacheName = "TC22Cache_Jul2025_v1";
-const base = "/timecheck22/";
+const cacheName = "TC22Cache_Oct2025_v1";
+const base = "/";
 const cachedItems = [
 	"index.html",
 	"bundle.js",

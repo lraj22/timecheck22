@@ -2,77 +2,77 @@
 	"short_name": "TC22",
 	"name": "TimeCheck 22",
 	"icons": [{
-		"src": "/timecheck22/favicons/favicon-vector.svg",
+		"src": "/favicons/favicon-vector.svg",
 		"type": "image/svg+xml",
 		"sizes": "any"
 	},
 	{
-		"src": "/timecheck22/favicons/favicon-512.png",
+		"src": "/favicons/favicon-512.png",
 		"type": "image/png",
 		"sizes": "512x512"
 	},
 	{
-		"src": "/timecheck22/favicons/favicon-192.png",
+		"src": "/favicons/favicon-192.png",
 		"type": "image/png",
 		"sizes": "192x192"
 	},
 	{
-		"src": "/timecheck22/favicons/favicon-180.png",
+		"src": "/favicons/favicon-180.png",
 		"type": "image/png",
 		"sizes": "180x180"
 	},
 	{
-		"src": "/timecheck22/favicons/favicon-32.png",
+		"src": "/favicons/favicon-32.png",
 		"type": "image/png",
 		"sizes": "32x32"
 	},
 	{
-		"src": "/timecheck22/favicons/favicon-16.png",
+		"src": "/favicons/favicon-16.png",
 		"type": "image/png",
 		"sizes": "16x16"
 	},
 	{
-		"src": "/timecheck22/favicons/favicon-vector-maskable.svg",
+		"src": "/favicons/favicon-vector-maskable.svg",
 		"type": "image/svg+xml",
 		"sizes": "any",
 		"purpose": "maskable"
 	},
 	{
-		"src": "/timecheck22/favicons/favicon-512-maskable.png",
+		"src": "/favicons/favicon-512-maskable.png",
 		"type": "image/png",
 		"sizes": "512x512",
 		"purpose": "maskable"
 	},
 	{
-		"src": "/timecheck22/favicons/favicon-192-maskable.png",
+		"src": "/favicons/favicon-192-maskable.png",
 		"type": "image/png",
 		"sizes": "192x192",
 		"purpose": "maskable"
 	},
 	{
-		"src": "/timecheck22/favicons/favicon-180-maskable.png",
+		"src": "/favicons/favicon-180-maskable.png",
 		"type": "image/png",
 		"sizes": "180x180",
 		"purpose": "maskable"
 	},
 	{
-		"src": "/timecheck22/favicons/favicon-32-maskable.png",
+		"src": "/favicons/favicon-32-maskable.png",
 		"type": "image/png",
 		"sizes": "32x32",
 		"purpose": "maskable"
 	},
 	{
-		"src": "/timecheck22/favicons/favicon-16-maskable.png",
+		"src": "/favicons/favicon-16-maskable.png",
 		"type": "image/png",
 		"sizes": "16x16",
 		"purpose": "maskable"
 	}],
-	"id": "/timecheck22/",
-	"start_url": "/timecheck22/",
+	"id": "/",
+	"start_url": "/",
 	"background_color": "#117711",
 	"display_override": ["fullscreen"],
 	"display": "standalone",
-	"scope": "/timecheck22/",
+	"scope": "/",
 	"theme_color": "#117711",
 	"description": "Tracking bells, breaks, and beyond!"
 }

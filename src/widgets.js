@@ -158,6 +158,7 @@ function makeDraggable(element, dragger) {
 		document.onmousemove = mousemoveDrag;
 	});
 	
+	// TODO: fix touch events not working
 	dragger.addEventListener("touchstart", function (ev) {
 		document.body.classList.add("dragging");
 		dragger.addEventListener("touchmove", ontouchmove, {

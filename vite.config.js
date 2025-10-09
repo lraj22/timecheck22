@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
-	"base": "/timecheck22/",
+	"base": "/",
 	"build": {
 		"rollupOptions": {
 			"output": {
