@@ -68,11 +68,11 @@
 		"purpose": "maskable"
 	}],
 	"id": "/",
-	"start_url": "/",
-	"background_color": "#117711",
+	"start_url": "/?utm_source=pwa",
+	"background_color": "#18203a",
 	"display_override": ["fullscreen"],
 	"display": "standalone",
 	"scope": "/",
-	"theme_color": "#117711",
+	"theme_color": "#18203a",
 	"description": "Tracking bells, breaks, and beyond!"
 }
