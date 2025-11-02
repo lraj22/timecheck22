@@ -1,9 +1,13 @@
 // spooky.js - adds some mischief for the spOooOOoooky season!
 
+import { settings } from "./helper";
+
 let jumpscareImage = new Image();
 jumpscareImage.src = "./PhantomBBJumpscare.gif";
 document.querySelectorAll(`[data-js-on-click="true"]`).forEach(el => {
 	el.addEventListener("click", _ => {
+		if (settings.backgroundTheme !== "spooky") return; // only jumpscare on spooky theme
+		
 		let jumpscare = document.getElementById("jumpscare");
 		jumpscare.src = jumpscareImage.src;
 		jumpscare.style.display = "block";
