@@ -169,7 +169,9 @@ function makeDraggable(element, dragger) {
 	
 		function ontouchmove (e) {
 			e.preventDefault();
-			for (target of e.targetTouches) {
+			let total = e.targetTouches.length;
+			for (let i = 0; i < total; i++) {
+				let target = e.targetTouches[i];
 				var x = target.clientX - dragger.clientWidth/2 + "px";
 				var y = target.clientY - dragger.clientHeight/2 + "px";
 				element.style.left = x;

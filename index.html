@@ -26,8 +26,7 @@
 		<script defer src="https://cloud.umami.is/script.js" data-website-id="b5d12824-9768-405c-90fa-1e5c51fbb248"></script>
 		
 		<!-- basic styles (should not require anything to have loaded prior) -->
-		<style>
-		</style>
+		<style></style>
 	</head>
 	<body>
 		<div id="app">
@@ -90,6 +89,7 @@
 							</div>
 							
 							<div class="hideWhenFullTheme">
+								<br>
 								<!-- foreground theme -->
 								<label for="settingForegroundTheme" class="miniLabel">Text theme </label>
 								<select name="settingForegroundTheme" id="settingForegroundTheme" data-setting-name="foregroundTheme">
@@ -110,6 +110,7 @@
 								</select><br><br>
 							</div>
 							
+							<!-- settings for the timer (sound when finishes, volume of sound) -->
 							<hr>
 							<h2>Timer</h2>
 							<label for="settingTimerRing" class="schLabel">Timer ring sound</label>
@@ -126,7 +127,7 @@
 								<option value="50" label="50%"></option>
 								<option value="75" label="75%"></option>
 								<option value="100" label="100%"></option>
-							</datalist><br><br>
+							</datalist><br>
 							
 							<hr>
 							<p>Want to choose or change your school? Go to the <a class="linklike" data-navigate-to="school" data-js-on-click="true">Schools page</a>.</p>
