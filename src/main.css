@@ -262,6 +262,19 @@ select {
 	cursor: pointer;
 }
 
+input[type="range"] {
+	width: 200px;
+	display: block;
+}
+
+datalist {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	writing-mode: vertical-lr;
+	width: 200px;
+}
+
 /* (timings) table */
 table {
 	width: 100%;

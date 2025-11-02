@@ -1,10 +1,10 @@
 // audio.js - audio manager
 
-var audios = {};
-var audioTypes = {
+export var audios = {};
+export var audioTypes = {
 	"timerRing": "timerEndHarp",
 };
-var audiosCurrentlyPlaying = [];
+export let audiosCurrentlyPlaying = [];
 function loadAudios () {
 	var audioBase = "./audio/";
 	var audioList = {

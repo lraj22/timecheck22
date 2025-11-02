@@ -2,6 +2,7 @@
 
 // imports
 import { DateTime, Interval } from "luxon";
+import { audiosCurrentlyPlaying, audioSwitch, audioTypes, setAudioVolume } from "./audio";
 
 export var clockdata = {};
 export const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -88,6 +89,8 @@ const defaultSettings = {
 	"backgroundTheme": "dark",
 	"foregroundTheme": "auto",
 	"font": "default",
+	"timerRing": "timerEndHarp",
+	"timerRingVolume": "100",
 };
 export var settings = await localforage.getItem("settings");
 if (!settings) {
@@ -101,7 +104,6 @@ if (!settings) {
 let systemTheme = null;
 const darkishBgs = [
 	"dark",
-	// "spooky",
 ];
 function updateDarkishLightish (newIndicator) {
 	systemTheme = (newIndicator ? "dark" : "light");
@@ -137,6 +139,17 @@ function applySettings (fetchAfterwards) {
 		updateDarkishLightish(systemTheme);
 	} else {
 		updateDarkishLightish(darkishBgs.includes(settings.backgroundTheme));
+	}
+	
+	if ("timerRing" in settings) {
+		if ((audiosCurrentlyPlaying.includes("timerRing")) && (audioTypes.timerRing !== settings.timerRing)) {
+			audioSwitch("timerRing", settings.timerRing);
+		}
+		audioTypes.timerRing = settings.timerRing;
+	}
+	
+	if ("timerRingVolume" in settings) {
+		setAudioVolume("timerRing", parseInt(settings.timerRingVolume) / 100);
 	}
 	
 	if (fetchAfterwards) fetchContext();
