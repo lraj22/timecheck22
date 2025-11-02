@@ -19,7 +19,8 @@
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Rampart+One&display=swap&text=0123456789%20%3AAaPpMm" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400..700&display=swap" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=block" rel="stylesheet" />
+		<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=block" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
 		
 		<!-- umami tracking -->
 		<script defer src="https://cloud.umami.is/script.js" data-website-id="b5d12824-9768-405c-90fa-1e5c51fbb248"></script>
@@ -80,26 +81,29 @@
 								<option value="light">Light</option>
 								<option value="system">System</option>
 								<option value="mistyRose">Misty rose</option>
+								<option value="spooky">spOooOOoooky (full theme)</option>
 							</select><br><br>
 							
-							<!-- foreground theme -->
-							<label for="settingForegroundTheme" class="miniLabel">Text theme </label>
-							<select name="settingForegroundTheme" id="settingForegroundTheme" data-setting-name="foregroundTheme">
-								<option value="auto">Automatic (Default)</option>
-								<option value="relaxingBlue">Relaxing blue</option>
-								<option value="exoticPurple">Exotic purple</option>
-							</select>
-							<small>Automatic will use a dark color on a light background, or a light color on a dark background.</small><br><br>
-							
-							<!-- font -->
-							<label for="settingFont" class="miniLabel">Font </label>
-							<select name="settingFont" id="settingFont" data-setting-name="font">
-								<option value="default">Default (Rubik)</option>
-								<option value="rubik">Rubik</option>
-								<option value="lucida">Lucida</option>
-								<option value="cambria">Cambria</option>
-								<option value="monospace">Monospace</option>
-							</select><br><br>
+							<div class="hideWhenFullTheme">
+								<!-- foreground theme -->
+								<label for="settingForegroundTheme" class="miniLabel">Text theme </label>
+								<select name="settingForegroundTheme" id="settingForegroundTheme" data-setting-name="foregroundTheme">
+									<option value="auto">Automatic (Default)</option>
+									<option value="relaxingBlue">Relaxing blue</option>
+									<option value="exoticPurple">Exotic purple</option>
+								</select>
+								<small>Automatic will use a dark color on a light background, or a light color on a dark background.</small><br><br>
+								
+								<!-- font -->
+								<label for="settingFont" class="miniLabel">Font </label>
+								<select name="settingFont" id="settingFont" data-setting-name="font">
+									<option value="default">Default (Rubik)</option>
+									<option value="rubik">Rubik</option>
+									<option value="lucida">Lucida</option>
+									<option value="cambria">Cambria</option>
+									<option value="monospace">Monospace</option>
+								</select><br><br>
+							</div>
 							
 							<!-- TODO: Add timer music/volume settings -->
 							

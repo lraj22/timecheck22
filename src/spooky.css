@@ -1,0 +1,55 @@
+/* spooky.css - contains spooky effects for the spooky full theme */
+
+/* spooky: full theme (overrides other styles) */
+[data-setting-backgroundTheme="spooky"] {
+	--theme-bg: oklch(0.71547 0.18939 45);
+	--theme-font: Creepster, Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+}
+
+[data-setting-backgroundTheme="spooky"] #time {
+	font-family: Creepster, Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+	animation: flicker 2s infinite alternate;
+}
+
+[data-setting-backgroundTheme="spooky"] .hideWhenFullTheme {
+	display: none;
+}
+
+/* spooky animation-ing */
+
+@keyframes shiver {
+	0% {
+		transform: translate(0, 0);
+		filter: blur(1px);
+	} 20% {
+		transform: translate(-2px, 2px);
+	} 40% {
+		transform: translate(2px, -2px);
+	} 60% {
+		transform: translate(-1px, 1px);
+	} 80% {
+		transform: translate(1px, -1px);
+	} 100% {
+		transform: translate(0, 0);
+		filter: none;
+	}
+}
+
+.flatBtn:hover, .btnClean:hover {
+	animation: shiver 75ms 2 forwards;
+}
+
+@keyframes flicker {
+	0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+		opacity: 1;
+		text-shadow: 0 0 2px var(--theme-fg), 0 0 5.5px var(--theme-fg), 0 0 9.5px var(--theme-fg);
+	}
+	20%, 24%, 55% {
+		opacity: 0.7;
+		text-shadow: none;
+	}
+}
+
+.flickering-text {
+	animation: flicker 2s infinite alternate;
+}

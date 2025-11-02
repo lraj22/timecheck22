@@ -1,3 +1,8 @@
+/* main.css - contians the main styles that run the whole thing */
+
+/* import stylesheets as necessary */
+@import url("./spooky.css"); /* spOooOOoooky full theme */
+
 :root {
 	line-height: 1.5;
 	font-weight: 400;
@@ -59,11 +64,11 @@
 }
 
 /* automatic (system) text theme */
-[data-setting-backgroundTheme="dark"][data-setting-foregroundTheme="auto"], .darkishBg[data-setting-backgroundTheme="system"][data-setting-foregroundTheme="auto"] {
+.darkishBg[data-setting-foregroundTheme="auto"] {
 	--theme-fg: oklch(from var(--theme-bg) 0.9 c h);
 }
 
-[data-setting-backgroundTheme="light"][data-setting-foregroundTheme="auto"], .lightishBg[data-setting-backgroundTheme="system"][data-setting-foregroundTheme="auto"] {
+.lightishBg[data-setting-foregroundTheme="auto"] {
 	--theme-fg: oklch(from var(--theme-bg) 0.2 c h);
 }
 
@@ -368,7 +373,7 @@ main {
 /* time elements */
 #time {
 	font-size: 15vw;
-	font-family: "Rampart One";
+	font-family: "Rampart One", var(--theme-font);
 }
 
 .v-hidden {

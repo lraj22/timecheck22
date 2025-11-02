@@ -99,9 +99,13 @@ if (!settings) {
 }
 
 let systemTheme = null;
-function updateDarkishLightish (matches) {
-	systemTheme = (matches ? "dark" : "light");
-	if (matches) { // dark theme; darkish
+const darkishBgs = [
+	"dark",
+	// "spooky",
+];
+function updateDarkishLightish (newIndicator) {
+	systemTheme = (newIndicator ? "dark" : "light");
+	if (newIndicator) { // dark theme; darkish
 		document.documentElement.classList.add("darkishBg");
 		document.documentElement.classList.remove("lightishBg");
 	} else { // light theme; lightish
@@ -132,7 +136,7 @@ function applySettings (fetchAfterwards) {
 	if (settings.backgroundTheme === "system") {
 		updateDarkishLightish(systemTheme);
 	} else {
-		updateDarkishLightish(["dark"].includes(settings.backgroundTheme));
+		updateDarkishLightish(darkishBgs.includes(settings.backgroundTheme));
 	}
 	
 	if (fetchAfterwards) fetchContext();
