@@ -57,3 +57,19 @@ html:not([data-setting-backgroundTheme="spooky"]) .showWhenFullTheme {
 .flickering-text {
 	animation: flicker 2s infinite alternate;
 }
+
+#jumpscare {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	object-fit: contain;
+	object-position: center;
+	z-index: 999999999999999999999999;
+	display: none; /* until the user makes it appear... */
+}
+
+.cursor-prohibit {
+	cursor: not-allowed;
+}

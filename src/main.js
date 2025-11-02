@@ -15,6 +15,7 @@ import "./main.css";
 import { DateTime } from "luxon";
 import { audioPlay } from "./audio";
 import { stopwatchData, timerData } from "./widgets";
+import "./spooky"; // spooky time!
 
 activateSidebar(dom, settings, updateSettings); // runs sidebar component w/ necessary dependencies (the dom tree)
 

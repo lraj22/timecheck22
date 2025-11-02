@@ -113,7 +113,7 @@
 							<!-- TODO: Add timer music/volume settings -->
 							
 							<hr>
-							<p>Want to choose or change your school? Go to the <a class="linklike" data-navigate-to="school">Schools page</a>.</p>
+							<p>Want to choose or change your school? Go to the <a class="linklike" data-navigate-to="school" data-js-on-click="true">Schools page</a>.</p>
 						</div>
 						<div class="sbPage" data-page-name="school">
 							<p>Welcome! Select your school here. This will set the clock to the current schedule.</p>
@@ -190,6 +190,10 @@
 		
 		<!-- fullscreen area -->
 		<div id="fullscreen"></div>
+		
+		<!-- jumpscare -->
+		<img src="./PhantomBBJumpscare.gif" alt="jumpscare" id="jumpscare">
+		<audio src="./audio/Scream3.ogg" id="scream"></audio>
 		
 		<!-- scripts -->
 		<script type="module" src="/lib/localforage.js"></script>
