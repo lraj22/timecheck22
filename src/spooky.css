@@ -15,6 +15,10 @@
 	display: none;
 }
 
+html:not([data-setting-backgroundTheme="spooky"]) .showWhenFullTheme {
+	display: none;
+}
+
 /* spooky animation-ing */
 
 @keyframes shiver {
