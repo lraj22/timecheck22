@@ -1,23 +1,23 @@
 import {
-	loaded,
-	dom,
-	msToTimeDiff,
 	clockdata,
+	dom,
+	updateTimingsTable,
+	getSchedule,
+	escapeHtml,
+	msToTimeDiff,
+	stringToLuxonDuration,
+} from "./util";
+import {
 	settings,
 	updateSettings,
-	stringToLuxonDuration,
-	getSchedule,
-	updateTimingsTable,
-	escapeHtml,
-} from "./helper";
-import activateSidebar from "./sidebar";
+} from "./settings";
 import "./main.css";
+import activateSidebar from "./sidebar";
+activateSidebar(dom, settings, updateSettings); // runs sidebar component w/ necessary dependencies (the dom tree)
 import { DateTime } from "luxon";
-import { audioPlay } from "./audio";
+import audio from "./audio";
 import { stopwatchData, timerData } from "./widgets";
 import "./spooky"; // spooky time!
-
-activateSidebar(dom, settings, updateSettings); // runs sidebar component w/ necessary dependencies (the dom tree)
 
 function setContent (id, content) {
 	if (dom[id].textContent !== content) dom[id].textContent = content;
@@ -72,7 +72,7 @@ function tick () {
 			timerBtnPlay.classList.toggle("hidden", true);
 			timerBtnPause.classList.toggle("hidden", true);
 			timerBtnRestart.classList.toggle("hidden", false);
-			if (!timerData.isMuted) audioPlay("timerRing");
+			if (!timerData.isMuted) audio.play("timerRing");
 		}
 		timeLeft = Math.floor(timeLeft);
 		let afterDigits = 0;
@@ -220,6 +220,17 @@ document.querySelectorAll("[data-fullscreenable]").forEach(el => {
 		}
 	});
 });
+
+// keeps track of when page is fully loaded
+let loadFlags = 0;
+export function loaded () {
+	var threshold = 1; // waiting for 1 flag: window.onload
+	if (!navigator.onLine) threshold = 1; // just wait for load
+	loadFlags++;
+	if (loadFlags >= threshold) {
+		console.log("finished loading!");
+	}
+}
 
 // on page load
 window.addEventListener("load", () => loaded());

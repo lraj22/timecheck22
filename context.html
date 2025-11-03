@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en-US">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Context Editor | TimeCheck 22</title>
+		
+		<!-- favicons -->
+		<link rel="icon" href="./favicon.ico" sizes="32x32">
+		<link rel="icon" type="image/svg+xml" href="./favicons/favicon-vector.svg">
+		<link rel="apple-touch-icon" sizes="180x180" href="./favicons/favicon-180-maskable.png">
+		
+		<!-- pwa -->
+		<meta name="theme-color" content="#18203a">
+		<link rel="manifest" href="./manifest.webmanifest">
+		
+		<!-- fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400..700&display=swap" rel="stylesheet">
+		<!-- <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet"> -->
+		
+		<!-- umami tracking -->
+		<script defer src="https://cloud.umami.is/script.js" data-website-id="b5d12824-9768-405c-90fa-1e5c51fbb248"></script>
+		
+		<!-- basic styles (should not require anything to have loaded prior) -->
+		<style></style>
+	</head>
+	<body>
+		<h1>Context Editor</h1>
+		
+		<p>Welcome to the context editor! This page is for School Managers. <a href="./">Click here to return to the clock.</a></p>
+		<p>You can load context in various ways. Start blank, load from text, or by school.</p>
+		
+		<p>WARNING: this is a work-in-progress and does not work at all.</p>
+		
+		<button type="button">Start blank</button>
+		<button type="button">Load from text</button>
+		<select name="school" id="schoolSelect">
+			<!-- schools will be added here programmatically -->
+		</select>
+		
+		<script type="module" src="/lib/localforage.js"></script>
+		<script type="module" src="./src/context.js"></script>
+	</body>
+</html>

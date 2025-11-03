@@ -1,0 +1,27 @@
+/* context.css - styling for the context.html page */
+
+/* import stylesheets as necessary */
+@import url("./themes.css"); /* all themes, all here */
+@import url("./spooky.css"); /* spOooOOoooky full theme (it gets its own file) */
+
+:root {
+	line-height: 1.5;
+	font-weight: 400;
+
+	color-scheme: light dark;
+
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+html {
+	background-color: var(--theme-bg);
+	color: var(--theme-fg);
+	font-family: var(--theme-font)
+}
+
+body {
+	margin: 1rem;
+}

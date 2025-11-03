@@ -1,10 +1,10 @@
 // audio.js - audio manager
 
-export var audios = {};
-export var audioTypes = {
+var audios = {};
+var types = {
 	"timerRing": "timerEndHarp",
 };
-export let audiosCurrentlyPlaying = [];
+let currentlyPlaying = [];
 function loadAudios () {
 	var audioBase = "./audio/";
 	var audioList = {
@@ -30,34 +30,43 @@ function loadAudios () {
 }
 loadAudios();
 
-export function audioPlay (type) {
-	let audioKey = audioTypes[type];
+function play (type) {
+	let audioKey = types[type];
 	if (!audioKey) return;
 	audios[audioKey].play();
-	audiosCurrentlyPlaying.push(type);
+	currentlyPlaying.push(type);
 }
 
-export function setAudioVolume (type, volume) {
-	let audioKey = audioTypes[type];
+function setVolume (type, volume) {
+	let audioKey = types[type];
 	if (!audioKey) return;
 	audios[audioKey].volume = volume;
 }
 
-export function audioSwitch (type, newValue) {
-	let audioKey = audioTypes[type];
+function switchTo (type, newValue) {
+	let audioKey = types[type];
 	if (!audioKey) return;
 	let prevVolume = audios[audioKey].volume;
-	audioStopReset(type);
-	setAudioVolume(type, 1);
-	audioTypes[type] = newValue;
-	audioPlay(type);
-	setAudioVolume(type, prevVolume);
+	stopReset(type);
+	setVolume(type, 1);
+	types[type] = newValue;
+	play(type);
+	setVolume(type, prevVolume);
 }
 
-export function audioStopReset (type) {
-	let audioKey = audioTypes[type];
+function stopReset (type) {
+	let audioKey = types[type];
 	if (!audioKey) return;
 	audios[audioKey].pause();
 	audios[audioKey].currentTime = 0;
-	audiosCurrentlyPlaying.splice(audiosCurrentlyPlaying.indexOf(type), 1);
+	currentlyPlaying.splice(currentlyPlaying.indexOf(type), 1);
 }
+
+export default {
+	types,
+	currentlyPlaying,
+	play,
+	setVolume,
+	switchTo,
+	stopReset,
+};

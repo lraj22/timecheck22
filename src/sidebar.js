@@ -1,3 +1,5 @@
+import { schools } from "./util";
+
 export default function (dom, settings, updateSettings) {
 	const pageIdsToName = {
 		"home": "Home",
@@ -48,6 +50,18 @@ export default function (dom, settings, updateSettings) {
 	dom.sbClose.addEventListener("click", _ => toggleSidebar(false));
 	
 	// school page
+	// create school options in sidebar
+	schools.forEach(({ id, name, repo }) => {
+		let option = document.createElement("option");
+		option.value = repo;
+		option.setAttribute("data-school-id", id);
+		option.textContent = name;
+		dom.schoolSelect.appendChild(option);
+		if (settings.schoolId === id.toString()) {
+			option.selected = true;
+		}
+	});
+	// update school setting when changed
 	dom.schoolSelect.addEventListener("change", function () {
 		settings.schoolId = dom.schoolSelect.selectedOptions[0].getAttribute("data-school-id");
 		updateSettings(true);

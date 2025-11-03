@@ -1,5 +1,5 @@
-import { audioStopReset } from "./audio";
-import { dom, msToTimeDiff } from "./helper";
+import audio from "./audio";
+import { dom, msToTimeDiff } from "./util";
 
 export var stopwatchData = {
 	"total": 0,
@@ -88,7 +88,7 @@ dom.timerBtnRestart.addEventListener("click", function () {
 	timerData.running = false;
 	dom.timerTime.value = msToTimeDiff(timerData.from).replace("s", "");
 	dom.timerTime.disabled = false;
-	audioStopReset("timerRing");
+	audio.stopReset("timerRing");
 	dom.timerBtnPlay.classList.toggle("hidden", false);
 	dom.timerBtnPause.classList.toggle("hidden", true);
 	dom.timerBtnRestart.classList.toggle("hidden", true);
@@ -101,7 +101,7 @@ dom.timerTime.addEventListener("input", function () {
 		dom.timerBtnPlay.classList.toggle("hidden", false);
 		dom.timerBtnPause.classList.toggle("hidden", true);
 		dom.timerBtnRestart.classList.toggle("hidden", true);
-		audioStopReset("timerRing");
+		audio.stopReset("timerRing");
 	}
 	timerData.from = timerData.total = timeDiffToMs(dom.timerTime.value);
 });
@@ -111,7 +111,7 @@ dom.timerMute.addEventListener("click", function () {
 	timerData.isMuted = isMuted;
 	dom.timerMute.textContent = isMuted ? "volume_off" : "volume_up";
 	dom.timerMute.title = isMuted ? "Click to unmute the timer" : "Click to mute the timer";
-	if (isMuted) audioStopReset("timerRing");
+	if (isMuted) audio.stopReset("timerRing");
 });
 
 // activate stopwatch & dom.timer

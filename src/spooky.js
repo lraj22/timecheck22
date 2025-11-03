@@ -1,6 +1,6 @@
 // spooky.js - adds some mischief for the spOooOOoooky season!
 
-import { settings } from "./helper";
+import { settings } from "./settings";
 
 let jumpscareImage = new Image();
 jumpscareImage.src = "./PhantomBBJumpscare.gif";

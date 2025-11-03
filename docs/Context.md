@@ -366,7 +366,7 @@ I know this is a *little* confusing, but once you get used to it, you'll be able
 (aka, Infrequently Asked Questions)
 
 Q1: What if two schools use the same ID?<br>
-A1: I would ensure each school has a unique ID. Wait, you mean like, a school manager edits their own context to steal a different school's ID? That shouldn't cause any problems, since all the client-side happenings use the IDs that `helper.js` keeps track of (aka: that I control). The ID stored in a school's context shouldn't affect how its presence in data is managed. It's just there for the ride.
+A1: I would ensure each school has a unique ID. Wait, you mean like, a school manager edits their own context to steal a different school's ID? That shouldn't cause any problems, since all the client-side happenings use the IDs defined in `util.js` (aka: that I control). The ID stored in a school's context shouldn't affect how its presence in data is managed. It's just there for the ride.
 
 Q2: This is a lot of data. How will the school managers keep up?<br>
 A2: It's their job to keep it up to date. Honestly, most of this is a "set it up once and forget it" type of job. I personally just have to enter in a school rally or assembly day once in a while and push the new context the night before. It only takes a few minutes and helps out the students at my school. If school managers are unable to keep up, they can get people to help, but it's important that SOMEONE is updating it. Otherwise, it won't be accurate to the actual school schedule, which would invalidate the purpose of the context and TC22 in general.

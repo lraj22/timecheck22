@@ -1,7 +1,8 @@
 /* main.css - contians the main styles that run the whole thing */
 
 /* import stylesheets as necessary */
-@import url("./spooky.css"); /* spOooOOoooky full theme */
+@import url("./themes.css"); /* all themes, all here */
+@import url("./spooky.css"); /* spOooOOoooky full theme (it gets its own file) */
 
 :root {
 	line-height: 1.5;
@@ -13,82 +14,6 @@
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-}
-
-/* fonts */
-[data-setting-font="default"] {
-	--theme-font: Rubik, Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-}
-
-[data-setting-font="rubik"] {
-	--theme-font: Rubik, sans-serif;
-}
-
-[data-setting-font="lucida"] {
-	--theme-font: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-}
-
-[data-setting-font="cambria"] {
-	--theme-font: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-	font-size: large;
-}
-
-[data-setting-font="monospace"] {
-	--theme-font: "Courier New", Courier, monospace;
-}
-
-/* background themes */
-[data-setting-backgroundTheme="dark"] {
-	--theme-bg: oklch(0.20 0.015 270);
-}
-
-[data-setting-backgroundTheme="light"] {
-	--theme-bg: oklch(0.90 0.035 270);
-}
-
-[data-setting-backgroundTheme="mistyRose"] {
-	--theme-bg: oklch(0.94 0.035 25);
-}
-
-/* system background theme */
-@media (prefers-color-scheme: dark) {
-	[data-setting-backgroundTheme="system"] {
-		--theme-bg: oklch(0.20 0.015 270);
-	}
-}
-
-@media (prefers-color-scheme: light) {
-	[data-setting-backgroundTheme="system"] {
-		--theme-bg: oklch(0.90 0.035 270);
-	}
-}
-
-/* automatic (system) text theme */
-.darkishBg[data-setting-foregroundTheme="auto"] {
-	--theme-fg: oklch(from var(--theme-bg) 0.9 c h);
-}
-
-.lightishBg[data-setting-foregroundTheme="auto"] {
-	--theme-fg: oklch(from var(--theme-bg) 0.2 c h);
-}
-
-.darkishBg {
-	--l-change-multiplier: 1; /* basically, if the background is dark, changes to it should make it ligher (positive) */
-	--theme-fg-darklight: oklch(from var(--theme-bg) 0.9 c h);
-}
-
-.lightishBg {
-	--l-change-multiplier: -1; /* if it's a light background, changes should make it darker */
-	--theme-fg-darklight: oklch(from var(--theme-bg) 0.2 c h);
-}
-
-/* text themes */
-[data-setting-foregroundTheme="relaxingBlue"] {
-	--theme-fg: oklch(calc(0.567 + calc(0.1 * var(--l-change-multiplier))) 0.125 245);
-}
-
-[data-setting-foregroundTheme="exoticPurple"] {
-	--theme-fg: oklch(calc(0.567 + calc(0.1 * var(--l-change-multiplier))) 0.25 300);
 }
 
 html {
