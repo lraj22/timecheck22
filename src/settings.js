@@ -63,14 +63,18 @@ export async function fetchContext (options) {
 		targetUrl = options.targetUrl;
 	} else if ((ENVIRONMENT === "dev") && (localStorage.getItem("contextUrl"))) { // dev override
 		targetUrl = localStorage.getItem("contextUrl");
-	} else if (("schoolId" in settings) && (settings.schoolId in schoolIdMappings)) { // use school context url
-		if (settings.schoolId.toString() === "-1") {
+	} else if (
+		(("schoolId" in options) && (options.schoolId in schoolIdMappings)) ||
+		(("schoolId" in settings) && (settings.schoolId in schoolIdMappings))
+	) { // use school context url
+		let schoolId = (("schoolId" in options) ? options.schoolId : settings.schoolId);
+		if (schoolId.toString() === "-1") {
 			setClockdata({
 				"hasNothing": true,
 			});
 			return;
 		}
-		targetUrl = `https://raw.githubusercontent.com/${schools[schoolIdMappings[settings.schoolId]].repo}/refs/heads/main/context.json`;
+		targetUrl = `https://raw.githubusercontent.com/${schools[schoolIdMappings[schoolId]].repo}/refs/heads/main/context.json`;
 		usingApi = true;
 	}
 	// console.log("target:", targetUrl);
