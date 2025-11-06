@@ -44,3 +44,10 @@ textarea {
 pre {
 	display: inline;
 }
+
+.announcement {
+	border: 1px solid gray;
+	border-radius: 4px;
+	margin-bottom: 0.5rem;
+	padding: 1rem;
+}

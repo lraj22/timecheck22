@@ -210,7 +210,7 @@ export function pad0 (string, length) {
 const allPartNames = ["year", "month", "day", "hour", "minute", "second", "millisecond"];
 
 export function stringToLuxonDuration (durationString, timezone) {
-	durationString = durationString || "";
+	durationString = durationString.toString() || "";
 	durationString = durationString.trim();
 	let separated = durationString.split("--");
 	let impliedEnd = false;
@@ -240,7 +240,7 @@ export function stringToLuxonDuration (durationString, timezone) {
 
 export function stringToLuxonTime (time, timezone, onlyParsedInfo) {
 	// something like "2025-09-13/06:07:41.123 AM | e" but with any amount of information included
-	time = time || "";
+	time = time.toString() || "";
 	
 	let flags = [];
 	let flagParts = time.split("|");
@@ -281,15 +281,15 @@ export function stringToLuxonTime (time, timezone, onlyParsedInfo) {
 		let timeParts = timeString.split(/[:\.]/);
 		let timePartNames = ["hour", "minute", "second", "millisecond"];
 		timeParts.forEach((part, index) => {
+			let partValue = parseInt(part);
+			if (Number.isNaN(partValue)) return; // if invalid, ignore
+			
 			if (index >= 4) return; // 4 parts max lol
 			if (index === 0) { // hour, in case of AM/PM
-				let partValue = parseInt(part);
 				if (timeString.includes("M")) partValue %= 12; // AM/PM are %= 12
 				if (timeString.includes("PM")) partValue += 12; // add 12 for PM
-				parsedInfo[timePartNames[index]] = partValue;
-			} else {
-				parsedInfo[timePartNames[index]] = parseInt(part);
 			}
+			parsedInfo[timePartNames[index]] = partValue;
 		});
 	}
 	

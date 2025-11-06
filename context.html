@@ -47,17 +47,44 @@
 		<hr>
 		
 		<p class="uneditable" title="Context version number. You can't change this.">Version: 1</p>
-		<p class="uneditable" title="Context last edited date. You can't manually change this.">Last edited: <span id="lastEdited">YYYY-MM-DD-XX</span></p>
+		<p class="uneditable" title="Context last updated date. You can't manually change this.">Last updated: <span id="lastUpdated">YYYY-MM-DD-XX</span></p>
 		
-		<p title="ID of your school. You shouldn't change this.">School ID: <input type="number" placeholder="0"><br>
+		<h3>Metadata</h3>
+		
+		<p title="ID of your school. You shouldn't change this.">School ID: <input type="number" placeholder="0" id="schoolId"><br>
 		<small>If you already have a school ID, do not change it unless Lakshya tells you to.</small></p>
 		
-		<p title="What most people know your school by.">School common name: <input type="text" placeholder="Example High School"></p>
-		<p title="Short name/initals. Not necessarily unique.">School short name/initials: <input type="text" placeholder="EHS"><br>
+		<p title="What most people know your school by.">School common name: <input type="text" placeholder="Example High School" id="commonName"></p>
+		<p title="Short name/initals. Not necessarily unique.">School short name/initials: <input type="text" placeholder="EHS" id="shortName"><br>
 		<small>A short name your school goes by. For example, Chino Hills High School can be called CHHS. This does not have to be unique.</small></p>
 		
-		<p>School's local timezone: <input type="text" placeholder="Continent/City"><br>
-		<small>Timezones should look something like this: <code>America/Los_Angeles</code>. Don't know yours? Use <a href="https://zones.arilyn.cc/" target="_blank">this tool</a> to find your timezone, hit "Copy", and then paste that here.</small></p>
+		<p>School's local timezone: <input type="text" placeholder="Continent/City" id="timezone"><br>
+		<small>Timezones should look something like this: <code>America/Los_Angeles</code>. Don't know yours? Use <a href="https://zones.arilyn.cc/" target="_blank">this tool</a> to find your school's timezone, hit "Copy", and then paste that here.</small></p>
+		
+		<h3>Announcements</h3>
+		<div id="announcementsContainer">
+			<button type="button" id="addAnnouncement">Add announcement</button>
+		</div>
+		
+		<h3>Scheduling rules</h3>
+		<div id="rulesContainer">
+			<button type="button">Add rule</button>
+		</div>
+		
+		<h3>Schedules</h3>
+		<div id="schedulesContainer">
+			<button type="button">Add schedule</button>
+		</div>
+		
+		<h3>Full day overrides</h3>
+		<div id="fdoContainer">
+			<button type="button">Add full day override</button>
+		</div>
+		
+		<h3>Timeframe overrides</h3>
+		<div id="tfoContainer">
+			<button type="button">Add timeframe override</button>
+		</div>
 		
 		<script type="module" src="/lib/localforage.js"></script>
 		<script type="module" src="./src/context.js"></script>
