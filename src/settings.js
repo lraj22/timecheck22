@@ -4,6 +4,7 @@ import audio from "./audio";
 import {
 	addObj,
 	clockdata,
+	cloneObj,
 	ENVIRONMENT,
 	schoolIdMappings,
 	schools,
@@ -57,7 +58,7 @@ export async function fetchContext (options) {
 	let targetUrl = null;
 	let usingApi = false;
 	if (typeof options !== "object") options = {};
-	
+	let schoolId = (("schoolId" in options) ? options.schoolId : settings.schoolId);
 	// figure out which context to find
 	if ("targetUrl" in options) { // options override
 		targetUrl = options.targetUrl;
@@ -67,7 +68,6 @@ export async function fetchContext (options) {
 		(("schoolId" in options) && (options.schoolId in schoolIdMappings)) ||
 		(("schoolId" in settings) && (settings.schoolId in schoolIdMappings))
 	) { // use school context url
-		let schoolId = (("schoolId" in options) ? options.schoolId : settings.schoolId);
 		if (schoolId.toString() === "-1") {
 			setClockdata({
 				"hasNothing": true,
@@ -91,8 +91,8 @@ export async function fetchContext (options) {
 		let lastRequest = state.lastApiRequest;
 		let now = Date.now();
 		if (now < (lastRequest + 10 * 60e3)) { // preferably, don't rerequest within ten minutes
-			if (settings.schoolId in savedContexts) { // we don't need to rerequest! It's in the cache :D
-				setClockdata(savedContexts[settings.schoolId]);
+			if (schoolId in savedContexts) { // we don't need to rerequest! It's in the cache :D
+				setClockdata(savedContexts[schoolId]);
 				console.info("Loaded context from cache: it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString(), clockdata);
 				return;
 			} else { // not in cache, rerequest (and then save in cache lol)
@@ -104,13 +104,13 @@ export async function fetchContext (options) {
 	}
 	
 	// let's go!
-	fetch(targetUrl)
+	await fetch(targetUrl)
 		.then(res => res.json())
 		.then(async function (rawContext) {
 			console.log("received new context!", rawContext);
 			setClockdata(rawContext);
 			if (usingApi) {
-				savedContexts[settings.schoolId] = rawContext;
+				savedContexts[schoolId] = rawContext;
 				await localforage.setItem("savedContexts", savedContexts);
 			}
 		});

@@ -27,66 +27,10 @@
 		<style></style>
 	</head>
 	<body>
-		<h1>Context Editor</h1>
-		
-		<p>Welcome to the context editor! This page is for School Managers. <a href="./">Click here to return to the clock.</a></p>
-		<p>You can load context in various ways. Start blank, load from text, or by school.</p>
-		
-		<p>WARNING: this is a work-in-progress and does not work at all.</p>
-		
-		<button type="button" id="startBlank">Start blank</button><br><br>
-		
-		<textarea name="textContext" id="textContext" placeholder="Paste text here..."></textarea><br>
-		<button type="button" id="loadText">Load from text</button><br><br>
-		
-		<select name="school" id="schoolSelect">
-			<!-- schools will be added here programmatically -->
-		</select>
-		<button type="button" id="pickSchool">Select school</button>
-		
-		<hr>
-		
-		<p class="uneditable" title="Context version number. You can't change this.">Version: 1</p>
-		<p class="uneditable" title="Context last updated date. You can't manually change this.">Last updated: <span id="lastUpdated">YYYY-MM-DD-XX</span></p>
-		
-		<h3>Metadata</h3>
-		
-		<p title="ID of your school. You shouldn't change this.">School ID: <input type="number" placeholder="0" id="schoolId"><br>
-		<small>If you already have a school ID, do not change it unless Lakshya tells you to.</small></p>
-		
-		<p title="What most people know your school by.">School common name: <input type="text" placeholder="Example High School" id="commonName"></p>
-		<p title="Short name/initals. Not necessarily unique.">School short name/initials: <input type="text" placeholder="EHS" id="shortName"><br>
-		<small>A short name your school goes by. For example, Chino Hills High School can be called CHHS. This does not have to be unique.</small></p>
-		
-		<p>School's local timezone: <input type="text" placeholder="Continent/City" id="timezone"><br>
-		<small>Timezones should look something like this: <code>America/Los_Angeles</code>. Don't know yours? Use <a href="https://zones.arilyn.cc/" target="_blank">this tool</a> to find your school's timezone, hit "Copy", and then paste that here.</small></p>
-		
-		<h3>Announcements</h3>
-		<div id="announcementsContainer">
-			<button type="button" id="addAnnouncement">Add announcement</button>
-		</div>
-		
-		<h3>Scheduling rules</h3>
-		<div id="rulesContainer">
-			<button type="button">Add rule</button>
-		</div>
-		
-		<h3>Schedules</h3>
-		<div id="schedulesContainer">
-			<button type="button">Add schedule</button>
-		</div>
-		
-		<h3>Full day overrides</h3>
-		<div id="fdoContainer">
-			<button type="button">Add full day override</button>
-		</div>
-		
-		<h3>Timeframe overrides</h3>
-		<div id="tfoContainer">
-			<button type="button">Add timeframe override</button>
-		</div>
+		<!-- React app root (ContextEditorApp.jsx) -->
+		<div id="app"></div>
 		
 		<script type="module" src="/lib/localforage.js"></script>
-		<script type="module" src="./src/context.js"></script>
+		<script type="module" src="./src/context.jsx"></script>
 	</body>
 </html>
