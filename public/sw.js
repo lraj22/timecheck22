@@ -1,10 +1,11 @@
 // Establish a cache name
-const cacheName = "TC22Cache_Oct2025_v1";
+const cacheName = "TC22Cache_Nov2025_v1";
 const base = "/";
 const cachedItems = [
 	"index.html",
-	"bundle.js",
-	"bundle.css",
+	"main.js",
+	"shared/settings.js",
+	"main.css",
 	"favicon.ico",
 	"favicons/favicon-32.png",
 	"favicons/favicon-16.png",
