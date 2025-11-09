@@ -75,3 +75,26 @@
 [data-setting-foregroundTheme="exoticPurple"] {
 	--theme-fg: oklch(calc(0.567 + calc(0.1 * var(--l-change-multiplier))) 0.25 300);
 }
+
+/* grid underlay */
+
+[data-setting-gridenabled="true"], [data-setting-gridenabled="true"] #fullscreen {
+	z-index: -1;
+	background-size: 2.5rem 2.5rem;
+	background-image:
+		linear-gradient(to right, rgba(from var(--theme-fg-darklight) r g b / 0.1) 1px, transparent 1px),
+		linear-gradient(to bottom, rgba(from var(--theme-fg-darklight) r g b / 0.1) 1px, transparent 1px);
+	animation-name: pan;
+	animation-duration: var(--grid-animation-duration);
+	animation-iteration-count: infinite;
+	animation-fill-mode: both;
+	animation-timing-function: linear;
+}
+
+@keyframes pan {
+	from {
+		background-position: 0 0;
+	} to {
+		background-position: calc(2.5em * var(--grid-speed-x)) calc(2.5em * var(--grid-speed-y));
+	}
+}

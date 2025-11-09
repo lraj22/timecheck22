@@ -221,6 +221,17 @@ document.querySelectorAll("[data-fullscreenable]").forEach(el => {
 	});
 });
 
+const maxGridSpeed = 4; // tested experimentally
+window.addEventListener("mousemove", event => {
+	let w = window.innerWidth, h = window.innerHeight;
+	let dx = event.clientX - (w / 2), dy = event.clientY - (h / 2);
+	let scale = maxGridSpeed / (Math.max(w, h) / 2);
+	console.log(w, h, dx, dy, scale);
+	document.documentElement.style.setProperty("--grid-speed-x", dx);
+	document.documentElement.style.setProperty("--grid-speed-y", dy);
+	document.documentElement.style.setProperty("--grid-animation-duration", (1 / scale) + "s");
+});
+
 // keeps track of when page is fully loaded
 let loadFlags = 0;
 export function loaded () {

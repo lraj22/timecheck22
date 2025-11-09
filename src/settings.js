@@ -18,6 +18,7 @@ const defaultSettings = {
 	"hourFormat": "auto",
 	"colonBlinkEnabled": false,
 	"backgroundTheme": "dark",
+	"gridEnabled": false,
 	"foregroundTheme": "auto",
 	"font": "default",
 	"timerRing": "timerEndHarp",
@@ -119,7 +120,6 @@ export async function fetchContext (options) {
 function applySettings (fetchAfterwards) {
 	// apply setting states
 	document.querySelectorAll("[data-setting-name]").forEach(settingInput => {
-		console.log("here");
 		let settingName = settingInput.getAttribute("data-setting-name");
 		if (settingInput.type === "checkbox") {
 			settingInput.checked = settings[settingName];
