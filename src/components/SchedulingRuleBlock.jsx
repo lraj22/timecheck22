@@ -1,6 +1,7 @@
 import React from "react";
+import { move } from "../util";
 
-export default function SchedulingRuleBlock ({ schedulingRules, setSchedulingRules, index, timezone }) {
+export default function SchedulingRuleBlock ({ schedulingRules, setSchedulingRules, index }) {
 	const placeholders = {
 		"dayOfTheWeek": "1 (Monday) -- 5 (Friday)",
 	};
@@ -17,6 +18,10 @@ export default function SchedulingRuleBlock ({ schedulingRules, setSchedulingRul
 		}));
 	}
 	
+	function moveRule (idx, shift) {
+		setSchedulingRules(move(schedulingRules, idx, shift));
+	}
+	
 	return (
 		<div className="schedulingRule">
 			<span>Matches: </span>
@@ -27,8 +32,8 @@ export default function SchedulingRuleBlock ({ schedulingRules, setSchedulingRul
 			<input type="text" name="pattern" placeholder={placeholders[schedulingRule.match]} value={schedulingRule.pattern || ""} onChange={e => updateSchedulingRule("pattern", e.target.value)} /><br />
 			<span>Schedule ID: </span>
 			<input type="text" name="schedule" placeholder="Enter a valid schedule ID" value={schedulingRule.schedule || ""} onChange={e => updateSchedulingRule("schedule", e.target.value)} /><br /><br />
-			<button type="button" onClick={_ => alert("work in progress")} disabled={index === 0}>Move up</button><span> </span>
-			<button type="button" onClick={_ => alert("work in progress")} disabled={index === (schedulingRules.length - 1)}>Move down</button>
+			<button type="button" onClick={_ => moveRule(index, -1)} disabled={index === 0}>Move up</button><span> </span>
+			<button type="button" onClick={_ => moveRule(index, 1)} disabled={index === (schedulingRules.length - 1)}>Move down</button>
 		</div>
 	)
 }

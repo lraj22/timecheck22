@@ -345,6 +345,17 @@ export function msToTimeDiff (ms, f, afterDigits) {
 	}
 }
 
+export function move (original, index, diff) {
+	let array = [...original];
+	if (!(index.toString() in array)) return;
+	let removed = array.splice(index, 1)[0];
+	let newIndex = index + diff;
+	if (newIndex < 0) newIndex = 0;
+	if (newIndex > array.length) newIndex = array.length;
+	array.splice(newIndex, 0, removed);
+	return array;
+}
+
 // cloneObj function taken & modified from https://stackoverflow.com/a/7574273
 // WARNING: cloneObj does not support cloning native objects like Date, Map, Set, etc. unless explicitly defined.
 export function cloneObj (obj) {

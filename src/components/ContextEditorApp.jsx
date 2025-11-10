@@ -111,10 +111,11 @@ export default function ContextEditorApp () {
 			</div>
 			
 			<h3>Scheduling rules</h3>
+			<p>The first scheduling rule to match will take effect, so make sure you put a rule for Thursday (<code>4</code>) before a rule for Monday - Friday (<code>1 -- 5</code>), or it will never take effect. If no rule matches, no schedule will happen (schedule ID: <code>none</code>). For example, Saturday & Sunday (<code>6 -- 7</code>) probably don't need a special schedule if you don't have school on those days.</p>
 			<div id="schedulingRulesContainer">
 				{
 					schedulingRules.map((_, i) => {
-						return <SchedulingRuleBlock schedulingRules={schedulingRules} setSchedulingRules={setSchedulingRules} move={move} index={i} key={i} />;
+						return <SchedulingRuleBlock schedulingRules={schedulingRules} setSchedulingRules={setSchedulingRules} index={i} key={i} />;
 					})
 				}
 				<button type="button" id="addSchedulingRule" onClick={_ => {
