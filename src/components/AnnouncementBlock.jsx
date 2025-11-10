@@ -20,7 +20,6 @@ export default function AnnouncementBlock ({ announcements, setAnnouncements, in
 			...announcement,
 			message,
 		} : announcement)));
-		console.log(announcements);
 	}
 	function setStartISO (newStart) {
 		setStart(newStart); // update the input, of course, and THEN do the main work

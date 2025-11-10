@@ -45,9 +45,15 @@ pre {
 	display: inline;
 }
 
-.announcement {
+.announcement, .schedulingRule {
 	border: 1px solid gray;
 	border-radius: 4px;
 	margin-bottom: 0.5rem;
 	padding: 1rem;
+}
+
+button:disabled {
+	opacity: 0.8;
+	cursor: not-allowed;
+	color: gray;
 }

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { months } from "../util";
 import ContextSelector from "./ContextSelector";
 import AnnouncementBlock from "./AnnouncementBlock";
+import SchedulingRuleBlock from "./SchedulingRuleBlock";
 
 export default function ContextEditorApp () {
 	let [lastUpdated, setLastUpdated] = useState("YYYY-MM-DD-XX");
@@ -10,6 +11,7 @@ export default function ContextEditorApp () {
 	let [shortName, setShortName] = useState("");
 	let [timezone, setTimezone] = useState("");
 	let [announcements, setAnnouncements] = useState([]);
+	let [schedulingRules, setSchedulingRules] = useState([]);
 	
 	function clearFields () {
 		// clear all fields
@@ -19,6 +21,7 @@ export default function ContextEditorApp () {
 		setShortName("");
 		setTimezone("");
 		setAnnouncements([]);
+		setSchedulingRules([]);
 	}
 	
 	function establishContext (context) {
@@ -47,11 +50,19 @@ export default function ContextEditorApp () {
 			let newAnnouncements = [];
 			context.announcements.forEach(announcement => {
 				announcement.applies.forEach((appliesRange) => {
-					setAnnouncements([...newAnnouncements, {
+					newAnnouncements.push({
 						"message": announcement.message,
 						"applies": [appliesRange],
-					}]);
-				})
+					});
+					setAnnouncements(newAnnouncements);
+				});
+			});
+		}
+		if ("schedulingRules" in context) {
+			let newSchedulingRules = [];
+			context.schedulingRules.forEach(schedulingRule => {
+				newSchedulingRules.push(schedulingRule);
+				setSchedulingRules(newSchedulingRules);
 			});
 		}
 	}
@@ -100,8 +111,19 @@ export default function ContextEditorApp () {
 			</div>
 			
 			<h3>Scheduling rules</h3>
-			<div id="rulesContainer">
-				<button type="button" id="addSchedulingRule">Add rule</button>
+			<div id="schedulingRulesContainer">
+				{
+					schedulingRules.map((_, i) => {
+						return <SchedulingRuleBlock schedulingRules={schedulingRules} setSchedulingRules={setSchedulingRules} move={move} index={i} key={i} />;
+					})
+				}
+				<button type="button" id="addSchedulingRule" onClick={_ => {
+					setSchedulingRules([...schedulingRules, {
+						"match": "dayOfTheWeek",
+						"pattern": "",
+						"schedule": "",
+					}]);
+				}}>Add rule</button>
 			</div>
 			
 			<h3>Schedules</h3>
