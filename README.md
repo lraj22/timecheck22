@@ -5,16 +5,18 @@ TimeCheck 22 is a clock website to enable students & teachers to easily and effe
 ## Features
 
 Current features:
-- See the time
+- See the time.
 - Customize the time display in settings.
-- Select a school in the 'Schools' tab and follow its time!
+- Select a school in the 'Schools' tab and automatically follow its time!
 - Check out all of the schedules the school has in the 'Schedules' tab.
+- Change your theme to Dark/Light/Automatic, Misty Rose, or even spOooOOoooky!
+- Adjust the colors and font to your liking.
+- Start and stop the easy-use stopwatch & timer widgets.
 
 Planned features:
-- Settings: MORE customization & themes
-- Timer/stopwatch
 - Going to add more schools!
-- You can suggest features in the Issues tab. :D
+- Easy to use editor for the people who edit the schedules behind the scenes.
+- You can suggest new features in the Issues tab. :D
 
 ## What is context?
 
@@ -22,8 +24,10 @@ Context is any data that defines a school's real schedule, along with any relate
 
 Context is curated by specially appointed students at each school! They update the context as necessary and it gets pushed to all the regular users of the clock.
 
+You can find more information on what exactly context describes in the [Context documentation](./docs/Context.md).
+
 ## My school isn't on the list :[
 
-This tool is being designed for students from schools around mine, so if you want your school added on this list, please DM me and we can work on adding it! I will need to have at least one person willing to update context.
+This tool is being designed for students from schools around mine, so if you want your school added on this list, please DM me and we can work on adding it! I will need to have at least one person willing to update context (this can be you!).
 
 Made with 💖 by Lakshya Raj
