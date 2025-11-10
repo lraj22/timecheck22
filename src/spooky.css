@@ -39,7 +39,7 @@ html:not([data-setting-backgroundTheme="spooky"]) .showWhenFullTheme {
 	}
 }
 
-.flatBtn:hover, .btnClean:hover {
+[data-setting-backgroundTheme="spooky"] .flatBtn:hover, [data-setting-backgroundTheme="spooky"] .btnClean:hover {
 	animation: shiver 75ms 2 forwards;
 }
 
