@@ -65,5 +65,5 @@ export default function AnnouncementBlock ({ announcements, setAnnouncements, in
 			<span> to </span>
 			<input type="datetime-local" value={end} onChange={e => setEndISO(e.target.value)} />
 		</div>
-	)
+	);
 }

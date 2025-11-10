@@ -3,6 +3,7 @@ import { months } from "../util";
 import ContextSelector from "./ContextSelector";
 import AnnouncementBlock from "./AnnouncementBlock";
 import SchedulingRuleBlock from "./SchedulingRuleBlock";
+import ScheduleBlock from "./ScheduleBlock";
 
 export default function ContextEditorApp () {
 	let [lastUpdated, setLastUpdated] = useState("YYYY-MM-DD-XX");
@@ -12,6 +13,7 @@ export default function ContextEditorApp () {
 	let [timezone, setTimezone] = useState("");
 	let [announcements, setAnnouncements] = useState([]);
 	let [schedulingRules, setSchedulingRules] = useState([]);
+	let [schedules, setSchedules] = useState([]);
 	
 	function clearFields () {
 		// clear all fields
@@ -22,6 +24,7 @@ export default function ContextEditorApp () {
 		setTimezone("");
 		setAnnouncements([]);
 		setSchedulingRules([]);
+		setSchedules([]);
 	}
 	
 	function establishContext (context) {
@@ -59,11 +62,10 @@ export default function ContextEditorApp () {
 			});
 		}
 		if ("schedulingRules" in context) {
-			let newSchedulingRules = [];
-			context.schedulingRules.forEach(schedulingRule => {
-				newSchedulingRules.push(schedulingRule);
-				setSchedulingRules(newSchedulingRules);
-			});
+			setSchedulingRules(context.schedulingRules);
+		}
+		if ("schedules" in context) {
+			setSchedules(context.schedules);
 		}
 	}
 	
@@ -111,7 +113,7 @@ export default function ContextEditorApp () {
 			</div>
 			
 			<h3>Scheduling rules</h3>
-			<p>The first scheduling rule to match will take effect, so make sure you put a rule for Thursday (<code>4</code>) before a rule for Monday - Friday (<code>1 -- 5</code>), or it will never take effect. If no rule matches, no schedule will happen (schedule ID: <code>none</code>). For example, Saturday & Sunday (<code>6 -- 7</code>) probably don't need a special schedule if you don't have school on those days.</p>
+			<p>The first scheduling rule to match will take effect, so make sure you put a rule for Thursday (<code>4</code>) before a rule for Monday - Friday (<code>1 -- 5</code>), or it will never take effect. If no rule matches, no schedule will happen (schedule ID: <code>none</code>). For example, Saturday & Sunday (<code>6 -- 7</code>) probably don't need a special schedule if you don't have school on those days, so it's fine if they don't have a rule matching them.</p>
 			<div id="schedulingRulesContainer">
 				{
 					schedulingRules.map((_, i) => {
@@ -128,8 +130,21 @@ export default function ContextEditorApp () {
 			</div>
 			
 			<h3>Schedules</h3>
+			<p>The order of schedules doesn't matter, but you can move them up and down to organize them how you like :)</p>
 			<div id="schedulesContainer">
-				<button type="button">Add schedule</button>
+				{
+					schedules.map((schedule, i) => {
+						if (schedule.id === "none") return; // do not show 'none' schedule
+						return <ScheduleBlock schedules={schedules} setSchedules={setSchedules} timezone={timezone} index={i} key={i} />;
+					})
+				}
+				<button type="button" onClick={_ => {
+					setSchedules([...schedules, {
+						"id": "custom",
+						"label": "Custom Schedule",
+						"timings": {}
+					}])
+				}}>Add schedule</button>
 			</div>
 			
 			<h3>Full day overrides</h3>

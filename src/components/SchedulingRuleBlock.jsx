@@ -35,5 +35,5 @@ export default function SchedulingRuleBlock ({ schedulingRules, setSchedulingRul
 			<button type="button" onClick={_ => moveRule(index, -1)} disabled={index === 0}>Move up</button><span> </span>
 			<button type="button" onClick={_ => moveRule(index, 1)} disabled={index === (schedulingRules.length - 1)}>Move down</button>
 		</div>
-	)
+	);
 }

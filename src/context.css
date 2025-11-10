@@ -45,7 +45,7 @@ pre {
 	display: inline;
 }
 
-.announcement, .schedulingRule {
+.announcement, .schedulingRule, .schedule {
 	border: 1px solid gray;
 	border-radius: 4px;
 	margin-bottom: 0.5rem;
