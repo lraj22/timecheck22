@@ -19,7 +19,8 @@
 html {
 	background-color: var(--theme-bg);
 	color: var(--theme-fg);
-	font-family: var(--theme-font)
+	font-family: var(--theme-font);
+	background-image: none!important; /* I don't want the grid underlay in context.html, also mouse control isn't added here anyways */
 }
 
 select, button, input {
