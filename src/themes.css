@@ -98,3 +98,10 @@
 		background-position: calc(2.5em * var(--grid-speed-x)) calc(2.5em * var(--grid-speed-y));
 	}
 }
+
+/* weird bug with grid in #fullscreen, so I'm just going to override the mouse-control with this constant movement */
+#fullscreen {
+	--grid-speed-x: 1!important;
+	--grid-speed-y: -1!important;
+	--grid-animation-duration: 9.87s!important;
+}
