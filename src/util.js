@@ -156,16 +156,16 @@ export function getSchedule () {
 			let appliesRange = stringToLuxonDuration(applyRule);
 			// console.log(override.name, appliesRange);
 			if (appliesRange.contains(now)) {
-				if (typeof override.schedule === "string") {
+				if (typeof override.schedule === "string") { // id provided
 					return {
 						...getScheduleById(override.schedule),
-						"isOverride": true,
+						"override": override,
 					};
-				} else {
+				} else { // timings provided
 					return {
 						...override.schedule,
 						"label": override.name,
-						"isOverride": true,
+						"override": override,
 					};
 				}
 			}
@@ -179,14 +179,14 @@ export function getSchedule () {
 				if ((parseInt(ruleParts[0]) <= dayOfWeek) && (dayOfWeek <= parseInt(ruleParts[1]))) {
 					return {
 						...getScheduleById(rule.schedule),
-						"isOverride": false,
+						"override": false,
 					};
 				}
 			} else { // something like 1 (Monday)
 				if (parseInt(ruleParts[0]) === dayOfWeek) {
 					return {
 						...getScheduleById(rule.schedule),
-						"isOverride": false,
+						"override": false,
 					};
 				}
 			}
@@ -196,7 +196,7 @@ export function getSchedule () {
 	}
 	return {
 		...noneSchedule,
-		"isOverride": false,
+		"override": false,
 	};
 }
 
@@ -236,6 +236,23 @@ export function stringToLuxonDuration (durationString, timezone) {
 	
 	// construct an interval
 	return Interval.fromDateTimes(startTime.startOf(startLeastSignificant), endTime[impliedEnd ? "endOf" : "startOf"](endLeastSignificant));
+}
+
+export function commaListify (list) {
+	let lastIndex = list.length - 1;
+	if (list.length > 1) list[lastIndex] = "and " + list[lastIndex];
+	return ((list.length > 2) ? list.join(", ") : list.join(" "));
+}
+
+export function appliesStrarrListify (appliesBlock) {
+	if (typeof appliesBlock === "string") appliesBlock = [appliesBlock];
+	return commaListify(appliesBlock.map(applies => {
+		let format;
+		if (applies.indexOf("/") !== -1) format = DateTime.DATETIME_MED_WITH_SECONDS;
+		else if (applies.includes("-") || /^[0-9]{4}$/.test(applies)) format = DateTime.DATE_MED;
+		else format = DateTime.TIME_WITH_SECONDS;
+		return stringToLuxonDuration(applies).toLocaleString(format);
+	}));
 }
 
 export function stringToLuxonTime (time, timezone, onlyParsedInfo) {
