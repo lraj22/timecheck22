@@ -38,8 +38,8 @@ const darkishBgs = [
 	"dark",
 ];
 function updateDarkishLightish (newIndicator) {
-	systemTheme = (newIndicator ? "dark" : "light");
-	if (newIndicator) { // dark theme; darkish
+	systemTheme = ((newIndicator === "light") ? "light" : "dark"); // ensure it's either dark or light, fallback to dark
+	if (systemTheme === "dark") { // dark theme; darkish
 		document.documentElement.classList.add("darkishBg");
 		document.documentElement.classList.remove("lightishBg");
 	} else { // light theme; lightish
@@ -49,9 +49,9 @@ function updateDarkishLightish (newIndicator) {
 }
 
 let schemeMedia = window.matchMedia("(prefers-color-scheme: dark)");
-updateDarkishLightish(schemeMedia.matches);
+updateDarkishLightish(schemeMedia.matches ? "dark" : "light");
 window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", event => {
-	if (settings.backgroundTheme === "system") updateDarkishLightish(event.matches);
+	if (settings.backgroundTheme === "system") updateDarkishLightish(event.matches ? "dark" : "light");
 });
 
 // fetch context
@@ -135,7 +135,7 @@ function applySettings (fetchAfterwards) {
 	if (settings.backgroundTheme === "system") {
 		updateDarkishLightish(systemTheme);
 	} else {
-		updateDarkishLightish(darkishBgs.includes(settings.backgroundTheme));
+		updateDarkishLightish(darkishBgs.includes(settings.backgroundTheme) ? "dark" : "light");
 	}
 	
 	if ("timerRing" in settings) {
