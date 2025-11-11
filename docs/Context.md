@@ -370,3 +370,6 @@ A1: I would ensure each school has a unique ID. Wait, you mean like, a school ma
 
 Q2: This is a lot of data. How will the school managers keep up?<br>
 A2: It's their job to keep it up to date. Honestly, most of this is a "set it up once and forget it" type of job. I personally just have to enter in a school rally or assembly day once in a while and push the new context the night before. It only takes a few minutes and helps out the students at my school. If school managers are unable to keep up, they can get people to help, but it's important that SOMEONE is updating it. Otherwise, it won't be accurate to the actual school schedule, which would invalidate the purpose of the context and TC22 in general.
+
+Q3: Has context always been like this?<br>
+A3: Surprisingly, no! A bit of history, but it used to only contain override data; no schedules, no metadata, no timezone or version, nothing else. It even used to have different keys to describe it. You can read a lot more about the history of `context.json` and of TimeCheck 22 in general in [the documented history](./History.md).
