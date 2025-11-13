@@ -113,21 +113,27 @@ export function updateTimingsTable () {
 	if (!("scheduleSelect" in dom)) return;
 	let schedule = ((dom.scheduleSelect.selectedIndex === 0) ? getSchedule() : getScheduleById(dom.scheduleSelect.value)).timings; // index 0 = current schedule
 	let scheduleParts = [];
-	Object.entries(schedule).forEach((period) => { // [name, appliesArray]
-		for (const appliesBlock of period[1]) {
-			scheduleParts.push({
-				"name": period[0],
-				"applies": stringToLuxonDuration(appliesBlock),
-			});
-		}
-	});
+	if (!Array.isArray(schedule)) // aka, if still v1 context
+		Object.entries(schedule).forEach((period) => { // [name, appliesArray]
+			for (const appliesBlock of period[1]) {
+				scheduleParts.push({
+					"label": period[0],
+					"applies": stringToLuxonDuration(appliesBlock),
+				});
+			}
+		});
+	else
+		scheduleParts = schedule.map(timing => ({
+			"label": timing.label,
+			"applies": stringToLuxonDuration(timing.applies),
+		}));
 	scheduleParts = scheduleParts.sort((period1, period2) => period1.applies.start - period2.applies.start); // sort by starting time
 	
 	dom.scheduleTableBody.innerHTML = "";
 	scheduleParts.forEach(part => {
 		let tr = document.createElement("tr");
 		let tdPeriod = document.createElement("td");
-		tdPeriod.textContent = part.name;
+		tdPeriod.textContent = part.label;
 		let tdWhen = document.createElement("td");
 		tdWhen.textContent = part.applies.start.toFormat("h:mm a") + " to " + part.applies.end.toFormat("h:mm a");
 		tr.appendChild(tdPeriod);
@@ -141,6 +147,30 @@ function getScheduleById (id) {
 	return ("schedules" in clockdata) ? (clockdata.schedules.find(schedule => schedule.id === id) || noneSchedule) : noneSchedule;
 }
 
+const matchers = {
+	"dayOfTheWeek": function (rule) {
+		let dayOfWeek = DateTime.local({
+			"zone": (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined),
+		}).weekday;
+		let patternParts = rule.pattern.split("--").map(part => part.trim());
+		if (patternParts.length > 1) { // something like 2 -- 5 (Tuesday - Friday inclusive)
+			if ((parseInt(patternParts[0]) <= dayOfWeek) && (dayOfWeek <= parseInt(patternParts[1]))) {
+				return {
+					...getScheduleById(rule.schedule),
+					"override": false,
+				};
+			}
+		} else { // something like 1 (Monday)
+			if (parseInt(patternParts[0]) === dayOfWeek) {
+				return {
+					...getScheduleById(rule.schedule),
+					"override": false,
+				};
+			}
+		}
+	},
+};
+
 export function getSchedule () {
 	if (!("schedules" in clockdata)) return {
 		...noneSchedule,
@@ -149,12 +179,10 @@ export function getSchedule () {
 	let now = DateTime.local({
 		"zone": (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined),
 	});
-	let dayOfWeek = now.weekday;
 	
 	for (let override of clockdata.full_day_overrides) {
 		for (let applyRule of override.applies) {
 			let appliesRange = stringToLuxonDuration(applyRule);
-			// console.log(override.name, appliesRange);
 			if (appliesRange.contains(now)) {
 				if (typeof override.schedule === "string") { // id provided
 					return {
@@ -172,28 +200,13 @@ export function getSchedule () {
 		}
 	}
 	
-	for (let rule of clockdata.schedulingRules) {
-		if (rule.match === "dayOfTheWeek") {
-			let ruleParts = rule.pattern.split("--").map(part => part.trim());
-			if (ruleParts.length > 1) { // something like 2 -- 5 (Tuesday - Friday inclusive)
-				if ((parseInt(ruleParts[0]) <= dayOfWeek) && (dayOfWeek <= parseInt(ruleParts[1]))) {
-					return {
-						...getScheduleById(rule.schedule),
-						"override": false,
-					};
-				}
-			} else { // something like 1 (Monday)
-				if (parseInt(ruleParts[0]) === dayOfWeek) {
-					return {
-						...getScheduleById(rule.schedule),
-						"override": false,
-					};
-				}
-			}
-		} else {
-			// this rule doesn't follow any of the supported matching patterns
-		}
+	for (let rule of (clockdata.scheduling_rules || clockdata.schedulingRules || [])) {
+		if (!((rule.matcher || rule.match) in matchers)) continue; // is the matcher specified invalid? next!
+		
+		let result = matchers[(rule.matcher || rule.match)](rule);
+		if (result) return result; // if it matches today, return it
 	}
+	
 	return {
 		...noneSchedule,
 		"override": false,

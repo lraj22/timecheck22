@@ -6,6 +6,7 @@ import SchedulingRuleBlock from "./SchedulingRuleBlock";
 import ScheduleBlock from "./ScheduleBlock";
 
 export default function ContextEditorApp () {
+	let [version, setVersion] = useState("N");
 	let [lastUpdated, setLastUpdated] = useState("YYYY-MM-DD-XX");
 	let [schoolId, setSchoolId] = useState("");
 	let [commonName, setCommonName] = useState("");
@@ -31,19 +32,22 @@ export default function ContextEditorApp () {
 		clearFields();
 		
 		// populate fields now
+		if ("version" in context) {
+			setVersion(context.version);
+		}
 		if ("last_updated_id" in context) {
 			let lastUpdatedParts = context.last_updated_id.split("-").map(part => parseInt(part));
 			setLastUpdated(months[lastUpdatedParts[1] - 1] + " " + lastUpdatedParts[2] + ", " + lastUpdatedParts[0] + ` (#${lastUpdatedParts[3]})`);
 		}
 		if ("metadata" in context) {
 			if ("schoolId" in context.metadata) {
-				setSchoolId(context.metadata.schoolId);
+				setSchoolId(context.metadata.school_id || context.metadata.schoolId);
 			}
 			if ("school" in context.metadata) {
-				setCommonName(context.metadata.school);
+				setCommonName(context.metadata.school_name || context.metadata.school);
 			}
 			if ("shortName" in context.metadata) {
-				setShortName(context.metadata.shortName);
+				setShortName(context.metadata.short_name || context.metadata.shortName);
 			}
 			if ("timezone" in context.metadata) {
 				setTimezone(context.metadata.timezone);
@@ -61,8 +65,8 @@ export default function ContextEditorApp () {
 				});
 			});
 		}
-		if ("schedulingRules" in context) {
-			setSchedulingRules(context.schedulingRules);
+		if (("scheduling_rules" in context) || ("schedulingRules" in context)) {
+			setSchedulingRules(context.scheduling_rules || context.schedulingRules || []);
 		}
 		if ("schedules" in context) {
 			setSchedules(context.schedules);
@@ -82,7 +86,7 @@ export default function ContextEditorApp () {
 			
 			<hr />
 			
-			<p className="uneditable" title="Context version number. You can't change this.">Version: 1</p>
+			<p className="uneditable" title="Context version number. You can't change this.">Version: {version}</p>
 			<p className="uneditable" title="Context last updated date. You can't manually change this.">Last updated: <span id="lastUpdated">{lastUpdated}</span></p>
 			
 			<h3>Metadata</h3>
@@ -122,7 +126,7 @@ export default function ContextEditorApp () {
 				}
 				<button type="button" id="addSchedulingRule" onClick={_ => {
 					setSchedulingRules([...schedulingRules, {
-						"match": "dayOfTheWeek",
+						"matcher": "dayOfTheWeek",
 						"pattern": "",
 						"schedule": "",
 					}]);

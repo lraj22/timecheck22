@@ -89,7 +89,7 @@ function tick () {
 	
 	// if clockdata has loaded
 	if ("version" in clockdata) {
-		setContent("statusMiddle", (isSmallScreen) ? clockdata.metadata.shortName : clockdata.metadata.school);
+		setContent("statusMiddle", (isSmallScreen) ? (clockdata.metadata.short_name || clockdata.metadata.shortName) : (clockdata.metadata.school_name || clockdata.metadata.school));
 	} else if (clockdata.hasNothing) { // special property if clockdata is loaded but empty (no school selected instead of not loaded yet)
 		if (dom.statusMiddle.textContent !== "Select school") {
 			setHtml("statusMiddle", `<a class="linklike">Select school</a>`);
@@ -130,17 +130,27 @@ function tick () {
 		}
 		
 		let timeframeOverrides = clockdata.timeframe_overrides.map(tfo => {
-			tfo.isOverride = true; // add override metadata
-			return tfo;
+			return {
+				"occasion": tfo.occasion || tfo.name,
+				"label": tfo.label || tfo.description,
+				"applies": tfo.applies,
+				"isOverride": true, // add override metadata
+			};
 		});
 		let scheduleData = getSchedule();
-		let timings = Object.entries(scheduleData.timings);
-		let currentSchedule = timings.map(([name, applies]) => {
-			return { // same data, in different format to make it easier to parse
-				"applies": applies,
-				"description": name,
-				"isOverride": false,
-			};
+		let timings = (Array.isArray(scheduleData.timings) ? scheduleData.timings : Object.entries(scheduleData.timings));
+		let currentSchedule = timings.map(timing => {
+			if (typeof timing[0] === "string") // aka, if it used to be an object and was made into [key, value] by Object.entries
+				return { // same data, in different format to make it easier to parse
+					"label": timing[0], // label ("label": applies[] --> ["label", applies[]])
+					"applies": timing[1], // applies block ("label": applies[] --> ["label", applies[]])
+					"isOverride": false,
+				};
+			else
+				return {
+					...timing,
+					"isOverride": false,
+				};
 		});
 		let timesToday = [
 			...timeframeOverrides,
@@ -149,7 +159,8 @@ function tick () {
 		
 		let timeFound = false;
 		for (const time of timesToday) {
-			for (const duration of time.applies) {
+			let appliesArray = (Array.isArray(time.applies) ? time.applies : [time.applies]);
+			for (const duration of appliesArray) {
 				let appliesDuration = stringToLuxonDuration(duration);
 				let doesApply = appliesDuration.contains(now);
 				if (!doesApply) continue; // doesn't apply, continue
@@ -158,7 +169,7 @@ function tick () {
 					...time,
 					duration,
 				};
-				setContent("period", time.description);
+				setContent("period", time.label || time.description);
 				setContent("timeOver", msToTimeDiff(-appliesDuration.start.diffNow()) + " over");
 				setContent("timeLeft", msToTimeDiff(+appliesDuration.end.diffNow()) + " left");
 				break;
@@ -179,10 +190,10 @@ function tick () {
 		}
 		
 		// write sidebar message
-		let fdoOccasion = (("override" in scheduleData) ? scheduleData.override.name : null);
-		let currentScheduleMsg = `<p>Today, ${escapeHtml(clockdata.metadata.shortName)} is on <b>${escapeHtml(scheduleData.label)}</b> ${fdoOccasion ? "override schedule" : "schedule"}.${fdoOccasion ? (` The reason for this is ${escapeHtml(fdoOccasion)}, which is during ${appliesStrarrListify(scheduleData.override.applies)}.`) : ""}</p>`;
+		let fdoOccasion = (("override" in scheduleData) ? (scheduleData.override.occasion || scheduleData.override.name) : null);
+		let currentScheduleMsg = `<p>Today, ${escapeHtml(clockdata.metadata.short_name || clockdata.metadata.shortName)} is on <b>${escapeHtml(scheduleData.label)}</b> ${fdoOccasion ? "override schedule" : "schedule"}.${fdoOccasion ? (` The reason for this is ${escapeHtml(fdoOccasion)}, which is during ${appliesStrarrListify(scheduleData.override.applies)}.`) : ""}</p>`;
 		if (timeFound.isOverride) {
-			currentScheduleMsg += `<p>Currently, though, the schedule is on the following timeframe: <b>${escapeHtml(timeFound.name)}</b>. It lasts from ${appliesStrarrListify(timeFound.duration)}.</p>`;
+			currentScheduleMsg += `<p>Currently, though, the schedule is on the following timeframe: <b>${escapeHtml(timeFound.occasion || timeFound.name)}</b>. It lasts from ${appliesStrarrListify(timeFound.duration)}.</p>`;
 		}
 		
 		if (oldScheduleMsg !== currentScheduleMsg) {

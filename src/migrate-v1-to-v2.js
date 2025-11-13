@@ -34,7 +34,7 @@ function transform_v1_to_v2 (v1Context) {
 	if ("metadata" in v1Context)
 		v2Context.metadata = {
 			"school_id": v1Context.metadata.schoolId || metadataDefaults.school_id,
-			"school_name": v1Context.metadata.name || metadataDefaults.school_name,
+			"school_name": v1Context.metadata.school || metadataDefaults.school_name,
 			"short_name": v1Context.metadata.shortName || metadataDefaults.short_name,
 			"timezone": v1Context.metadata.timezone || metadataDefaults.timezone,
 		};
