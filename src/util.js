@@ -189,10 +189,10 @@ export function getSchedule () {
 						...getScheduleById(override.schedule),
 						"override": override,
 					};
-				} else { // timings provided
+				} else { // schedule provided
 					return {
-						...override.schedule,
-						"label": override.name,
+						"label": override.occasion || override.name,
+						...override.schedule, // if label is defined in override.schedule, it is allowed to override the default label
 						"override": override,
 					};
 				}
@@ -203,7 +203,7 @@ export function getSchedule () {
 	for (let rule of (clockdata.scheduling_rules || clockdata.schedulingRules || [])) {
 		if (!((rule.matcher || rule.match) in matchers)) continue; // is the matcher specified invalid? next!
 		
-		let result = matchers[(rule.matcher || rule.match)](rule);
+		let result = matchers[rule.matcher || rule.match](rule);
 		if (result) return result; // if it matches today, return it
 	}
 	

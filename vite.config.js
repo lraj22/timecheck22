@@ -8,6 +8,7 @@ export default defineConfig({
 			"input": {
 				"main": join(import.meta.dirname, "index.html"),
 				"contextEditor": join(import.meta.dirname, "context.html"),
+				"migrate-v1-to-v2": join(import.meta.dirname, "migrate-v1-to-v2.html"),
 			},
 			"output": {
 				/*
