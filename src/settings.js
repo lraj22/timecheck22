@@ -18,7 +18,7 @@ const defaultSettings = {
 	"hourFormat": "auto",
 	"colonBlinkEnabled": false,
 	"backgroundTheme": "dark",
-	"gridEnabled": false,
+	"themeUnderlay": "none",
 	"foregroundTheme": "auto",
 	"font": "default",
 	"timerRing": "timerEndHarp",

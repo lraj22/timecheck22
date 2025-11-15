@@ -6,7 +6,6 @@ import {
 	escapeHtml,
 	msToTimeDiff,
 	stringToLuxonDuration,
-	cloneObj,
 	appliesStrarrListify,
 } from "./util";
 import {
@@ -234,16 +233,8 @@ document.querySelectorAll("[data-fullscreenable]").forEach(el => {
 	});
 });
 
-// moving grid effect
-const maxGridSpeed = 4; // tested experimentally
-window.addEventListener("mousemove", event => {
-	let w = window.innerWidth, h = window.innerHeight;
-	let dx = event.clientX - (w / 2), dy = event.clientY - (h / 2);
-	let scale = maxGridSpeed / (Math.max(w, h) / 2);
-	document.documentElement.style.setProperty("--grid-speed-x", dx);
-	document.documentElement.style.setProperty("--grid-speed-y", dy);
-	document.documentElement.style.setProperty("--grid-animation-duration", (1 / scale) + "s");
-});
+// all underlay managing code is here
+import "./underlays";
 
 // keeps track of when page is fully loaded
 let loadFlags = 0;

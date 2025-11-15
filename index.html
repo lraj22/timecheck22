@@ -83,8 +83,13 @@
 								<option value="spooky">spOooOOoooky (full theme)</option>
 							</select><br><br>
 							
-							<!-- grid underlay (behind the background) -->
-							<input type="checkbox" name="settingGridEnabled" id="settingGridEnabled" data-setting-name="gridEnabled"><label for="settingGridEnabled">Grid underlay enabled</label>
+							<!-- background theme -->
+							<label for="settingThemeUnderlay" class="miniLabel">Underlay </label>
+							<select name="settingThemeUnderlay" id="settingThemeUnderlay" data-setting-name="themeUnderlay">
+								<option value="none">None (Default)</option>
+								<option value="grid">Grid</option>
+								<option value="lightspeed">Lightspeed</option>
+							</select><br><br>
 							
 							<!-- some themes are full themes, which means they control all of the following: bg color, fg color, and font. Usually, they do other stuff too. In short, you don't control most of the styles anymore -->
 							<div class="showWhenFullTheme">
@@ -214,6 +219,9 @@
 		<!-- jumpscare -->
 		<img src="./PhantomBBJumpscare.gif" alt="jumpscare" id="jumpscare">
 		<audio src="./audio/Scream3.ogg" id="scream"></audio>
+		
+		<!-- lightspeed underlay -->
+		<canvas id="lightspeedCanvas" data-fullscreen-hide-excepted="true"></canvas>
 		
 		<!-- scripts -->
 		<script type="module" src="/lib/localforage.js"></script>

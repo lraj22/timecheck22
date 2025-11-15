@@ -76,9 +76,9 @@
 	--theme-fg: oklch(calc(0.567 + calc(0.1 * var(--l-change-multiplier))) 0.25 300);
 }
 
-/* grid underlay */
+/* underlays */
 
-[data-setting-gridenabled="true"], [data-setting-gridenabled="true"] #fullscreen {
+[data-setting-themeUnderlay="grid"] {
 	z-index: -1;
 	background-size: 2.5rem 2.5rem;
 	background-image:
@@ -99,9 +99,16 @@
 	}
 }
 
-/* weird bug with grid in #fullscreen, so I'm just going to override the mouse-control with this constant movement */
-#fullscreen {
-	--grid-speed-x: 1!important;
-	--grid-speed-y: -1!important;
-	--grid-animation-duration: 9.87s!important;
+#lightspeedCanvas {
+	z-index: -1;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	display: none;
+}
+
+[data-setting-themeUnderlay="lightspeed"] #lightspeedCanvas {
+	display: block;
 }
