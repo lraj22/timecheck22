@@ -14,7 +14,7 @@ function transform_v1_to_v2 (v1Context) {
 	// update last_updated_id
 	let now = new Date();
 	let prevDate = (v1Context.last_updated_id || "0000-00-00-00").slice(0, 10); // the date portion (2025-06-07)
-	let newDate = "" + now.getFullYear() + "-" + pad0(now.getMonth(), 2) + "-" + pad0(now.getDate(), 2);
+	let newDate = "" + now.getFullYear() + "-" + pad0(now.getMonth() + 1, 2) + "-" + pad0(now.getDate(), 2);
 	if (newDate !== prevDate) {
 		v2Context.last_updated_id = newDate + "-01"; // first update of the day
 	} else {

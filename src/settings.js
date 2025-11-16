@@ -60,6 +60,11 @@ export async function fetchContext (options) {
 	let usingApi = false;
 	if (typeof options !== "object") options = {};
 	let schoolId = (("schoolId" in options) ? options.schoolId : settings.schoolId);
+	
+	//// OVERRIDING TO LOCAL FILES (testing only!)
+	options.targetUrl = "./clockdata/" + schools[schoolIdMappings[schoolId]].repo.split("/")[1] + "/context.json";
+	//// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	
 	// figure out which context to find
 	if ("targetUrl" in options) { // options override
 		targetUrl = options.targetUrl;
@@ -97,7 +102,7 @@ export async function fetchContext (options) {
 				console.info("Loaded context from cache: it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString(), clockdata);
 				return;
 			} else { // not in cache, rerequest (and then save in cache lol)
-				console.info("Fetching context regardless of rate limit: it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString());
+				console.info("Fetching context regardless of rate limit (not in cache): it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString());
 			}
 		}
 		state.lastApiRequest = now;

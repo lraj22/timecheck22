@@ -169,8 +169,10 @@ function tick () {
 					duration,
 				};
 				setContent("period", time.label || time.description);
-				setContent("timeOver", msToTimeDiff(-appliesDuration.start.diffNow()) + " over");
-				setContent("timeLeft", msToTimeDiff(+appliesDuration.end.diffNow()) + " left");
+				if (!time.hideStart) setContent("timeOver", msToTimeDiff(-appliesDuration.start.diffNow()) + " over");
+				else setContent("timeOver", "");
+				if (!time.hideEnd) setContent("timeLeft", msToTimeDiff(+appliesDuration.end.diffNow()) + " left");
+				else setContent("timeLeft", "");
 				break;
 			}
 			if (timeFound) break;
