@@ -61,10 +61,6 @@ export async function fetchContext (options) {
 	if (typeof options !== "object") options = {};
 	let schoolId = (("schoolId" in options) ? options.schoolId : settings.schoolId);
 	
-	//// OVERRIDING TO LOCAL FILES (testing only!)
-	options.targetUrl = "./clockdata/" + schools[schoolIdMappings[schoolId]].repo.split("/")[1] + "/context.json";
-	//// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-	
 	// figure out which context to find
 	if ("targetUrl" in options) { // options override
 		targetUrl = options.targetUrl;

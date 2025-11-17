@@ -1,3 +1,6 @@
+// underlays.js - includes code that runs the active underlay functionality
+// ex.: mouse-controlled grid & randomized lightspeed stars
+
 import { dom } from "./util";
 
 // moving grid effect on grid underlay
