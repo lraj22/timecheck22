@@ -1,19 +1,13 @@
 import React, { useState } from "react";
-import { stringToLuxonDuration } from "../util";
+import { luxonToDatetimelocal, stringToLuxonDuration } from "../util";
 import { DateTime } from "luxon";
 
 export default function AnnouncementBlock ({ announcements, setAnnouncements, index, timezone }) {
-	function luxonToDatetimelocal (time) {
-		return time.toISO({
-			"precision": "minute",
-			"includeOffset": false,
-		});
-	}
-	
 	let announcement = announcements[index];
 	let { s, e } = stringToLuxonDuration(announcement.applies[0]);
 	let [start, setStart] = useState(luxonToDatetimelocal(s));
 	let [end, setEnd] = useState(luxonToDatetimelocal(e));
+	const contextFormat = "yyyy-MM-dd/HH:mm";
 	
 	function setMessage (message) {
 		setAnnouncements(announcements.map((announcement, i) => ((i === index) ? {
@@ -23,7 +17,6 @@ export default function AnnouncementBlock ({ announcements, setAnnouncements, in
 	}
 	function setStartISO (newStart) {
 		setStart(newStart); // update the input, of course, and THEN do the main work
-		const contextFormat = "yyyy-MM-dd/HH:mm";
 		
 		let startFormatted = DateTime.fromISO(newStart, {
 			"zone": timezone,
@@ -40,7 +33,6 @@ export default function AnnouncementBlock ({ announcements, setAnnouncements, in
 	
 	function setEndISO (newEnd) {
 		setEnd(newEnd); // update the input, of course, and THEN do the main work
-		const contextFormat = "yyyy-MM-dd/HH:mm";
 		
 		let startFormatted = DateTime.fromISO(start, {
 			"zone": timezone,

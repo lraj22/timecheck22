@@ -1,5 +1,6 @@
 import React from "react";
 import { move } from "../util";
+import TimingBlock from "./TimingBlock";
 
 export default function ScheduleBlock ({ schedules, setSchedules, index }) {
 	let schedule = schedules[index];
@@ -15,10 +16,6 @@ export default function ScheduleBlock ({ schedules, setSchedules, index }) {
 		}));
 	}
 	
-	function updateTiming () {
-		// this function will update a timing, but doesn't work yet for the reason in the comment below (like, further below)
-	}
-	
 	function moveSchedule (idx, shift) {
 		setSchedules(move(schedules, idx, shift));
 	}
@@ -29,9 +26,13 @@ export default function ScheduleBlock ({ schedules, setSchedules, index }) {
 			<input type="text" name="id" value={schedule.id || ""} onChange={e => updateSchedule("id", e.target.value)} /><br />
 			<span>Schedule label (name): </span>
 			<input type="text" name="label" value={schedule.label || ""} onChange={e => updateSchedule("label", e.target.value)} /><br />
-			<span>Timings: WORK IN PROGRESS</span>
-			{/* I just realized that timings are not going to work right now, they will need a redesign of the data format */}
-			<br /><br />
+			<span>Timings:</span>
+			{
+				schedule.timings.map((_, i) => {
+					return <TimingBlock key={i} schIndex={index} index={i} schedules={schedules} updateSchedule={updateSchedule} />;
+				})
+			}
+			<br />
 			<button type="button" onClick={_ => moveSchedule(index, -1)} disabled={index === 0}>Move up</button><span> </span>
 			<button type="button" onClick={_ => moveSchedule(index, 1)} disabled={index === (schedules.length - 1)}>Move down</button>
 		</div>

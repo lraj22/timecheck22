@@ -248,7 +248,17 @@ export function stringToLuxonDuration (durationString, timezone) {
 	});
 	
 	// construct an interval
-	return Interval.fromDateTimes(startTime.startOf(startLeastSignificant), endTime[impliedEnd ? "endOf" : "startOf"](endLeastSignificant));
+	if (startTime < endTime)
+		return Interval.fromDateTimes(startTime.startOf(startLeastSignificant), endTime[impliedEnd ? "endOf" : "startOf"](endLeastSignificant));
+	else
+		return Interval.fromDateTimes(endTime.startOf(endLeastSignificant), startTime[impliedEnd ? "endOf" : "startOf"](startLeastSignificant));
+}
+
+export function luxonToDatetimelocal (time) {
+	return time.toISO({
+		"precision": "minute",
+		"includeOffset": false,
+	});
 }
 
 export function commaListify (list) {

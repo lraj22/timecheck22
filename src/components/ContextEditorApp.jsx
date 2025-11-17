@@ -18,6 +18,7 @@ export default function ContextEditorApp () {
 	
 	function clearFields () {
 		// clear all fields
+		setVersion("N");
 		setLastUpdated("YYYY-MM-DD-XX");
 		setSchoolId("");
 		setCommonName("");
@@ -40,13 +41,13 @@ export default function ContextEditorApp () {
 			setLastUpdated(months[lastUpdatedParts[1] - 1] + " " + lastUpdatedParts[2] + ", " + lastUpdatedParts[0] + ` (#${lastUpdatedParts[3]})`);
 		}
 		if ("metadata" in context) {
-			if ("schoolId" in context.metadata) {
+			if (("school_id" in context.metadata) || ("schoolId" in context.metadata)) {
 				setSchoolId(context.metadata.school_id || context.metadata.schoolId);
 			}
-			if ("school" in context.metadata) {
+			if (("school_name" in context.metadata) || ("school" in context.metadata)) {
 				setCommonName(context.metadata.school_name || context.metadata.school);
 			}
-			if ("shortName" in context.metadata) {
+			if (("short_name" in context.metadata) || ("shortName" in context.metadata)) {
 				setShortName(context.metadata.short_name || context.metadata.shortName);
 			}
 			if ("timezone" in context.metadata) {
@@ -71,6 +72,24 @@ export default function ContextEditorApp () {
 		if ("schedules" in context) {
 			setSchedules(context.schedules);
 		}
+	}
+	
+	function output () {
+		console.log({
+			"version": version,
+			"last_updated_id": lastUpdated,
+			"metadata": {
+				"school_id": schoolId,
+				"school_name": commonName,
+				"short_name": shortName,
+				"timezone": timezone,
+			},
+			"announcements": announcements,
+			"scheduling_rules": schedulingRules,
+			"schedules": schedules,
+			// "full_day_overrides": full_day_overrides,
+			// "timeframe_overrides": timeframe_overrides,
+		});
 	}
 	
 	return (
@@ -146,7 +165,7 @@ export default function ContextEditorApp () {
 					setSchedules([...schedules, {
 						"id": "custom",
 						"label": "Custom Schedule",
-						"timings": {}
+						"timings": []
 					}])
 				}}>Add schedule</button>
 			</div>
@@ -160,6 +179,9 @@ export default function ContextEditorApp () {
 			<div id="tfoContainer">
 				<button type="button">Add timeframe override</button>
 			</div>
+			
+			<h3>Output</h3>
+			<button type="button" onClick={output}>Output</button>
 		</>
 	);
 }

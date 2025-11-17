@@ -8,7 +8,7 @@ It will get updated over time, so if something is missing, just open an issue an
 
 ## NOTICE: v1 to v2
 
-Are you looking to convert your `"version": 1` context to `"version": 2` context? Use the v1 to v2 conversion tool: <https://timecheck22.lraj22.xyz/migrate-v1-to-v2.html>. You can also find the file in this repository.
+Are you looking to convert your `"version": 1` context to `"version": 2` context? Use the v1 to v2 conversion tool: <https://timecheck22.lraj22.xyz/migrate-v1-to-v2.html>. If the link doesn't work, you should be able to find the files to run locally in this repository.
 
 It can do all the work automatically!
 
