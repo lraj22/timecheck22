@@ -368,7 +368,7 @@ export function stringToLuxonTime(time, timezone, onlyParsedInfo) {
 	return onlyParsedInfo ? parsedInfo : luxonTime;
 }
 export function stringToLuxonDuration(durationString, timezone) {
-	durationString = durationString.toString() || "";
+	durationString = (durationString || "").toString() || "";
 	durationString = durationString.trim();
 	let separated = durationString.split("--");
 	let impliedEnd = false;

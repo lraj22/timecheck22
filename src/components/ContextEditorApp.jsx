@@ -4,6 +4,9 @@ import ContextSelector from "./ContextSelector";
 import AnnouncementBlock from "./AnnouncementBlock";
 import SchedulingRuleBlock from "./SchedulingRuleBlock";
 import ScheduleBlock from "./ScheduleBlock";
+import FdoBlock from "./FdoBlock";
+import { DateTime } from "luxon";
+import { stringToLuxonDuration } from "../clockdata";
 
 export default function ContextEditorApp () {
 	let [version, setVersion] = useState("N");
@@ -15,6 +18,11 @@ export default function ContextEditorApp () {
 	let [announcements, setAnnouncements] = useState([]);
 	let [schedulingRules, setSchedulingRules] = useState([]);
 	let [schedules, setSchedules] = useState([]);
+	let [fullDayOverrides, setFullDayOverrides] = useState([]);
+	let [timeframeOverrides, setTimeframeOverrides] = useState([]);
+	let now = DateTime.now({
+		"zone": timezone,
+	});
 	
 	function clearFields () {
 		// clear all fields
@@ -27,6 +35,8 @@ export default function ContextEditorApp () {
 		setAnnouncements([]);
 		setSchedulingRules([]);
 		setSchedules([]);
+		setFullDayOverrides([]);
+		setTimeframeOverrides([]);
 	}
 	
 	function establishContext (context) {
@@ -72,9 +82,17 @@ export default function ContextEditorApp () {
 		if ("schedules" in context) {
 			setSchedules(context.schedules);
 		}
+		if ("full_day_overrides" in context) {
+			setFullDayOverrides(context.full_day_overrides);
+		}
+		if ("timeframe_overrides" in context) {
+			setTimeframeOverrides(context.timeframe_overrides);
+		}
 	}
 	
 	function output () {
+		let sortedFdos = fullDayOverrides.sort((fdo1, fdo2) => stringToLuxonDuration(fdo1.applies[0]).s - stringToLuxonDuration(fdo2.applies[0]).s);
+		setFullDayOverrides(sortedFdos);
 		console.log({
 			"version": version,
 			"last_updated_id": lastUpdated,
@@ -87,7 +105,7 @@ export default function ContextEditorApp () {
 			"announcements": announcements,
 			"scheduling_rules": schedulingRules,
 			"schedules": schedules,
-			// "full_day_overrides": full_day_overrides,
+			"full_day_overrides": sortedFdos,
 			// "timeframe_overrides": timeframe_overrides,
 		});
 	}
@@ -121,6 +139,7 @@ export default function ContextEditorApp () {
 			<small>Timezones should look something like this: <code>America/Los_Angeles</code>. Don't know yours? Use <a href="https://zones.arilyn.cc/" target="_blank">this tool</a> to find your school's timezone, hit "Copy", and then paste that here.</small></p>
 			
 			<h3>Announcements</h3>
+			<p>These show at the top of everyone's screen when they apply, and can't be cleared. They disappear automatically once they expire. Having more than one active at a time is kinda annoying, but you can schedule multiple here without them all appearing at once!</p>
 			<div id="announcementsContainer">
 				{
 					announcements.map((_, i) => {
@@ -172,7 +191,18 @@ export default function ContextEditorApp () {
 			
 			<h3>Full day overrides</h3>
 			<div id="fdoContainer">
-				<button type="button">Add full day override</button>
+				{
+					fullDayOverrides.map((fdo, i) => {
+						return <FdoBlock fullDayOverrides={fullDayOverrides} setFullDayOverrides={setFullDayOverrides} index={i} key={i} />
+					})
+				}
+				<button type="button" onClick={_ => {
+					setFullDayOverrides([...fullDayOverrides, {
+						"occasion": "New FDO",
+						"applies": [now.startOf("day").toFormat("yyyy-MM-dd") + " -- " + now.startOf("day").plus({ "days": 1 }).toFormat("yyyy-MM-dd")],
+						"schedule": "none",
+					}])
+				}}>Add full day override</button>
 			</div>
 			
 			<h3>Timeframe overrides</h3>
