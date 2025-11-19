@@ -143,7 +143,7 @@ function tick () {
 		// write sidebar message
 		let fdoOccasion = (("override" in todaysSchedule) ? (todaysSchedule.override.occasion || todaysSchedule.override.name) : null);
 		let currentScheduleMsg = `<p>Today, ${escapeHtml(cd.metadata.short_name || cd.metadata.shortName)} is on <b>${escapeHtml(todaysSchedule.label)}</b> ${fdoOccasion ? "override schedule" : "schedule"}.${fdoOccasion ? (` The reason for this is ${escapeHtml(fdoOccasion)}, which is during ${appliesStrarrListify(todaysSchedule.override.applies)}.`) : ""}</p>`;
-		if (timeFound.isOverride) {
+		if (timeFound && timeFound.isOverride) {
 			currentScheduleMsg += `<p>Currently, though, the schedule is on the following timeframe: <b>${escapeHtml(timeFound.occasion || timeFound.name)}</b>. It lasts from ${appliesStrarrListify(timeFound.duration)}.</p>`;
 		}
 		setHtml("scheduleMessage", currentScheduleMsg);

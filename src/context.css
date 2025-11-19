@@ -70,3 +70,11 @@ button:disabled {
 	cursor: not-allowed;
 	color: gray;
 }
+
+button + button {
+	margin-left: 0.5rem;
+}
+
+.danger {
+	color: red;
+}

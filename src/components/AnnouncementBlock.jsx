@@ -48,6 +48,11 @@ export default function AnnouncementBlock ({ announcements, setAnnouncements, in
 		} : announcement));
 	}
 	
+	function removeAnnouncement (idx) {
+		if (confirm("Are you sure you want to remove this announcement?"))
+			setAnnouncements(announcements.filter((_, i) => i !== idx));
+	}
+	
 	return (
 		<div className="announcement">
 			<span>Message: </span>
@@ -56,7 +61,9 @@ export default function AnnouncementBlock ({ announcements, setAnnouncements, in
 			<span>Applies: </span>
 			<input type="datetime-local" value={start} onChange={e => setStartISO(e.target.value)} />
 			<span> to </span>
-			<input type="datetime-local" value={end} onChange={e => setEndISO(e.target.value)} />
+			<input type="datetime-local" value={end} onChange={e => setEndISO(e.target.value)} /><br /><br />
+			
+			<button type="button" onClick={_ => removeAnnouncement(index)} className="danger">Delete announcement</button>
 		</div>
 	);
 }

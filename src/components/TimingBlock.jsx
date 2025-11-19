@@ -32,6 +32,11 @@ export default function TimingBlock ({ schIndex, schedules, updateSchedule, inde
 		updateTiming("applies", updatedStart + " -- " + updatedEnd);
 	}
 	
+	function removeTiming (idx) {
+		if (confirm("Delete this timing?"))
+			updateSchedule("timings", schedule.timings.filter((_, i) => i !== idx));
+	}
+	
 	return (
 		<div className="timing">
 			<label><span>Period: </span><input type="text" name="timingLabel" value={timing.label} onChange={e => updateTiming("label", e.target.value)} /></label>
@@ -44,8 +49,9 @@ export default function TimingBlock ({ schIndex, schedules, updateSchedule, inde
 				<input type="checkbox" name="timingShowStart" checked={!timing.hideEnd} onChange={e => updateTiming("hideEnd", !e.target.checked)}/>
 			</span>
 			<span>
-				<button type="button" onClick={_ => moveTiming(index, -1)} disabled={index === 0}>⬆</button><span> </span>
+				<button type="button" onClick={_ => moveTiming(index, -1)} disabled={index === 0}>⬆</button>
 				<button type="button" onClick={_ => moveTiming(index, 1)} disabled={index === (schedule.timings.length - 1)}>⬇</button>
+				<button type="button" onClick={_ => removeTiming(index)} className="danger">X</button>
 			</span>
 		</div>
 	);

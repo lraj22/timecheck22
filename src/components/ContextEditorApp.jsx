@@ -153,11 +153,11 @@ export default function ContextEditorApp () {
 			</div>
 			
 			<h3>Schedules</h3>
-			<p>The order of schedules doesn't matter, but you can move them up and down to organize them how you like :)</p>
+			<p>The order of schedules doesn't matter, but you can move them up and down to organize them how you like :) If you don't know what the checkboxes do, don't do anything to them. Leave them checked. (If unchecked, the over/left indicator will be hidden while the label continues to show.)</p>
 			<div id="schedulesContainer">
 				{
 					schedules.map((schedule, i) => {
-						if (schedule.id === "none") return; // do not show 'none' schedule
+						if (schedule.id === "none") return; // do not show 'none' schedule, they can't edit it
 						return <ScheduleBlock schedules={schedules} setSchedules={setSchedules} timezone={timezone} index={i} key={i} />;
 					})
 				}

@@ -20,6 +20,11 @@ export default function ScheduleBlock ({ schedules, setSchedules, index }) {
 		setSchedules(move(schedules, idx, shift));
 	}
 	
+	function removeSchedule () {
+		if (confirm("Are you absolutely sure you want to delete this schedule?!"))
+			setSchedules(schedules.filter((_, i) => i !== index));
+	}
+	
 	return (
 		<div className="schedule">
 			<span>Schedule ID: </span>
@@ -32,9 +37,14 @@ export default function ScheduleBlock ({ schedules, setSchedules, index }) {
 					return <TimingBlock key={i} schIndex={index} index={i} schedules={schedules} updateSchedule={updateSchedule} />;
 				})
 			}
-			<br />
-			<button type="button" onClick={_ => moveSchedule(index, -1)} disabled={index === 0}>Move up</button><span> </span>
+			<button type="button" onClick={_ => updateSchedule("timings", [...schedule.timings, {
+				"label": "Period Label",
+				"applies": "10:00 -- 11:00",
+			}])}>Add timing</button>
+			<br /><br />
+			<button type="button" onClick={_ => moveSchedule(index, -1)} disabled={index === 0}>Move up</button>
 			<button type="button" onClick={_ => moveSchedule(index, 1)} disabled={index === (schedules.length - 1)}>Move down</button>
+			<button type="button" className="danger" onClick={_ => removeSchedule()}>Delete schedule</button>
 		</div>
 	);
 }

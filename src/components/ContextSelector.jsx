@@ -24,7 +24,7 @@ export default function ContextSelector ({ establishContext }) {
 		await fetchContext({
 			"schoolId": selectedSchoolId,
 		});
-		establishContext(clockdata);
+		establishContext(clockdata.clockdata);
 	}
 	
 	return (
