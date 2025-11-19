@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { luxonToDatetimelocal, stringToLuxonDuration } from "../util";
+import { luxonToDatetimelocal } from "../util";
+import { stringToLuxonDuration } from "../clockdata";
 import { DateTime } from "luxon";
 
 export default function AnnouncementBlock ({ announcements, setAnnouncements, index, timezone }) {

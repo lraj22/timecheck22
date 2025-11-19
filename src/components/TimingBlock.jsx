@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { move, stringToLuxonDuration } from "../util";
+import { move } from "../util";
+import { stringToLuxonDuration } from "../clockdata";
 
 export default function TimingBlock ({ schIndex, schedules, updateSchedule, index }) {
 	try {

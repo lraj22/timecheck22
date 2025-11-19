@@ -2,12 +2,11 @@ import {
 	clockdata,
 	dom,
 	updateTimingsTable,
-	getSchedule,
 	escapeHtml,
 	msToTimeDiff,
-	stringToLuxonDuration,
 	appliesStrarrListify,
 } from "./util";
+import { stringToLuxonDuration } from "./clockdata";
 import {
 	settings,
 	updateSettings,
@@ -32,9 +31,7 @@ let oldAnnouncements = [];
 let oldTimings = [];
 let oldScheduleMsg = "";
 function tick () {
-	let now = DateTime.local({
-		"zone": (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined),
-	});
+	let now = clockdata.getNowLuxon();
 	let isSmallScreen = (window.innerWidth <= 500);
 	
 	// update clock
@@ -87,9 +84,10 @@ function tick () {
 	}
 	
 	// if clockdata has loaded
-	if ("version" in clockdata) {
-		setContent("statusMiddle", (isSmallScreen) ? (clockdata.metadata.short_name || clockdata.metadata.shortName) : (clockdata.metadata.school_name || clockdata.metadata.school));
-	} else if (clockdata.hasNothing) { // special property if clockdata is loaded but empty (no school selected instead of not loaded yet)
+	let cd = clockdata.clockdata;
+	if ("version" in cd) {
+		setContent("statusMiddle", (isSmallScreen) ? (cd.metadata.short_name || cd.metadata.shortName) : (cd.metadata.school_name || cd.metadata.school));
+	} else if (cd.hasNothing) { // special property if clockdata is loaded but empty (no school selected instead of not loaded yet)
 		if (dom.statusMiddle.textContent !== "Select school") {
 			setHtml("statusMiddle", `<a class="linklike">Select school</a>`);
 		}
@@ -97,10 +95,10 @@ function tick () {
 		setContent("statusMiddle", "");
 	}
 	
-	if ("version" in clockdata) {
+	if ("version" in cd) {
 		// handle announcements
 		let currentAnnouncements = [];
-		clockdata.announcements.forEach(announcement => {
+		cd.announcements.forEach(announcement => {
 			// check if announcement is valid right now
 			let appliesAtAll = announcement.applies.some(range => {
 				let duration = stringToLuxonDuration(range);
@@ -128,7 +126,7 @@ function tick () {
 			oldAnnouncements = currentAnnouncements;
 		}
 		
-		let timeframeOverrides = clockdata.timeframe_overrides.map(tfo => {
+		let timeframeOverrides = cd.timeframe_overrides.map(tfo => {
 			return {
 				"occasion": tfo.occasion || tfo.name,
 				"label": tfo.label || tfo.description,
@@ -136,7 +134,7 @@ function tick () {
 				"isOverride": true, // add override metadata
 			};
 		});
-		let scheduleData = getSchedule();
+		let scheduleData = clockdata.getScheduleByDay();
 		let timings = (Array.isArray(scheduleData.timings) ? scheduleData.timings : Object.entries(scheduleData.timings));
 		let currentSchedule = timings.map(timing => {
 			if (typeof timing[0] === "string") // aka, if it used to be an object and was made into [key, value] by Object.entries
@@ -192,7 +190,7 @@ function tick () {
 		
 		// write sidebar message
 		let fdoOccasion = (("override" in scheduleData) ? (scheduleData.override.occasion || scheduleData.override.name) : null);
-		let currentScheduleMsg = `<p>Today, ${escapeHtml(clockdata.metadata.short_name || clockdata.metadata.shortName)} is on <b>${escapeHtml(scheduleData.label)}</b> ${fdoOccasion ? "override schedule" : "schedule"}.${fdoOccasion ? (` The reason for this is ${escapeHtml(fdoOccasion)}, which is during ${appliesStrarrListify(scheduleData.override.applies)}.`) : ""}</p>`;
+		let currentScheduleMsg = `<p>Today, ${escapeHtml(cd.metadata.short_name || cd.metadata.shortName)} is on <b>${escapeHtml(scheduleData.label)}</b> ${fdoOccasion ? "override schedule" : "schedule"}.${fdoOccasion ? (` The reason for this is ${escapeHtml(fdoOccasion)}, which is during ${appliesStrarrListify(scheduleData.override.applies)}.`) : ""}</p>`;
 		if (timeFound.isOverride) {
 			currentScheduleMsg += `<p>Currently, though, the schedule is on the following timeframe: <b>${escapeHtml(timeFound.occasion || timeFound.name)}</b>. It lasts from ${appliesStrarrListify(timeFound.duration)}.</p>`;
 		}

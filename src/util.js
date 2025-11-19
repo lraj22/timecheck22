@@ -2,8 +2,8 @@
 
 import {
 	DateTime,
-	Interval,
 } from "luxon"; // luxon is an exception because it is a globally available & reimportable library
+import Clockdata, { noneSchedule, stringToLuxonDuration } from "./clockdata";
 
 
 
@@ -32,13 +32,24 @@ export function log(m, override) {
 
 
 // data
-export var clockdata = {};
+export var clockdata = new Clockdata({ // initialize clockdata with all matchers
+	"matchers": {
+		"dayOfTheWeek": function (dt, pattern) {
+			let dayOfWeek = dt.weekday;
+			
+			let patternParts = pattern.split("--").map(part => part.trim());
+			if (patternParts.length === 1) patternParts[1] = patternParts[0]; // turn "1" (Monday) into "1 -- 1" (Monday -- Monday)
+			
+			if ((parseInt(patternParts[0]) <= dayOfWeek) && (dayOfWeek <= parseInt(patternParts[1]))) {
+				return true;
+			} else {
+				return false;
+			}
+		},
+	},
+});
+
 export const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-export const noneSchedule = {
-	"id": "none",
-	"label": "<None>",
-	"timings": {},
-};
 export const schools = [
 	{
 		"id": -1,
@@ -68,9 +79,9 @@ export const schoolIdMappings = Object.fromEntries(schools.map((school, index) =
 // clockdata & state related functions
 export function setClockdata (newClockdata) { // when context is fetched, the new clockdata is applied!
 	let data = cloneObj(newClockdata || {});
-	clockdata = {...data};
+	clockdata.setClockdata(data);
 	
-	if (!("version" in clockdata)) {
+	if (!("schedules" in data)) {
 		data.schedules = [];
 	}
 	// update the schedules
@@ -111,7 +122,8 @@ export async function updateState (updatedState) {
 // schedules related functions
 export function updateTimingsTable () {
 	if (!("scheduleSelect" in dom)) return;
-	let schedule = ((dom.scheduleSelect.selectedIndex === 0) ? getSchedule() : getScheduleById(dom.scheduleSelect.value)).timings; // index 0 = current schedule
+	let schedule = ((dom.scheduleSelect.selectedIndex === 0) ? clockdata.getScheduleByDay() : clockdata.getScheduleById(dom.scheduleSelect.value)).timings; // select menu index 0 = current schedule
+	
 	let scheduleParts = [];
 	if (!Array.isArray(schedule)) // aka, if still v1 context
 		Object.entries(schedule).forEach((period) => { // [name, appliesArray]
@@ -143,115 +155,11 @@ export function updateTimingsTable () {
 }
 dom?.scheduleSelect?.addEventListener("change", updateTimingsTable);
 
-function getScheduleById (id) {
-	return ("schedules" in clockdata) ? (clockdata.schedules.find(schedule => schedule.id === id) || noneSchedule) : noneSchedule;
-}
-
-export const matchers = {
-	"dayOfTheWeek": function (rule) {
-		let dayOfWeek = DateTime.local({
-			"zone": (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined),
-		}).weekday;
-		let patternParts = rule.pattern.split("--").map(part => part.trim());
-		if (patternParts.length > 1) { // something like 2 -- 5 (Tuesday - Friday inclusive)
-			if ((parseInt(patternParts[0]) <= dayOfWeek) && (dayOfWeek <= parseInt(patternParts[1]))) {
-				return {
-					...getScheduleById(rule.schedule),
-					"override": false,
-				};
-			}
-		} else { // something like 1 (Monday)
-			if (parseInt(patternParts[0]) === dayOfWeek) {
-				return {
-					...getScheduleById(rule.schedule),
-					"override": false,
-				};
-			}
-		}
-	},
-};
-
-export function getSchedule () {
-	if (!("schedules" in clockdata)) return {
-		...noneSchedule,
-		"isOverride": false,
-	};
-	let now = DateTime.local({
-		"zone": (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined),
-	});
-	
-	for (let override of clockdata.full_day_overrides) {
-		for (let applyRule of override.applies) {
-			let appliesRange = stringToLuxonDuration(applyRule);
-			if (appliesRange.contains(now)) {
-				if (typeof override.schedule === "string") { // id provided
-					return {
-						...getScheduleById(override.schedule),
-						"override": override,
-					};
-				} else { // schedule provided
-					return {
-						"label": override.occasion || override.name,
-						...override.schedule, // if label is defined in override.schedule, it is allowed to override the default label
-						"override": override,
-					};
-				}
-			}
-		}
-	}
-	
-	for (let rule of (clockdata.scheduling_rules || clockdata.schedulingRules || [])) {
-		if (!((rule.matcher || rule.match) in matchers)) continue; // is the matcher specified invalid? next!
-		
-		let result = matchers[rule.matcher || rule.match](rule);
-		if (result) return result; // if it matches today, return it
-	}
-	
-	return {
-		...noneSchedule,
-		"override": false,
-	};
-}
-
 
 
 // generic, absolutely dependency-less helpers
 export function pad0 (string, length) {
 	return string.toString().padStart(length, "0");
-}
-
-const allPartNames = ["year", "month", "day", "hour", "minute", "second", "millisecond"];
-
-export function stringToLuxonDuration (durationString, timezone) {
-	durationString = durationString.toString() || "";
-	durationString = durationString.trim();
-	let separated = durationString.split("--");
-	let impliedEnd = false;
-	
-	if (separated.length === 1) {
-		separated[1] = separated[0]; // if only start specified, end will be implied by how specific the start is
-		impliedEnd = true;
-	}
-	
-	// calculate the start time & specificity
-	let startTimeParts = stringToLuxonTime(separated[0], undefined, true);
-	let startLeastSignificant = allPartNames.filter(partName => partName in startTimeParts).slice(-1)[0];
-	let startTime = DateTime.fromObject(startTimeParts, {
-		"zone": timezone || (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined)
-	});
-	
-	// calculate the end time & specificity
-	let endTimeParts = stringToLuxonTime(separated[1], undefined, true);
-	let endLeastSignificant = allPartNames.filter(partName => partName in endTimeParts).slice(-1)[0];
-	let endTime = DateTime.fromObject(endTimeParts, {
-		"zone": timezone || (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined)
-	});
-	
-	// construct an interval
-	if (startTime < endTime)
-		return Interval.fromDateTimes(startTime.startOf(startLeastSignificant), endTime[impliedEnd ? "endOf" : "startOf"](endLeastSignificant));
-	else
-		return Interval.fromDateTimes(endTime.startOf(endLeastSignificant), startTime[impliedEnd ? "endOf" : "startOf"](startLeastSignificant));
 }
 
 export function luxonToDatetimelocal (time) {
@@ -276,85 +184,6 @@ export function appliesStrarrListify (appliesBlock) {
 		else format = DateTime.TIME_WITH_SECONDS;
 		return stringToLuxonDuration(applies).toLocaleString(format);
 	}));
-}
-
-export function stringToLuxonTime (time, timezone, onlyParsedInfo) {
-	// something like "2025-09-13/06:07:41.123 AM | e" but with any amount of information included
-	time = time.toString() || "";
-	
-	let flags = [];
-	let flagParts = time.split("|");
-	time = flagParts[0];
-	time = time.trim();
-	if (flagParts[1]) {
-		flags = flagParts[1].split(",").map(part => part.trim());
-	}
-	
-	let separated = time.split("/").map(part => part.trim().toUpperCase());
-	let dateString = null;
-	let timeString = null;
-	let parsedInfo = {};
-	
-	if (separated.length > 1) { // both date & time parts exist
-		[dateString, timeString] = separated;
-	} else if (time.includes("-") || /^[0-9]{4}$/.test(time)) { // only date part (includes date separator '-' or is just year 'yyyy')
-		dateString = separated[0];
-	} else { // must be the time part
-		parsedInfo.year = undefined;
-		parsedInfo.month = undefined;
-		parsedInfo.day = undefined;
-		timeString = separated[0];
-	}
-	
-	// parse the date part if not already done
-	if (dateString) {
-		let dateParts = dateString.split("-");
-		let datePartNames = ["year", "month", "day"];
-		dateParts.forEach((part, index) => {
-			if (index >= 3) return; // we only have 3 parts...
-			parsedInfo[datePartNames[index]] = parseInt(part);
-		});
-	}
-	
-	// parse the time part if not already done
-	if (timeString) {
-		let timeParts = timeString.split(/[:\.]/);
-		let timePartNames = ["hour", "minute", "second", "millisecond"];
-		timeParts.forEach((part, index) => {
-			let partValue = parseInt(part);
-			if (Number.isNaN(partValue)) return; // if invalid, ignore
-			
-			if (index >= 4) return; // 4 parts max lol
-			if (index === 0) { // hour, in case of AM/PM
-				if (timeString.includes("M")) partValue %= 12; // AM/PM are %= 12
-				if (timeString.includes("PM")) partValue += 12; // add 12 for PM
-			}
-			parsedInfo[timePartNames[index]] = partValue;
-		});
-	}
-	
-	// get timezone & create object
-	timezone = timezone || (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined);
-	let luxonTime = DateTime.fromObject(parsedInfo, {
-		"zone": timezone,
-	});
-	
-	let didAnythingChange = false;
-	
-	// process flags
-	if (flags.includes("e") || flags.includes("end")) {
-		let leastSignificant = allPartNames.filter(partName => partName in parsedInfo).slice(-1)[0]; // get least significant item
-		let plusOptions = {};
-		plusOptions[leastSignificant] = 1; // for example, if least significant is day, add one day
-		luxonTime = luxonTime.plus(plusOptions);
-		didAnythingChange = true;
-	}
-	
-	if (didAnythingChange) {
-		Object.keys(parsedInfo).forEach(part => parsedInfo[part] = luxonTime[part]); // update parts accordingly
-	}
-	
-	return onlyParsedInfo ? parsedInfo : luxonTime;
 }
 
 // Convert number of milliseconds to human-readable string

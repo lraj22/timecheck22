@@ -3,7 +3,6 @@
 import audio from "./audio";
 import {
 	addObj,
-	clockdata,
 	cloneObj,
 	ENVIRONMENT,
 	schoolIdMappings,
@@ -95,7 +94,7 @@ export async function fetchContext (options) {
 		if (now < (lastRequest + 10 * 60e3)) { // preferably, don't rerequest within ten minutes
 			if (schoolId in savedContexts) { // we don't need to rerequest! It's in the cache :D
 				setClockdata(savedContexts[schoolId]);
-				console.info("Loaded context from cache: it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString(), clockdata);
+				console.info("Loaded context from cache: it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString());
 				return;
 			} else { // not in cache, rerequest (and then save in cache lol)
 				console.info("Fetching context regardless of rate limit (not in cache): it hasn't been 10 minutes since last API request at " + new Date(lastRequest).toLocaleString());
