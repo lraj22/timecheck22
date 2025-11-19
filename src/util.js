@@ -34,7 +34,7 @@ export function log(m, override) {
 // data
 export var clockdata = {};
 export const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-const noneSchedule = {
+export const noneSchedule = {
 	"id": "none",
 	"label": "<None>",
 	"timings": {},
@@ -147,7 +147,7 @@ function getScheduleById (id) {
 	return ("schedules" in clockdata) ? (clockdata.schedules.find(schedule => schedule.id === id) || noneSchedule) : noneSchedule;
 }
 
-const matchers = {
+export const matchers = {
 	"dayOfTheWeek": function (rule) {
 		let dayOfWeek = DateTime.local({
 			"zone": (("metadata" in clockdata) ? clockdata.metadata.timezone : undefined),
@@ -397,12 +397,12 @@ export function move (original, index, diff) {
 }
 
 // cloneObj function taken & modified from https://stackoverflow.com/a/7574273
-// WARNING: cloneObj does not support cloning native objects like Date, Map, Set, etc. unless explicitly defined.
+// WARNING: cloneObj does not support cloning native (or foreign) classes like Date, Map, Set, etc. unless explicitly defined.
 export function cloneObj (obj) {
-	if (obj == null || typeof (obj) != 'object') {
+	if ((obj == null) || (typeof obj !== "object")) {
 		return obj;
 	}
-	if (obj instanceof Date) {
+	if ((obj instanceof Date) || (typeof obj === "function")) {
 		return obj;
 	}
 
