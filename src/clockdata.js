@@ -54,87 +54,18 @@ export default class Clockdata {
 	}
 	
 	/**
-	 * Get full day override (if any) of given day or today
-	 * @param {string|DateTime} [day] - Optional day to get full day overrides of (defaults to now/today)
-	 * @returns {object|null} Full day override, or null if none/unavailable
+	 * Get the announcements at a given instant (default: now)
+	 * @param {DateTime} [time] - Optional instant to get announcements of
+	 * @returns {object[]} Array of announcement objects
 	 */
-	getFdoOfDay (day) {
-		if (!("full_day_overrides" in this.clockdata)) return null;
+	getAnnouncementsByTime (time) {
+		let now = this.getNowLuxon(time);
 		
-		let now = this.getNowLuxon(day);
-		
-		for (let override of this.clockdata.full_day_overrides) {
-			for (let applyRule of override.applies) { // each FDO can have multiple apply blocks, go through them all
-				let appliesRange = (this.intervalParser || stringToLuxonDuration)(applyRule, this.getTimezone());
-				if (!appliesRange.contains(now)) continue; // if this applies block doesn't work, continue to next
-				
-				return cloneObj(override);
-			}
-		}
-		
-		return null;
-	}
-	
-	/**
-	 * Get timezone of school (if available)
-	 * @returns {string|undefined} Timezone of school (like "America/Los_Angeles"), or undefined if not available
-	 */
-	getTimezone () {
-		let timezone = undefined;
-		if (("metadata" in this.clockdata) && ("timezone" in this.clockdata.metadata)) {
-			timezone = this.clockdata.metadata.timezone;
-		}
-		return timezone;
-	}
-	
-	/**
-	 * Get the Luxon DateTime of passed in value, or of now if not passed in
-	 * @param {string|DateTime} [dt] - If passed, the time to get the Luxon DateTime of
-	 * @returns {DateTime} DateTime of now, or of the time passed in
-	 */
-	getNowLuxon (dt) {
-		if (DateTime.isDateTime(dt)) return dt;
-		if (dt instanceof Date) return DateTime.fromJSDate(dt);
-		
-		if (typeof dt !== "undefined") {
-			// if parser provided, use it!
-			if (typeof this.instantParser === "function") {
-				try {
-					return this.instantParser(dt);
-				} catch (e) {
-					console.error("Provided Clockdata.instantParser function threw an error:", e, "Argument passed:", dt);
-				}
-			} else {
-				return stringToLuxonTime(dt, this.getTimezone());
-			}
-		}
-		
-		// if none of the previous, then just return now
-		return DateTime.local({
-			"zone": this.getTimezone(),
-		});
-	}
-	
-	/**
-	 * Check if the instant matches the matcher pattern
-	 * @param {string} matcher - The matcher to use (must be defined in Clockdata.matchers first!)
-	 * @param {string} pattern - The pattern the matcher will check against (if left out, will use "*")
-	 * @param {string|DateTime} [dt] - The instant to check (default: now)
-	 * @returns {boolean} Whether or not the instant matches
-	 */
-	checkMatch (matcher, pattern, dt) {
-		if (!(matcher in this.matchers)) return false;
-		if (typeof pattern === "undefined") pattern = "*";
-		if (!DateTime.isDateTime(dt)) dt = this.getNowLuxon(dt);
-		return this.matchers[matcher](dt, pattern);
-	}
-	
-	/**
-	 * Returns all scheduling rules
-	 * @returns {object[]} All scheduling rules
-	 */
-	getSchedulingRules () {
-		return this.clockdata.scheduling_rules || this.clockdata.schedulingRules || [];
+		return this.getAnnouncements().filter(
+			announcement => announcement.applies.some(
+				appliesItem => stringToLuxonDuration(appliesItem).contains(now)
+			)
+		);
 	}
 	
 	/**
@@ -146,7 +77,7 @@ export default class Clockdata {
 		let now = this.getNowLuxon(day);
 		
 		// check full day overrides
-		let activeFdo = this.getFdoOfDay(now);
+		let activeFdo = this.getFdoByDay(now);
 		if (activeFdo) {
 			if (typeof activeFdo.schedule === "string") { // id provided
 				return {
@@ -182,11 +113,25 @@ export default class Clockdata {
 	}
 	
 	/**
-	 * Returns all timeframe overrides
-	 * @returns {object[]} All timeframe overrides
+	 * Get full day override (if any) of given day or today
+	 * @param {string|DateTime} [day] - Optional day to get full day overrides of (defaults to now/today)
+	 * @returns {object|null} Full day override, or null if none/unavailable
 	 */
-	getTimeframeOverrides () {
-		return (this.clockdata.timeframe_overrides || []);
+	getFdoByDay (day) {
+		if (!("full_day_overrides" in this.clockdata)) return null;
+		
+		let now = this.getNowLuxon(day);
+		
+		for (let override of this.clockdata.full_day_overrides) {
+			for (let applyRule of override.applies) { // each FDO can have multiple apply blocks, go through them all
+				let appliesRange = (this.intervalParser || stringToLuxonDuration)(applyRule, this.getTimezone());
+				if (!appliesRange.contains(now)) continue; // if this applies block doesn't work, continue to next
+				
+				return cloneObj(override);
+			}
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -245,6 +190,60 @@ export default class Clockdata {
 	}
 	
 	/**
+	 * Get the Luxon DateTime of passed in value, or of now if not passed in
+	 * @param {string|DateTime} [dt] - If passed, the time to get the Luxon DateTime of
+	 * @returns {DateTime} DateTime of now, or of the time passed in
+	 */
+	getNowLuxon (dt) {
+		if (DateTime.isDateTime(dt)) return dt;
+		if (dt instanceof Date) return DateTime.fromJSDate(dt);
+		
+		if (typeof dt !== "undefined") {
+			// if parser provided, use it!
+			if (typeof this.instantParser === "function") {
+				try {
+					return this.instantParser(dt);
+				} catch (e) {
+					console.error("Provided Clockdata.instantParser function threw an error:", e, "Argument passed:", dt);
+				}
+			} else {
+				return stringToLuxonTime(dt, this.getTimezone());
+			}
+		}
+		
+		// if none of the previous, then just return now
+		return DateTime.local({
+			"zone": this.getTimezone(),
+		});
+	}
+	
+	/**
+	 * Check if the instant matches the matcher pattern
+	 * @param {string} matcher - The matcher to use (must be defined in Clockdata.matchers first!)
+	 * @param {string} pattern - The pattern the matcher will check against (if left out, will use "*")
+	 * @param {string|DateTime} [dt] - The instant to check (default: now)
+	 * @returns {boolean} Whether or not the instant matches
+	 */
+	checkMatch (matcher, pattern, dt) {
+		if (!(matcher in this.matchers)) return false;
+		if (typeof pattern === "undefined") pattern = "*";
+		if (!DateTime.isDateTime(dt)) dt = this.getNowLuxon(dt);
+		return this.matchers[matcher](dt, pattern);
+	}
+	
+	/**
+	 * Get timezone of school (if available)
+	 * @returns {string|undefined} Timezone of school (like "America/Los_Angeles"), or undefined if not available
+	 */
+	getTimezone () {
+		let timezone = undefined;
+		if (("metadata" in this.clockdata) && ("timezone" in this.clockdata.metadata)) {
+			timezone = this.clockdata.metadata.timezone;
+		}
+		return timezone;
+	}
+	
+	/**
 	 * Returns all announcements
 	 * @returns {object[]} All announcements
 	 */
@@ -253,18 +252,19 @@ export default class Clockdata {
 	}
 	
 	/**
-	 * Get the announcements at a given instant (default: now)
-	 * @param {DateTime} [time] - Optional instant to get announcements of
-	 * @returns {object[]} Array of announcement objects
+	 * Returns all scheduling rules
+	 * @returns {object[]} All scheduling rules
 	 */
-	getAnnouncementsByTime (time) {
-		let now = this.getNowLuxon(time);
-		
-		return this.getAnnouncements().filter(
-			announcement => announcement.applies.some(
-				appliesItem => stringToLuxonDuration(appliesItem).contains(now)
-			)
-		);
+	getSchedulingRules () {
+		return this.clockdata.scheduling_rules || this.clockdata.schedulingRules || [];
+	}
+	
+	/**
+	 * Returns all timeframe overrides
+	 * @returns {object[]} All timeframe overrides
+	 */
+	getTimeframeOverrides () {
+		return (this.clockdata.timeframe_overrides || []);
 	}
 	
 	/**
