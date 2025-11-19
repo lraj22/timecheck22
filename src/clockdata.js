@@ -182,6 +182,92 @@ export default class Clockdata {
 	}
 	
 	/**
+	 * Returns all timeframe overrides
+	 * @returns {object[]} All timeframe overrides
+	 */
+	getTimeframeOverrides () {
+		return (this.clockdata.timeframe_overrides || []);
+	}
+	
+	/**
+	 * Get timeframe override (if any) of given instant or right now
+	 * @param {string|DateTime} [time] - Optional instant to get timeframe overrides of (defaults to now)
+	 * @returns {object|null} Timeframe override, or null if none/unavailable
+	 */
+	getTfoByTime (time) {
+		let now = this.getNowLuxon(time);
+		return this.getTimeframeOverrides().find(
+			tfo => tfo.applies.find(
+				appliesItem => stringToLuxonDuration(appliesItem).contains(now)
+			)
+		) || null;
+	}
+	
+	/**
+	 * Get the timing at a given instant (default: now)
+	 * @param {DateTime} [time] - Optional instant to get timing of
+	 * @returns {object|null} Timing object, or null if none
+	 */
+	getTimingByTime (time) {
+		let now = this.getNowLuxon(time);
+		
+		// check timeframe overrides
+		let activeTfo = this.getTfoByTime(now);
+		if (activeTfo) {
+			return {
+				"occasion": tfo.occasion || tfo.name,
+				"label": tfo.label || tfo.description,
+				"applies": tfo.applies,
+				"isOverride": true, // add override metadata
+			};
+		}
+		
+		// check today's schedule
+		let currentSchedule = this.getScheduleByDay(now);
+		let rawTimings = (Array.isArray(currentSchedule.timings) ? currentSchedule.timings : Object.entries(currentSchedule.timings));
+		let timings = rawTimings.map(timing => {
+			if (typeof timing[0] === "string") // aka, if it used to be an object and was made into [key, value] by Object.entries
+				return timing[1].map(appliesItem => ({ // same data, in different format to make it easier to parse
+					"label": timing[0], // label ("label": applies[] --> ["label", applies[]])
+					"applies": appliesItem, // applies block ("label": applies[] --> ["label", applies[]])
+					"isOverride": false,
+				}));
+			else
+				return [{
+					...timing,
+					"isOverride": false,
+				}];
+		}).flat(1);
+		let activeTiming = timings.find(timing => stringToLuxonDuration(timing.applies).contains(now));
+		if (activeTiming) return activeTiming;
+		
+		return null;
+	}
+	
+	/**
+	 * Returns all announcements
+	 * @returns {object[]} All announcements
+	 */
+	getAnnouncements () {
+		return (this.clockdata.announcements || []);
+	}
+	
+	/**
+	 * Get the announcements at a given instant (default: now)
+	 * @param {DateTime} [time] - Optional instant to get announcements of
+	 * @returns {object[]} Array of announcement objects
+	 */
+	getAnnouncementsByTime (time) {
+		let now = this.getNowLuxon(time);
+		
+		return this.getAnnouncements().filter(
+			announcement => announcement.applies.some(
+				appliesItem => stringToLuxonDuration(appliesItem).contains(now)
+			)
+		);
+	}
+	
+	/**
 	 * Returns schedule in clockdata, given ID
 	 * @param {string} [id] - ID of schedule to look up
 	 * @returns {object} Schedule (none schedule when not found)

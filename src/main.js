@@ -29,7 +29,6 @@ function setHtml (id, html) {
 // this function runs all the time
 let oldAnnouncements = [];
 let oldTimings = [];
-let oldScheduleMsg = "";
 function tick () {
 	let now = clockdata.getNowLuxon();
 	let isSmallScreen = (window.innerWidth <= 500);
@@ -97,15 +96,7 @@ function tick () {
 	
 	if ("version" in cd) {
 		// handle announcements
-		let currentAnnouncements = [];
-		cd.announcements.forEach(announcement => {
-			// check if announcement is valid right now
-			let appliesAtAll = announcement.applies.some(range => {
-				let duration = stringToLuxonDuration(range);
-				return duration.contains(now)
-			});
-			if (appliesAtAll) currentAnnouncements.push(announcement.message);
-		});
+		let currentAnnouncements = clockdata.getAnnouncementsByTime(now).map(announcement => announcement.message);
 		
 		if (currentAnnouncements.join("") !== oldAnnouncements.join("")) { // check if any updates to the announcements (probably not honestly)
 			dom.announcements.innerHTML = "";
@@ -114,7 +105,7 @@ function tick () {
 			currentAnnouncements.forEach((announcement) => {
 				let el = document.createElement("div");
 				el.className = "announcement";
-				el.innerHTML = announcement;
+				el.innerHTML = announcement; // WARNING: school managers have implied HTML power in their announcements!
 				dom.announcements.appendChild(el);
 			});
 			
@@ -126,79 +117,36 @@ function tick () {
 			oldAnnouncements = currentAnnouncements;
 		}
 		
-		let timeframeOverrides = cd.timeframe_overrides.map(tfo => {
-			return {
-				"occasion": tfo.occasion || tfo.name,
-				"label": tfo.label || tfo.description,
-				"applies": tfo.applies,
-				"isOverride": true, // add override metadata
-			};
-		});
-		let scheduleData = clockdata.getScheduleByDay();
-		let timings = (Array.isArray(scheduleData.timings) ? scheduleData.timings : Object.entries(scheduleData.timings));
-		let currentSchedule = timings.map(timing => {
-			if (typeof timing[0] === "string") // aka, if it used to be an object and was made into [key, value] by Object.entries
-				return { // same data, in different format to make it easier to parse
-					"label": timing[0], // label ("label": applies[] --> ["label", applies[]])
-					"applies": timing[1], // applies block ("label": applies[] --> ["label", applies[]])
-					"isOverride": false,
-				};
-			else
-				return {
-					...timing,
-					"isOverride": false,
-				};
-		});
-		let timesToday = [
-			...timeframeOverrides,
-			...currentSchedule,
-		];
-		
-		let timeFound = false;
-		for (const time of timesToday) {
-			let appliesArray = (Array.isArray(time.applies) ? time.applies : [time.applies]);
-			for (const duration of appliesArray) {
-				let appliesDuration = stringToLuxonDuration(duration);
-				let doesApply = appliesDuration.contains(now);
-				if (!doesApply) continue; // doesn't apply, continue
-				
-				timeFound = {
-					...time,
-					duration,
-				};
-				setContent("period", time.label || time.description);
-				if (!time.hideStart) setContent("timeOver", msToTimeDiff(-appliesDuration.start.diffNow()) + " over");
-				else setContent("timeOver", "");
-				if (!time.hideEnd) setContent("timeLeft", msToTimeDiff(+appliesDuration.end.diffNow()) + " left");
-				else setContent("timeLeft", "");
-				break;
-			}
-			if (timeFound) break;
-		}
-		if (!timeFound) {
+		let timeFound = clockdata.getTimingByTime(now);
+		if (timeFound) {
+			setContent("period", timeFound.label);
+			
+			let duration = stringToLuxonDuration(timeFound.applies);
+			if (!time.hideStart) setContent("timeOver", msToTimeDiff(-duration.start.diffNow()) + " over");
+			else setContent("timeOver", "");
+			if (!time.hideEnd) setContent("timeLeft", msToTimeDiff(+duration.end.diffNow()) + " left");
+			else setContent("timeLeft", "");
+		} else {
 			setContent("period", "");
 			setContent("timeLeft", "");
 			setContent("timeOver", "");
 		}
 		
 		// if new timings for the schedule - update table
-		let currentTimings = timings.flat();
+		let todaysSchedule = clockdata.getScheduleByDay(now);
+		let currentTimings = (Array.isArray(todaysSchedule.timings) ? todaysSchedule.timings : Object.entries(todaysSchedule.timings));
 		if (oldTimings.join("\n") !== currentTimings.join("\n")) {
 			oldTimings = currentTimings;
 			updateTimingsTable();
 		}
 		
 		// write sidebar message
-		let fdoOccasion = (("override" in scheduleData) ? (scheduleData.override.occasion || scheduleData.override.name) : null);
-		let currentScheduleMsg = `<p>Today, ${escapeHtml(cd.metadata.short_name || cd.metadata.shortName)} is on <b>${escapeHtml(scheduleData.label)}</b> ${fdoOccasion ? "override schedule" : "schedule"}.${fdoOccasion ? (` The reason for this is ${escapeHtml(fdoOccasion)}, which is during ${appliesStrarrListify(scheduleData.override.applies)}.`) : ""}</p>`;
+		let fdoOccasion = (("override" in todaysSchedule) ? (todaysSchedule.override.occasion || todaysSchedule.override.name) : null);
+		let currentScheduleMsg = `<p>Today, ${escapeHtml(cd.metadata.short_name || cd.metadata.shortName)} is on <b>${escapeHtml(todaysSchedule.label)}</b> ${fdoOccasion ? "override schedule" : "schedule"}.${fdoOccasion ? (` The reason for this is ${escapeHtml(fdoOccasion)}, which is during ${appliesStrarrListify(todaysSchedule.override.applies)}.`) : ""}</p>`;
 		if (timeFound.isOverride) {
 			currentScheduleMsg += `<p>Currently, though, the schedule is on the following timeframe: <b>${escapeHtml(timeFound.occasion || timeFound.name)}</b>. It lasts from ${appliesStrarrListify(timeFound.duration)}.</p>`;
 		}
-		
-		if (oldScheduleMsg !== currentScheduleMsg) {
-			setHtml("scheduleMessage", currentScheduleMsg);
-			oldScheduleMsg = currentScheduleMsg;
-		}
+		setHtml("scheduleMessage", currentScheduleMsg);
 	} else {
 		setHtml("announcements", "");
 		oldAnnouncements = [];
