@@ -64,16 +64,16 @@ export default function FdoBlock ({ fullDayOverrides, setFullDayOverrides, index
 	return (
 		<div className="announcement">
 			<span>Occasion: </span>
-			<input type="text" value={fdo.occasion} onChange={e => setOccasion(e.target.value)} /><br />
+			<input type="text" value={fdo.occasion} name="fdoOccasion" onChange={e => setOccasion(e.target.value)} /><br />
 			
 			<span>Applies: </span>
-			<input type="date" value={start} onChange={e => setStartISO(e.target.value)} />
+			<input type="date" value={start} name="fdoStart" onChange={e => setStartISO(e.target.value)} />
 			<span> (included) to </span>
-			<input type="date" value={end} onChange={e => setEndISO(e.target.value)} />
+			<input type="date" value={end} name="fdoEnd" onChange={e => setEndISO(e.target.value)} />
 			<span> (excluded)</span><br /><br />
 			
 			<span>Schedule ID: </span>
-			<input type="text" value={fdo.schedule} onChange={e => setSchedule(e.target.value)} /><br />
+			<input type="text" value={fdo.schedule} name="fdoSchedule" onChange={e => setSchedule(e.target.value)} /><br />
 			
 			<button type="button" onClick={_ => removeFdo(index)} className="danger">Delete FDO</button>
 		</div>

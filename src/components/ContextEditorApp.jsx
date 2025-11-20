@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { months } from "../util";
+import { luxonToDatetimelocal, months } from "../util";
 import ContextSelector from "./ContextSelector";
 import AnnouncementBlock from "./AnnouncementBlock";
 import SchedulingRuleBlock from "./SchedulingRuleBlock";
@@ -7,6 +7,7 @@ import ScheduleBlock from "./ScheduleBlock";
 import FdoBlock from "./FdoBlock";
 import { DateTime } from "luxon";
 import { stringToLuxonDuration } from "../clockdata";
+import TfoBlock from "./TfoBlock";
 
 export default function ContextEditorApp () {
 	let [version, setVersion] = useState("N");
@@ -92,7 +93,9 @@ export default function ContextEditorApp () {
 	
 	function output () {
 		let sortedFdos = fullDayOverrides.sort((fdo1, fdo2) => stringToLuxonDuration(fdo1.applies[0]).s - stringToLuxonDuration(fdo2.applies[0]).s);
+		let sortedTfos = timeframeOverrides.sort((tfo1, tfo2) => stringToLuxonDuration(tfo1.applies[0]).s - stringToLuxonDuration(tfo2.applies[0]).s);
 		setFullDayOverrides(sortedFdos);
+		setTimeframeOverrides(sortedTfos);
 		console.log({
 			"version": version,
 			"last_updated_id": lastUpdated,
@@ -106,7 +109,7 @@ export default function ContextEditorApp () {
 			"scheduling_rules": schedulingRules,
 			"schedules": schedules,
 			"full_day_overrides": sortedFdos,
-			// "timeframe_overrides": timeframe_overrides,
+			"timeframe_overrides": sortedTfos,
 		});
 	}
 	
@@ -185,7 +188,7 @@ export default function ContextEditorApp () {
 						"id": "custom",
 						"label": "Custom Schedule",
 						"timings": []
-					}])
+					}]);
 				}}>Add schedule</button>
 			</div>
 			
@@ -201,13 +204,24 @@ export default function ContextEditorApp () {
 						"occasion": "New FDO",
 						"applies": [now.startOf("day").toFormat("yyyy-MM-dd") + " -- " + now.startOf("day").plus({ "days": 1 }).toFormat("yyyy-MM-dd")],
 						"schedule": "none",
-					}])
+					}]);
 				}}>Add full day override</button>
 			</div>
 			
 			<h3>Timeframe overrides</h3>
 			<div id="tfoContainer">
-				<button type="button">Add timeframe override</button>
+				{
+					timeframeOverrides.map((tfo, i) => {
+						return <TfoBlock timeframeOverrides={timeframeOverrides} setTimeframeOverrides={setTimeframeOverrides} index={i} key={i} />;
+					})
+				}
+				<button type="button" onClick={_ => {
+					setTimeframeOverrides([...timeframeOverrides, {
+						"occasion": "New TFO",
+						"label": "Example",
+						"applies": [now.startOf("hour").toFormat("yyyy-MM-dd/HH:mm") + " -- " + now.startOf("hour").plus({ "hours": 1 }).toFormat("yyyy-MM-dd/HH:mm")],
+					}]);
+				}}>Add timeframe override</button>
 			</div>
 			
 			<h3>Output</h3>
