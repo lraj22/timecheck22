@@ -5,23 +5,27 @@ import "./settings";
 import { cloneObj, dom, pad0 } from "./util";
 
 // the function that actually does the magic!
-function transform_v1_to_v2 (v1Context) {
+export function transform_v1_to_v2 (v1Context, updateLUI) {
 	let v2Context = {};
 	
 	// update version
 	v2Context.version = 2;
 	
 	// update last_updated_id
-	let now = new Date();
-	let prevDate = (v1Context.last_updated_id || "0000-00-00-00").slice(0, 10); // the date portion (2025-06-07)
-	let newDate = "" + now.getFullYear() + "-" + pad0(now.getMonth() + 1, 2) + "-" + pad0(now.getDate(), 2);
-	if (newDate !== prevDate) {
-		v2Context.last_updated_id = newDate + "-01"; // first update of the day
+	if ((typeof updateLUI === "undefined") || (updateLUI)) {
+		let now = new Date();
+		let prevDate = (v1Context.last_updated_id || "0000-00-00-00").slice(0, 10); // the date portion (2025-06-07)
+		let newDate = "" + now.getFullYear() + "-" + pad0(now.getMonth() + 1, 2) + "-" + pad0(now.getDate(), 2);
+		if (newDate !== prevDate) {
+			v2Context.last_updated_id = newDate + "-01"; // first update of the day
+		} else {
+			let oldUpdateNumber = parseInt(v1Context.last_updated_id.split("-").slice(-1)[0]); // last part (update number)
+			let newUpdateNumber = (oldUpdateNumber + 1).toString();
+			if (newUpdateNumber.length % 2 === 1) newUpdateNumber = "0" + newUpdateNumber; // 2 --> 02, 99 -> 99, 123 --> 0123
+			v2Context.last_updated_id = newDate + "-" + newUpdateNumber;
+		}
 	} else {
-		let oldUpdateNumber = parseInt(v1Context.last_updated_id.split("-").slice(-1)[0]); // last part (update number)
-		let newUpdateNumber = (oldUpdateNumber + 1).toString();
-		if (newUpdateNumber.length % 2 === 1) newUpdateNumber = "0" + newUpdateNumber; // 2 --> 02, 99 -> 99, 123 --> 0123
-		v2Context.last_updated_id = newDate + "-" + newUpdateNumber;
+		v2Context.last_updated_id = v1Context.last_updated_id;
 	}
 	
 	// update metadata key names
@@ -93,7 +97,7 @@ function transform_v1_to_v2 (v1Context) {
 }
 
 // generic onclick transformer function
-dom.convert.addEventListener("click", _ => {
+if (dom.convert) dom.convert.addEventListener("click", _ => {
 	let v1Context = {};
 	let success = false;
 	try {

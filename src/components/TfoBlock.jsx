@@ -72,9 +72,8 @@ export default function TfoBlock ({ timeframeOverrides, setTimeframeOverrides, i
 			
 			<span>Applies: </span>
 			<input type="datetime-local" value={start} name="tfoStart" onChange={e => setStartISO(e.target.value)} />
-			<span> (included) to </span>
-			<input type="datetime-local" value={end} name="tfoEnd" onChange={e => setEndISO(e.target.value)} />
-			<span> (excluded)</span><br /><br />
+			<span> to </span>
+			<input type="datetime-local" value={end} name="tfoEnd" onChange={e => setEndISO(e.target.value)} /><br /><br />
 			
 			<button type="button" onClick={_ => removeTfo(index)} className="danger">Delete TFO</button>
 		</div>
