@@ -20,7 +20,6 @@ html {
 	background-color: var(--theme-bg);
 	color: var(--theme-fg);
 	font-family: var(--theme-font);
-	background-image: none!important; /* I don't want the grid underlay in context.html, also mouse control isn't added here anyways */
 }
 
 select, button, input {
@@ -44,8 +43,12 @@ textarea {
 	text-decoration: 1px dotted underline;
 }
 
-pre {
-	display: inline;
+input[type="text"] {
+	border: 0;
+	border-bottom: 2px solid lightblue;
+	border-radius: 4px;
+	padding: 4px;
+	width: 300px;
 }
 
 .announcement, .schedulingRule, .schedule {

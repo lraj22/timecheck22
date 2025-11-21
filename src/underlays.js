@@ -15,7 +15,13 @@ window.addEventListener("mousemove", event => {
 });
 
 // lightspeed canvas underlay
-const lightspeedCanvas = dom.lightspeedCanvas;
+let lsc = dom.lightspeedCanvas;
+if (!lsc) {
+	lsc = document.createElement("canvas");
+	lsc.id = "lightspeedCanvas";
+	document.body.appendChild(lsc);
+}
+const lightspeedCanvas = lsc;
 const lightspeedCtx = lightspeedCanvas.getContext("2d");
 lightspeedCanvas.width = window.innerWidth;
 lightspeedCanvas.height = window.innerHeight;
