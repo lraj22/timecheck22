@@ -76,6 +76,18 @@
 	--theme-fg: oklch(calc(0.567 + calc(0.1 * var(--l-change-multiplier))) 0.25 300);
 }
 
+/* inputs */
+
+input[type="checkbox"] {
+	color-scheme: light;
+	accent-color: var(--theme-fg);
+}
+
+input, select, textarea {
+	background-color: oklch(from var(--theme-bg) calc(l + calc(0.05 * var(--l-change-multiplier))) c h);
+	color: var(--theme-fg)
+}
+
 /* underlays */
 
 [data-setting-themeUnderlay="grid"] {

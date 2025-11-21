@@ -3,7 +3,7 @@ import { move } from "../util";
 
 export default function SchedulingRuleBlock ({ schedulingRules, setSchedulingRules, index }) {
 	const placeholders = {
-		"dayOfTheWeek": "1 (Monday) -- 5 (Friday)",
+		"dayOfTheWeek": "1 -- 5 (Monday to Friday)",
 	};
 	let schedulingRule = schedulingRules[index];
 	

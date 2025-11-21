@@ -43,12 +43,20 @@ textarea {
 	text-decoration: 1px dotted underline;
 }
 
-input[type="text"] {
-	border: 0;
-	border-bottom: 2px solid lightblue;
+input, select, button {
+	border: 1px solid var(--theme-fg);
+	border-bottom: 2px solid var(--theme-fg);
 	border-radius: 4px;
 	padding: 4px;
+}
+
+input[type="text"] {
 	width: 300px;
+}
+
+button {
+	background-color: oklch(from var(--theme-bg) calc(l + calc(0.05 * var(--l-change-multiplier))) c h); /* color copied from "input, select, textarea" style in themes.css */
+	border: 2px solid var(--theme-fg);
 }
 
 .announcement, .schedulingRule, .schedule {

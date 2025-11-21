@@ -45,7 +45,7 @@ export default function ContextSelector ({ establishContext }) {
 						);
 					})
 				}
-			</select>
+			</select><span> </span>
 			<button type="button" id="pickSchool" onClick={async _ => await fetchSchoolContext()}>Select school</button>
 		</>
 	);
