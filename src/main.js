@@ -122,10 +122,10 @@ function tick () {
 			setContent("period", timeFound.label);
 			
 			let duration = stringToLuxonDuration(timeFound.applies);
-			if (!time.hideStart) setContent("timeOver", msToTimeDiff(-duration.start.diffNow()) + " over");
-			else setContent("timeOver", "");
-			if (!time.hideEnd) setContent("timeLeft", msToTimeDiff(+duration.end.diffNow()) + " left");
-			else setContent("timeLeft", "");
+			if (timeFound.hideStart) setContent("timeOver", "");
+			else setContent("timeOver", msToTimeDiff(-duration.start.diffNow()) + " over");
+			if (timeFound.hideEnd) setContent("timeLeft", "");
+			else setContent("timeLeft", msToTimeDiff(+duration.end.diffNow()) + " left");
 		} else {
 			setContent("period", "");
 			setContent("timeLeft", "");
