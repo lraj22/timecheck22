@@ -88,7 +88,7 @@ function tick () {
 		setContent("statusMiddle", (isSmallScreen) ? (cd.metadata.short_name || cd.metadata.shortName) : (cd.metadata.school_name || cd.metadata.school));
 	} else if (cd.hasNothing) { // special property if clockdata is loaded but empty (no school selected instead of not loaded yet)
 		if (dom.statusMiddle.textContent !== "Select school") {
-			setHtml("statusMiddle", `<a class="linklike">Select school</a>`);
+			setHtml("statusMiddle", `<span tabindex="0" role="link" class="linklike">Select school</span>`);
 		}
 	} else {
 		setContent("statusMiddle", "");
