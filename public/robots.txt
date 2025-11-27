@@ -1,0 +1,9 @@
+# Nothing much to see here
+# Thanks for visiting though, whether you be human or robot!
+# It's nice having visitors around these parts.
+# ~ Lakshya Raj, 2025 Nov 26
+
+User-agent: *
+Disallow: 
+
+# Happy hacking :]

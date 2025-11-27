@@ -1,9 +1,10 @@
 <!doctype html>
-<html lang="en-US">
+<html lang="en-US" class="stillLoading">
 	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>TimeCheck 22</title>
+		<meta name="description" content="Easily select your school and keep up with its schedules!">
 		
 		<!-- favicons -->
 		<link rel="icon" href="./favicon.ico" sizes="32x32">
@@ -19,14 +20,46 @@
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Rampart+One&display=swap&text=0123456789%20%3AAaPpMm" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400..700&display=swap" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=block" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
 		
 		<!-- umami tracking -->
 		<script defer src="https://cloud.umami.is/script.js" data-website-id="b5d12824-9768-405c-90fa-1e5c51fbb248"></script>
 		
 		<!-- basic styles (should not require anything to have loaded prior) -->
-		<style></style>
+		<style>
+			#loadingScreen {
+				width: 100vw;
+				height: 100vh;
+				position: fixed;
+				top: 0;
+				left: 0;
+				background-color: rebeccapurple;
+				font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+				color: white;
+				text-align: center;
+				line-height: 100vh;
+				z-index: 1234569;
+				user-select: none;
+			}
+			
+			html.stillLoading *:not(#loadingScreen) {
+				display: none!important;
+			}
+			
+			/* loading screen exit animation */
+			.exitDown {
+				animation-name: screenExitDown;
+				animation-duration: 500ms;
+				animation-delay: 250ms;
+				animation-fill-mode: forwards;
+			}
+			
+			@keyframes screenExitDown {
+				from { transform: none; }
+				to { transform: translateY(100vh); }
+			}
+		</style>
 	</head>
 	<body>
 		<div id="app">
@@ -138,14 +171,14 @@
 							</datalist><br>
 							
 							<hr>
-							<p>Want to choose or change your school? Go to the <a class="linklike" data-navigate-to="school" data-js-on-click="true">Schools page</a>.</p>
+							<p>Want to choose or change your school? Go to the <span tabindex="0" role="link" class="linklike" data-navigate-to="school" data-js-on-click="true">Schools page</span>.</p>
 						</div>
 						<div class="sbPage" data-page-name="school">
 							<p>Welcome! Select your school here. This will set the clock to the current schedule.</p>
 							<select name="school" id="schoolSelect">
 								<!-- List of schools will be added here programmatically -->
 							</select>
-							<p>You can see what schedules your school has in the <a class="linklike" data-navigate-to="schedules" title="Open Schedules page">Schedules</a> page.</p>
+							<p>You can see what schedules your school has in the <span tabindex="0" role="link" class="linklike" data-navigate-to="schedules" title="Open Schedules page">Schedules</span> page.</p>
 						</div>
 						<div class="sbPage" data-page-name="schedules">
 							<p>View your school's schedules here.</p>
@@ -174,7 +207,7 @@
 						<!-- in reality, the sidebar "button" will be a hoverable section on the left side of the screen and not a traditional button in the buttons bar. (concerns w/ this on small screen size?) -->
 						<button type="button" class="flatBtn" id="toggleStopwatch" title="Open stopwatch" data-icon="timer"></button>
 						<button type="button" class="flatBtn" id="toggleTimer" title="Open timer" data-icon="alarm"></button>
-						<button type="button" class="flatBtn" id="toggleSidebar" data-icon="left_panel_open"></button>
+						<button type="button" class="flatBtn" id="toggleSidebar" title="Toggle sidebar" data-icon="left_panel_open"></button>
 					</div>
 					<div id="time" data-fullscreenable="true">--:--</div>
 					<div id="period" data-fullscreenable="true"></div>
@@ -217,11 +250,14 @@
 		<div id="fullscreen"></div>
 		
 		<!-- jumpscare -->
-		<img src="./PhantomBBJumpscare.gif" alt="jumpscare" id="jumpscare">
+		<video src="./PhantomBBJumpscare.webm" alt="jumpscare" id="jumpscare"></video>
 		<audio src="./audio/Scream3.ogg" id="scream"></audio>
 		
 		<!-- lightspeed underlay -->
 		<canvas id="lightspeedCanvas" data-fullscreen-hide-excepted="true"></canvas>
+		
+		<!-- loading screen -->
+		<div id="loadingScreen">Loading...</div>
 		
 		<!-- scripts -->
 		<script type="module" src="/lib/localforage.js"></script>

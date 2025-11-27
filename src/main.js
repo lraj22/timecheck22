@@ -186,14 +186,21 @@ import "./underlays";
 
 // keeps track of when page is fully loaded
 let loadFlags = 0;
-export function loaded () {
-	var threshold = 1; // waiting for 1 flag: window.onload
+let threshold = 1; // waiting for 1 flag: window.onload
+export function loaded (weight) {
+	// if loaded already did its work, don't make it do it again
+	if (threshold < 0) return;
+	
 	if (!navigator.onLine) threshold = 1; // just wait for load
-	loadFlags++;
+	loadFlags += (weight ? weight : 1);
 	if (loadFlags >= threshold) {
+		dom.loadingScreen.className = "exitDown";
+		document.documentElement.classList.remove("stillLoading");
 		console.log("finished loading!");
+		threshold = -1;
 	}
 }
+setTimeout(_ => loaded(1000), 5000); // after 5 seconds, force the site to load so user is not stuck on loading screen
 
 // on page load
 window.addEventListener("load", () => loaded());
