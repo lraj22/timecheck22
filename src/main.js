@@ -200,10 +200,11 @@ export function loaded (weight) {
 		threshold = -1;
 	}
 }
-setTimeout(_ => loaded(1000), 5000); // after 5 seconds, force the site to load so user is not stuck on loading screen
+setTimeout(_ => loaded(999999), 5000); // after 5 seconds, force the site to load so user is not stuck on loading screen
 
 // on page load
-window.addEventListener("load", () => loaded());
+if (document.readyState === "complete") loaded();
+else window.addEventListener("load", () => loaded());
 
 // set up sw.js if supported
 if ("serviceWorker" in navigator) {
