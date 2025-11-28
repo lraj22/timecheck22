@@ -91,7 +91,35 @@ Describe the procedures you will use to analyze the results.
 
 Bibliography
 
-> Most of the content written here is based on what I know. However, here are some links to back up what I say.
-> Stack Overflow, a common place to find answers to coding problems (research rationale section): https://stackoverflow.com/
-> General computer safety (risk and safety sections): https://www.lifewire.com/computer-safety-tips-153314
+> Most of the content written here is based on what I know. However, here are some links to back up what I say.<br>
+> Stack Overflow, a common place to find answers to coding problems (research rationale section): https://stackoverflow.com/<br>
+> General computer safety (risk and safety sections): https://www.lifewire.com/computer-safety-tips-153314<br>
 > Umami privacy features, scroll down to Privacy (data analysis section): https://umami.is/features
+
+## Judging Criteria
+
+![Judging Criteria Checklist](./assets/judging-criteria.png)
+
+Mine is an engineering/software project, so I will answer those here.
+
+1. Research Question/Problem
+
+Description of a practical need or problem to be solved (4 pts)
+
+> My school, Chino Hills High School, has late starts on Monday and regular schedule on Tuesday to Friday. I know many students and even teachers who don't exactly remember the Monday schedule, even though we have it every week. This problem only gets worse on special days like rallies, where a unique rally schedule is followed, or block schedule days. These days have unique schedules that barely anyone knows, and most of my teachers end up writing the schedule on their board if they have the schedule. The rally schedule is the same every rally, but no reasonable person would remember every special schedule that the school has, period by period. That's the problem TimeCheck 22 solves - given the effort of a few dedicated students, everyone can benefit as the schedule is easily available on the TC22 website. The website also includes useful information like how much time is left in the period, how much time has passed, and a full listing of all schedules the school has. This way, people can check in on the schedule ahead of time.
+> 
+> Now, you might think, isn't this already solved with things like the announcement bell? Like, the one that rings on time every time? Well, I was surprised to learn this, but the bell apparently rings on days off, and I've also personally seen some times when it rings when it shouldn't. For example, it's on regular schedule when we're on block schedule. I know - my website was actually more accurate than the schedule our own school bell is on! What about posters around the school that have the bell schedule on them? Those don't contain every schedule, and they don't adapt to show you that one unique schedule you'll only see twice a year (for example, finals block schedules). TimeCheck 22 solves a unique need, and by doing this, enables students and teachers alike to be more efficient with their time, since they have a good idea when the period ends and how much time is left. Chino Hills High School itself has over 2700 students and 140 teachers, and when many of them are confused about how much time we have left in class, that results in a huge loss of potentially productive time and is generally a bother. I really don't like it when I don't know how much time is left, because it helps me pace myself.
+
+Definition of Criteria for a Proposed Solution (3 pts)
+
+> I wrote a Software Requirements Specification (SRS) document that outlines the purpose, audience, scope, stakeholders, constraints, and requirements. The criteria I specified was that the website should meet the needs of 4 main groups: 1. regular students, 2. regular teachers, 3. school managers, and 4. me, the administrator. To do this, it should make it easy to select their school, view schedules, see how much time passed/is left, be customizable, and have extra useful features. If a solution has all these features, it meets the criteria.
+
+Explanation of Constraints (3 pts)
+
+> Some constraints that I added in the SRS are that it should work on screens of all usual sizes, like a phone, a Chromebook, and a ViewSonic; it should be quick to load; and it should work offline. These constraints were actually written to allow my website to be experienceable by more people, so it is more useful in all form factors - on the go with your phone, during class with your Chromebook, and for teachers, on the ViewSonic. These constraints are all on top of the criteria mentioned before, where it needs all of its basic functional requirements.
+
+2. Design & Methodology
+
+Development of a Prototype/Model & ID of Solution (10 pts)
+
+The prototype is available as a website online at <https://timecheck22.lraj22.xyz/>. The code and history of how it was coded is available on GitHub at <https://github.com/lraj22/timecheck22>.
