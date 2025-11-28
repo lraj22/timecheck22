@@ -6,7 +6,7 @@ Hi! I'm going to be documenting some science fair information here. It is not di
 
 1. Identify and assess the risks and hazards involved in this project.
 
-Since the only equipment I will be using is a regular personal computer, which is generally considered to be safe under normal circumstances, I don't face much physical harm. However, there is the legal danger of using copyrighted code when researching for solutions online, and also the digital danger of malware when using the internet for research purposes. Finally, there is a legal risk when collecting analytics on my website.
+Since the only equipment I will be using is a regular personal computer, which is generally considered to be safe under normal circumstances, I don't face much physical risk. However, there is the legal danger of using copyrighted code when researching for solutions online, and also the digital danger of malware when using the internet for research purposes. Finally, there is a legal risk when collecting analytics on my website.
 
 2. 
 	a. List all hazardous chemicals, activities or devices to be used
@@ -63,28 +63,35 @@ Detail all procedures and experimental design including methods for data collect
 
 Experimental Design
 
-> x
+> First, I wrote the Software Requirements Specification (SRS) document, which details the objectives of the project. Based off of those goals and constraints, I wrote user stories, which are real life examples of what various users/stakeholders actually want. Then, I prioritize those user stories and work on the most important ones first, going on until all of them are done. This design flow ensures I'm spending my time working on what matters most to the stakeholders, and not on side features that don't really matter. This continues until the final product is something all users are happy with.
 
 Methods for Data Collection
 
-> x
+> To collect data, I will use Umami, which is a data analytics platform. It can be thought of like Google Analytics, except it is much more privacy-respecting, doesn't sell the analytics data to the highest bidder, and is compliant with many standards like the GDPR. The method for actually collecting data is simply adding a tag inside my website's code, which will run the analytics code when the site loads. This records how many visits I get, which pages were visited, and how long they stayed.
 
 Source of Data
 
-> x
+> As mentioned before, the source of the data is Umami. The Umami analytics snippet runs when the users load TimeCheck 22 into their web browser, and it reports back useful analytics data that helps me see whether users were actually engaged with the website or just looked and left. I can view this data in the Umami analytics dashboard or export it locally for analysis. This data is anonymous/non-identifiable.
 
 ### RISK AND SAFETY
 
 Potential Risk
 
-> x
+> Since the only equipment I will be using is a regular personal computer, which is generally considered to be safe under normal circumstances, I don't face much physical risk. However, there is the legal danger of using copyrighted code when researching for solutions online, and also the digital danger of malware when using the internet for research purposes. Finally, there is a legal risk when collecting analytics on my website. I face no risk from hazardous chemicals, activities, devices, or microorganisms (the hazardous agents mentioned in Form 3, "Risk Assessment"), since I don't deal with any of those in my project.
 
 Safety Precautions
 
-> x
+> To avoid potential copyright issues, I will adapt any code used as necessary to make it my own. To avoid digital danger, I will also avoid suspicious websites and links while researching, and I will have an antivirus installed to limit damage if malware does somehow run. I will also ensure that my analytics platform is privacy-respecting and legally compliant in order to avoid any legality issues when collecting data.
 
 ### DATA ANALYSIS
 
 Describe the procedures you will use to analyze the results.
 
-> x
+> I will use the filters provided in the Umami analytics dashboard to compare how the website is performing over time, and this data can be compared with assumptions on how SSC is performing. I didn't add analytics to SSC, so it's hard to know how well it's doing, but I did get a sense of how people liked it. The data analysis will see if the reactions to TC22 are better than that of SSC, and if the usage analytics match the image the visible reactions produced, i.e. do people use TC22 if they seem to be excited about the idea of it? Since the data is already nicely provided and formatted, I will not need to do much data transformation for analyzing it.
+
+Bibliography
+
+> Most of the content written here is based on what I know. However, here are some links to back up what I say.
+> Stack Overflow, a common place to find answers to coding problems (research rationale section): https://stackoverflow.com/
+> General computer safety (risk and safety sections): https://www.lifewire.com/computer-safety-tips-153314
+> Umami privacy features, scroll down to Privacy (data analysis section): https://umami.is/features
