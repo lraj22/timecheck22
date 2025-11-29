@@ -194,7 +194,8 @@ export function loaded (weight) {
 	if (!navigator.onLine) threshold = 1; // just wait for load
 	loadFlags += (weight ? weight : 1);
 	if (loadFlags >= threshold) {
-		dom.loadingScreen.className = "exitDown";
+		dom.loadingScreen.classList.add("exitDown");
+		dom.loadingScreen.addEventListener("animationend", _ => dom.loadingScreen.classList.add("hidden"));
 		document.documentElement.classList.remove("stillLoading");
 		console.log("finished loading!");
 		threshold = -1;

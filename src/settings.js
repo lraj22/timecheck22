@@ -4,6 +4,7 @@ import audio from "./audio";
 import {
 	addObj,
 	cloneObj,
+	dom,
 	ENVIRONMENT,
 	schoolIdMappings,
 	schools,
@@ -11,6 +12,7 @@ import {
 	state,
 	updateState,
 } from "./util";
+import snowStorm from "../lib/snowstorm";
 
 const defaultSettings = {
 	"schoolId": -1,
@@ -37,8 +39,8 @@ const darkishBgs = [
 	"dark",
 ];
 function updateDarkishLightish (newIndicator) {
-	systemTheme = ((newIndicator === "light") ? "light" : "dark"); // ensure it's either dark or light, fallback to dark
-	if (systemTheme === "dark") { // dark theme; darkish
+	newIndicator = ((newIndicator === "light") ? "light" : "dark"); // ensure it's either dark or light, fallback to dark
+	if (newIndicator === "dark") { // dark theme; darkish
 		document.documentElement.classList.add("darkishBg");
 		document.documentElement.classList.remove("lightishBg");
 	} else { // light theme; lightish
@@ -47,10 +49,11 @@ function updateDarkishLightish (newIndicator) {
 	}
 }
 
-let schemeMedia = window.matchMedia("(prefers-color-scheme: dark)");
-updateDarkishLightish(schemeMedia.matches ? "dark" : "light");
+systemTheme = (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark " : "light");
+updateDarkishLightish(systemTheme);
 window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", event => {
-	if (settings.backgroundTheme === "system") updateDarkishLightish(event.matches ? "dark" : "light");
+	systemTheme = (event.matches ? "dark" : "light");
+	if (settings.backgroundTheme === "system") updateDarkishLightish(systemTheme);
 });
 
 // fetch context
@@ -117,6 +120,7 @@ export async function fetchContext (options) {
 		});
 }
 
+let isSnowActive = true;
 function applySettings (fetchAfterwards) {
 	// apply setting states
 	document.querySelectorAll("[data-setting-name]").forEach(settingInput => {
@@ -147,6 +151,18 @@ function applySettings (fetchAfterwards) {
 	
 	if ("timerRingVolume" in settings) {
 		audio.setVolume("timerRing", parseInt(settings.timerRingVolume) / 100);
+	}
+	
+	if (settings.backgroundTheme === "winter") {
+		if (!isSnowActive) {
+			snowStorm.toggleSnow();
+			isSnowActive = !isSnowActive;
+		}
+	} else {
+		if (isSnowActive) {
+			snowStorm.toggleSnow();
+			isSnowActive = !isSnowActive;
+		}
 	}
 	
 	if (fetchAfterwards) fetchContext();

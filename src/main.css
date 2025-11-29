@@ -316,6 +316,10 @@ main {
 	font-family: "Rampart One", var(--theme-font);
 }
 
+[data-setting-themeunderlay="lightspeed"] #time {
+	color: oklch(from var(--theme-bg) 0.9 c h);
+}
+
 .v-hidden {
 	visibility: hidden;
 }
@@ -506,6 +510,15 @@ body:has(#fullscreen.fullscreenPresent) *:not(#fullscreen):not(#fullscreen *):no
 
 .hidden {
 	display: none!important;
+}
+
+#snow {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	pointer-events: none;
 }
 
 .material-symbols-outlined, .flatBtn::after, .sbOption::after, #sidebarNavigation>button {
