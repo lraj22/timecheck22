@@ -6,6 +6,9 @@ export default function (dom, settings, updateSettings) {
 		"settings": "Settings",
 		"school": "School",
 		"schedules": "Schedules",
+		"about": "About",
+		"scheduleManagers": "For Schedule Managers",
+		"developers": "Developers",
 	};
 	let currentPage = null;
 
@@ -20,6 +23,21 @@ export default function (dom, settings, updateSettings) {
 		document.querySelector(`[data-page-name="${page}"]`).id="currentSidebarPage";
 		
 		dom.sidebarLocation.textContent = pageIdsToName[page]; // change breadcrumbs title
+		dom.sidebarLocation.addEventListener("dblclick", _ => {
+			let page = window.prompt("You are navigating to a page by ID/name. Please type the page ID/name exactly.");
+			if (!page) return;
+			
+			page = page.trim().toLowerCase();
+			let foundPage = Object.entries(pageIdsToName).find(
+				// if either ID or name match, go with it
+				pageMapping => ((pageMapping[0].toLowerCase() === page) || (pageMapping[1].toLowerCase() === page))
+			);
+			if (foundPage) {
+				navigateToSidebarPage(foundPage[0]);
+			} else {
+				alert("That page wasn't found.");
+			}
+		});
 		dom.sbBack.style.visibility = (page !== "home") ? "visible" : "hidden"; // change back button visibility
 		currentPage = page.toString(); // change 'currentPage' (w/ duplicate variable)
 	}
@@ -81,6 +99,27 @@ export default function (dom, settings, updateSettings) {
 			settings[settingName] = ((settingInput.type === "checkbox") ? settingInput.checked : settingInput.value);
 			updateSettings();
 		});
+	});
+	
+	// developer
+	dom.setEnv.addEventListener("click", _ => {
+		let currentEnv = localStorage.getItem("env");
+		let env = prompt("Current value: " + JSON.stringify(currentEnv) + "\nEnter new 'env' environment:");
+		if (env === null) {
+			localStorage.removeItem("env");
+			alert("Successfully removed.");
+		} else {
+			localStorage.setItem("env", env);
+			alert("Successfully set.");
+		}
+	});
+	dom.enableAnalytics.addEventListener("click", _ => {
+		localStorage.removeItem("umami.disabled");
+		alert("Analytics enabled.");
+	});
+	dom.disableAnalytics.addEventListener("click", _ => {
+		localStorage.setItem("umami.disabled", "true");
+		alert("Analytics disabled.");
 	});
 	
 	navigateToSidebarPage("home");

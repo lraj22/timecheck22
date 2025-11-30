@@ -121,6 +121,12 @@ export async function fetchContext (options) {
 }
 
 let isSnowActive = true;
+function forceSnowState (snowState) {
+	snowState = !!snowState;
+	snowStorm.toggleSnow();
+	while (snowStorm.active !== snowState) snowStorm.toggleSnow();
+}
+
 function applySettings (fetchAfterwards) {
 	// apply setting states
 	document.querySelectorAll("[data-setting-name]").forEach(settingInput => {
@@ -155,12 +161,12 @@ function applySettings (fetchAfterwards) {
 	
 	if (settings.backgroundTheme === "winter") {
 		if (!isSnowActive) {
-			snowStorm.toggleSnow();
+			forceSnowState(true);
 			isSnowActive = !isSnowActive;
 		}
 	} else {
 		if (isSnowActive) {
-			snowStorm.toggleSnow();
+			forceSnowState(false);
 			isSnowActive = !isSnowActive;
 		}
 	}

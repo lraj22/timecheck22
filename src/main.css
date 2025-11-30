@@ -7,8 +7,6 @@
 	line-height: 1.5;
 	font-weight: 400;
 
-	color-scheme: light dark;
-
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
@@ -199,6 +197,10 @@ datalist {
 	justify-content: space-between;
 	writing-mode: vertical-lr;
 	width: 200px;
+}
+
+#scheduleManagersAccess {
+	font-size: inherit;
 }
 
 /* (timings) table */

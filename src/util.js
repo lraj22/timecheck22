@@ -21,9 +21,10 @@ var logIdNumber = 1;
  * This is to prevent regular users from running into unexpected errors.
  */
 export var ENVIRONMENT = localStorage.getItem("env");
-export function log(m, override) {
+export function log (m, override) {
 	if (override || (ENVIRONMENT === "dev")) {
 		dom.consoleView.textContent = "[" + (logIdNumber++) + "] " + m;
+		console.log.apply(this, arguments);
 	} else {
 		console.log.apply(this, arguments);
 	}
@@ -58,17 +59,17 @@ export const schools = [
 	},
 	{
 		"id": 1,
-		"name": "Chino Hills High School (real school)",
+		"name": "Chino Hills High School",
 		"repo": "lraj22/chhs-clockdata",
 	},
 	{
 		"id": 2,
-		"name": "Cal Aero Preserve Academy (real school)",
+		"name": "Cal Aero Preserve Academy",
 		"repo": "lraj23/capa-clockdata",
 	},
 	{
 		"id": -2,
-		"name": "Always High School (fake school that is always doing something!)",
+		"name": "Always High School (testing purposes; always doing something!)",
 		"repo": "lraj22/alwayshs-clockdata",
 	},
 ];

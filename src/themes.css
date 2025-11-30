@@ -70,11 +70,13 @@
 .darkishBg {
 	--l-change-multiplier: 1; /* basically, if the background is dark, changes to it should make it ligher (positive) */
 	--theme-fg-darklight: oklch(from var(--theme-bg) 0.9 c h);
+	color-scheme: dark;
 }
 
 .lightishBg {
 	--l-change-multiplier: -1; /* if it's a light background, changes should make it darker */
 	--theme-fg-darklight: oklch(from var(--theme-bg) 0.2 c h);
+	color-scheme: light;
 }
 
 /* text themes */
@@ -89,7 +91,6 @@
 /* inputs */
 
 input[type="checkbox"] {
-	color-scheme: light;
 	accent-color: var(--theme-fg);
 }
 

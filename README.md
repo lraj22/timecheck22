@@ -28,6 +28,6 @@ You can find more information on what exactly context describes in the [Context 
 
 ## My school isn't on the list :[
 
-This tool is being designed for students from schools around mine, so if you want your school added on this list, please DM me and we can work on adding it! I will need to have at least one person willing to update context (this can be you!).
+This tool is being designed for students from schools around mine, so if you want your school added on this list, please [open an issue](https://github.com/lraj22/timecheck22/issues/new/choose) and we can work on adding it! I will need to have at least one person willing to update context (this can be you!).
 
 Made with 💖 by Lakshya Raj

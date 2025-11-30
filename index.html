@@ -5,6 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>TimeCheck 22</title>
 		<meta name="description" content="Easily select your school and keep up with its schedules!">
+		<base target="_blank">
 		
 		<!-- favicons -->
 		<link rel="icon" href="./favicon.ico" sizes="32x32">
@@ -84,6 +85,7 @@
 							<div class="sbOption" data-navigate-to="settings">Settings</div>
 							<div class="sbOption" data-navigate-to="school">Set school</div>
 							<div class="sbOption" data-navigate-to="schedules">View schedules</div>
+							<div class="sbOption" data-navigate-to="about">About TC22</div>
 						</div>
 						<div class="sbPage" data-page-name="settings">
 							<p>Hi! You're in the settings right now.</p>
@@ -202,6 +204,47 @@
 								</tbody>
 							</table>
 							<div id="scheduleMessage"></div>
+						</div>
+						<div class="sbPage" data-page-name="about">
+							<p><span>TimeCheck 22, aka TC22.</span><br><small>Last updated November 30, 2025.</small></p>
+							
+							<h2>Introduction</h2>
+							<p>Welcome to the about page! Not many people pass by here. You'll find information about the app, links to "secret" pages, and credits.</p>
+							
+							<h2>Links</h2>
+							<p><a href="https://github.com/lraj22/timecheck22">GitHub repository: lraj22/timecheck22</a></p>
+							<p>Are you a schedule manager? Find your links here. Even if you're not a schedule manager, feel free to look around.</p>
+							<button type="button" data-navigate-to="scheduleManagers" class="flatBtn" id="scheduleManagersAccess">Totally secret schedule manager access button</button>
+							
+							<h2>Credits</h2>
+							<p>TC22 is made possible by its contributors on GitHub and the schedule managers who work to keep the clock up to date.</p>
+							<p>
+								<u>Developers</u><br>
+								<span>Lead developer: <a href="https://github.com/lraj22">Lakshya Raj</a></span><br>
+							</p>
+							<p>
+								<u>School schedule managers</u><br>
+								<span>Chino Hills High School: <a href="https://github.com/lraj22">Lakshya Raj</a></span><br>
+								<span>Cal Aero Preserve Academy JH: <a href="https://github.com/lraj23">Lavith Raj</a></span><br>
+								<span>Want to add your school? <a href="https://github.com/lraj22/timecheck22/issues/new/choose">Open an issue on GitHub</a> and I'll work with you to get your school added :]</span><br>
+							</p>
+						</div>
+						<div class="sbPage" data-page-name="scheduleManagers">
+							<p>Hi Schedule Managers! Glad you found this page. Here are some links that you might find useful.</p>
+							
+							<h2>Links</h2>
+							<p><a href="./context.html">Context Editor</a>: Just select your school, make the necessary edits, export the file, and copy-paste it into the <code>context.json</code> file in the repository that you manage.</p>
+							<p>Need to migrate your version 1 context to version 2? Use the <a href="./migrate-v1-to-v2.html">v1 to v2 context converter</a>. Or, honestly you could just use the context editor, since it will automatically upgrade to v2 for you.</p>
+							<p>If you ever face any issues with these tools, or any issues at all, feel free to contact me (Lakshya)!</p>
+							
+							<h2>Join us :D</h2>
+							<p>Want to add your school to TC22? Or maybe you just want to help keep your context up to date? You can <a href="https://github.com/lraj22/timecheck22/issues/new/choose">open an issue on GitHub</a> and request to be added. I'll get back to you as soon as possible!</p>
+						</div>
+						<div class="sbPage" data-page-name="developers">
+							<p>Welp, I guess you found this page! It's okay, have a look around and try it out :P</p>
+							<button type="button" id="setEnv">Set 'env' environment</button><br>
+							<button type="button" id="enableAnalytics">Enable Umami analytics (default)</button><br>
+							<button type="button" id="disableAnalytics">Disable Umami analytics (development)</button><br>
 						</div>
 					</div>
 				</aside>
