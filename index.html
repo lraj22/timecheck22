@@ -114,7 +114,11 @@
 								<option value="system">System</option>
 								<option value="mistyRose">Misty rose</option>
 								<option value="winter">Winter</option>
-								<option value="spooky">spOooOOoooky (full theme)</option>
+								
+								<!-- [notice] -->
+								<!-- spooky theme is being phased out; remove the below option once src/spooky.js is removed -->
+									<option value="spooky">spOooOOoooky (full theme)</option>
+								<!-- [/notice] -->
 							</select><br><br>
 							
 							<!-- background theme -->
@@ -250,9 +254,12 @@
 		<!-- fullscreen area -->
 		<div id="fullscreen"></div>
 		
-		<!-- jumpscare -->
-		<video src="./PhantomBBJumpscare.webm" alt="jumpscare" id="jumpscare"></video>
-		<audio src="./audio/Scream3.ogg" id="scream"></audio>
+		<!-- [notice] -->
+		<!-- spooky theme is being phased out; remove the following when src/spooky.js is removed -->
+			<!-- jumpscare -->
+			<video src="./PhantomBBJumpscare.webm" alt="jumpscare" id="jumpscare"></video>
+			<audio src="./audio/Scream3.ogg" id="scream"></audio>
+		<!-- [/notice] -->
 		
 		<!-- lightspeed underlay -->
 		<canvas id="lightspeedCanvas" data-fullscreen-hide-excepted="true"></canvas>

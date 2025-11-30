@@ -14,10 +14,15 @@ import {
 import "./main.css";
 import activateSidebar from "./sidebar";
 activateSidebar(dom, settings, updateSettings); // runs sidebar component w/ necessary dependencies (the dom tree)
-import { DateTime } from "luxon";
 import audio from "./audio";
 import { stopwatchData, timerData } from "./widgets";
+
+/////
+// Spooky theme will phase out of usage Dec 7, 2025 UTC.
+// Do NOT remove this import until far after that date passes, because ./spooky will be migrating users off of the spooky theme onto the default theme if they haven't already switched themselves.
 import "./spooky"; // spooky time!
+// You may, however, remove the jumpscare gif and audio once Dec 7, 2025 UTC arrives, since those will no longer be needed.
+/////
 
 function setContent (id, content) {
 	if (dom[id].textContent !== content) dom[id].textContent = content;

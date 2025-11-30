@@ -1,5 +1,11 @@
 /* themes.css - contains all the themes that are shared across different pages */
 
+/* special themes */
+/**************************/
+/* spooky theme is being phased out of usage on Dec 7, 2025 UTC. this import and the ./spooky.css file can be removed after that date */
+@import url("./spooky.css"); /* spOooOOoooky full theme (it gets its own file) */
+/**************************/
+
 /* fonts */
 [data-setting-font="default"] {
 	--theme-font: Rubik, Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;

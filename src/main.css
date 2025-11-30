@@ -2,7 +2,6 @@
 
 /* import stylesheets as necessary */
 @import url("./themes.css"); /* all themes, all here */
-@import url("./spooky.css"); /* spOooOOoooky full theme (it gets its own file) */
 
 :root {
 	line-height: 1.5;
