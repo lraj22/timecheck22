@@ -112,7 +112,7 @@ Description of a practical need or problem to be solved (4 pts)
 
 Definition of Criteria for a Proposed Solution (3 pts)
 
-> I wrote a Software Requirements Specification (SRS) document that outlines the purpose, audience, scope, stakeholders, constraints, and requirements. The criteria I specified was that the website should meet the needs of 4 main groups: 1. regular students, 2. regular teachers, 3. school managers, and 4. me, the administrator. To do this, it should make it easy to select their school, view schedules, see how much time passed/is left, be customizable, and have extra useful features. If a solution has all these features, it meets the criteria.
+> I wrote a Software Requirements Specification (SRS) document that outlines the purpose, audience, scope, stakeholders, constraints, and requirements. The criteria I specified was that the website should meet the needs of 4 main groups: 1. regular students, 2. regular teachers, 3. school managers, and 4. me, the administrator. To do this, it should make it easy to select their school, view schedules, see how much time passed/is left, be customizable, and have extra useful features. If a solution has all these features, it meets the criteria. These criteria are based on last year's project and my hypothesis, which guesses that reducing complexity by limiting choice while simultaneously increasing usefulness is better. That's why the main requirement went from being able to write your own schedule to only being able to select your school.
 
 Explanation of Constraints (3 pts)
 
@@ -122,4 +122,61 @@ Explanation of Constraints (3 pts)
 
 Development of a Prototype/Model & ID of Solution (10 pts)
 
-The prototype is available as a website online at <https://timecheck22.lraj22.xyz/>. The code and history of how it was coded is available on GitHub at <https://github.com/lraj22/timecheck22>.
+> The prototype is available as a website online at <https://timecheck22.lraj22.xyz/>. The code is available on GitHub at <https://github.com/lraj22/timecheck22>, and anyone can go through the entirety of the history of coding it through the commit history also available in the GitHub repository. The solution identified is the one in the hypothesis - limiting choice to reduce complexity and increase usefulness. I developed this solution by defining the requirements, designing the user interface in Figma, and prototyping it by writing code, testing, rewriting, testing, over and over again until all the initally set requirements were met. At that point, the prototype was complete.
+
+Exploration of Alternatives to Answer Need or Problem (5 pts)
+
+> There are two existing alternatives: the PA bell and schedule posters. The PA bell is okay, but it doesn't tell you WHEN the period ends, it only lets you know that it has ended, which isn't helpful for students and teachers trying to plan their time well. Additionally, it isn't the most accurate. One of my teachers told me it rang on off days, and I've experienced it ring on the wrong bell schedule (regular instead of block). Schedule posters are also okay, but they don't include unique schedules like rally schedule, and those that do don't contain even more niche schedules like finals block schedules or others. They're static and therefore you must do the math yourself to figure out how much time is left. There exists no other solution that adapts to daily schedule variations like TimeCheck 22 does, because nothing else can possibly be as aware of the real situation.
+
+3. Execution: Data Collection, Analysis & Interpretation (20 pts)
+
+Prototype has been Tested in Multiple Conditions/Trials (10 pts)
+
+> I have tested it in all of the following conditions: mobile website, mobile app, desktop website, large desktop website, ViewSonic (TV size), online/offline. Those are the constraints defined in the Software Requirements Specification (SRS) that I had to write code for. For my prototype, "trials" doesn't really apply, because no matter how many times you try an action, it'll have the same result - it's just about what whether that result is satisfactory or not (i.e., does it work or not work). From my testing, everything works in all form factors.
+
+Prototype Demonstrates Intended Design (5 pts)
+
+> The SRS indicates that the prototype should "enable students & teachers to easily and effectively use the customizable clock to track the time as it passes during school", and it should work "during school, in class/passing between classes on a Chromebook, phone, personal computer, or ViewSonic". It should enable the user to select their school, see how much time passed/remains in the class period, be customizable, and have extra features. These requirements are all met by my prototype.
+
+Prototype Demonstrates Engineering Skill and Completeness (5 pts)
+
+> The commit history can be viewed in [the GitHub repository][repo]. I'll explain the workings and show the code to demonstrate engineering skill, and completeness can be determined based on how well it solves the problem and how well it meets the requirements outlined in the SRS. It's up to the judges to interpret this, but given that I actually used engineering skill, and actually completed the product, I think I should be fine 😭
+
+4. Creativity
+
+Novelty Solutions Measuring New Outcomes Compared to Existing Solutions (5 pts)
+
+> x
+
+Application Assessment of Findings Applied in Innovative Ways (5 pts)
+
+> x
+
+Impact of Knowledge in the Field of Research (5 pts)
+
+> x
+
+Problem Solving Effectiveness in Addressing Unsolved/Challenging Problems(5 pts)
+
+> x
+
+5. Presentation (35 pts)
+
+This section is entirely based on what I put on my backboard and how well I do my interview, so I won't write anything here. If you're interested in what the target points are, I'll put them below.
+
+a. Poster
+
+Logical Organization of Material (4 pts)<br>
+Clarity of Graphics & Legends (4 pts)<br>
+Supporting Documentation Displayed (2 pts)
+
+b. Interview
+
+Clear, Concise, Thoughtful Responses to Questions (5 pts)<br>
+Understanding of Basic Science Relevant to the Project (5 pts)<br>
+Understanding Interpretation and Limitations of Results and Conclusions (4 pts)<br>
+Degree of Independence in Conducting Project (1 pt)<br>
+Recognition of Potential Impact in Science, Society and/or Economics (5 pts)<br>
+Quality of Ideas for Further Research (5 pts)
+
+[repo]: https://github.com/lraj22/timecheck22
