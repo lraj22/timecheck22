@@ -1,6 +1,8 @@
 # TimeCheck 22
 
-TimeCheck 22 is a clock website to enable students & teachers to easily and effectively use the customizable clock to track the time as it passes during school.
+Ever wondered how much time is left in your class period? What about that assembly schedule that no one exactly remembers?
+
+Keeping track of school schedules can be confusing, especially when a special schedule is active and no one knows exactly when each period starts and ends. TimeCheck 22 is a clock website/app to enable students & teachers to easily and effectively use the customizable clock to track the time as it passes during school.
 
 ## Features
 
@@ -9,13 +11,15 @@ Current features:
 - Customize the time display in settings.
 - Select a school in the 'Schools' tab and automatically follow its time!
 - Check out all of the schedules the school has in the 'Schedules' tab.
-- Change your theme to Dark/Light/Automatic, Misty Rose, or even spOooOOoooky!
+- Change your theme to Dark/Light/Automatic, Misty Rose, or even Winter!
+- Enable fancy underlays like Grid and Lightspeed.
 - Adjust the colors and font to your liking.
-- Start and stop the easy-use stopwatch & timer widgets.
+- Use the simple, no-confusion stopwatch & timer widgets.
+- Easy to use editor for the people who edit the schedules behind the scenes.
 
 Planned features:
 - Going to add more schools!
-- Easy to use editor for the people who edit the schedules behind the scenes.
+- Notes app, doubles as a todo list.
 - You can suggest new features in the Issues tab. :D
 
 ## What is context?
@@ -28,6 +32,10 @@ You can find more information on what exactly context describes in the [Context 
 
 ## My school isn't on the list :[
 
-This tool is being designed for students from schools around mine, so if you want your school added on this list, please [open an issue](https://github.com/lraj22/timecheck22/issues/new/choose) and we can work on adding it! I will need to have at least one person willing to update context (this can be you!).
+This tool is being designed for students from schools around mine, so if you want your school added on this list, please [open an issue](https://github.com/lraj22/timecheck22/issues/new/choose) and we can work on adding it! If you don't have a GitHub account, you may also use the contact form below.
+
+## Questions?
+
+Any questions? Feedback? You can send those to my [contact form](https://docs.google.com/forms/d/e/1FAIpQLSdDwXGHj7Dz2Z-A-Cd2TxkxPCrW-v_WEo0hrDyh7z21zLTlIg/viewform). I will get back when I can, so please be patient and reasonable. Thanks!
 
 Made with 💖 by Lakshya Raj
