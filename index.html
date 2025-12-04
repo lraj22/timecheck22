@@ -183,7 +183,14 @@
 						<div class="sbPage" data-page-name="school">
 							<p>Welcome! Select your school here. This will set the clock to the current schedule.</p>
 							<select name="school" id="schoolSelect">
-								<!-- List of schools will be added here programmatically -->
+								<option value="" data-school-id="-1">None</option>
+								<optgroup label="High schools" id="schoolSelectHighGroup">
+									<!-- List of high schools will be added here programmatically -->
+								</optgroup>
+								<optgroup label="Middle schools" id="schoolSelectMiddleGroup">
+									<!-- List of middle schools will be added here programmatically -->
+								</optgroup>
+								<optgroup label="Uncategorized" id="schoolSelectUncategorized"></optgroup>
 							</select>
 							<p>You can see what schedules your school has in the <span tabindex="0" role="link" class="linklike" data-navigate-to="schedules" title="Open Schedules page">Schedules</span> page.</p>
 						</div>
@@ -206,7 +213,7 @@
 							<div id="scheduleMessage"></div>
 						</div>
 						<div class="sbPage" data-page-name="about">
-							<p><span>TimeCheck 22, aka TC22.</span><br><small>Last updated November 30, 2025.</small></p>
+							<p><span>TimeCheck 22, aka TC22.</span><br><small>Last updated December 4, 2025.</small></p>
 							
 							<h2>Introduction</h2>
 							<p>Welcome to the about page! Not many people pass by here. You'll find information about the app, links to "secret" pages, and credits.</p>

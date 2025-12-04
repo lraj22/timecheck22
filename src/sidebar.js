@@ -69,12 +69,18 @@ export default function (dom, settings, updateSettings) {
 	
 	// school page
 	// create school options in sidebar
-	schools.forEach(({ id, name, repo }) => {
+	schools.forEach(({ id, name, repo, category }) => {
+		if (id === -1) return;
 		let option = document.createElement("option");
 		option.value = repo;
 		option.setAttribute("data-school-id", id);
 		option.textContent = name;
-		dom.schoolSelect.appendChild(option);
+		let optgroupId = ({
+			"high": "schoolSelectHighGroup",
+			"middle": "schoolSelectMiddleGroup",
+			"none": "schoolSelect",
+		})[category] || "schoolSelectUncategorized";
+		dom[optgroupId].appendChild(option);
 		if (settings.schoolId === id.toString()) {
 			option.selected = true;
 		}

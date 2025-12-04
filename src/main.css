@@ -181,6 +181,10 @@ select {
 	color: var(--theme-fg);
 }
 
+#schoolSelectUncategorized:empty {
+	display: none;
+}
+
 .linklike {
 	text-decoration: underline;
 	cursor: pointer;

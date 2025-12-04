@@ -56,26 +56,37 @@ export const schools = [
 		"id": -1,
 		"name": "None",
 		"repo": "",
+		"category": "none",
 	},
+	
+	// high schools
 	{
 		"id": 1,
 		"name": "Chino Hills High School",
 		"repo": "lraj22/chhs-clockdata",
-	},
-	{
-		"id": 2,
-		"name": "Cal Aero Preserve Academy",
-		"repo": "lraj23/capa-clockdata",
+		"category": "high",
 	},
 	{
 		"id": 3,
 		"name": "Ayala High School",
 		"repo": "ilovecats567/ayalahs-clockdata",
+		"category": "high",
 	},
+	
+	// middle schools
+	{
+		"id": 2,
+		"name": "Cal Aero Preserve Academy",
+		"repo": "lraj23/capa-clockdata",
+		"category": "middle",
+	},
+	
+	// testing
 	{
 		"id": -2,
 		"name": "Always High School (testing purposes; always doing something!)",
 		"repo": "lraj22/alwayshs-clockdata",
+		"category": "high",
 	},
 ];
 export const schoolIdMappings = Object.fromEntries(schools.map((school, index) => [school.id, index]));
