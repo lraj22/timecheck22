@@ -68,6 +68,11 @@ export const schools = [
 		"repo": "lraj23/capa-clockdata",
 	},
 	{
+		"id": 3,
+		"name": "Ayala High School",
+		"repo": "ilovecats567/ayalahs-clockdata",
+	},
+	{
 		"id": -2,
 		"name": "Always High School (testing purposes; always doing something!)",
 		"repo": "lraj22/alwayshs-clockdata",
