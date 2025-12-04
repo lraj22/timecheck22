@@ -124,7 +124,7 @@ export default function ContextEditorApp () {
 			"version": 2, // produced version should always be 2, regardless of input version
 			"last_updated_id": lastUpdatedResult, // new updated ID
 			"metadata": {
-				"school_id": schoolId || 0,
+				"school_id": parseInt(schoolId) || 0,
 				"school_name": commonName || "Example High School",
 				"short_name": shortName || "EHS",
 				"timezone": timezone || "America/Los_Angeles",

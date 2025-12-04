@@ -76,7 +76,7 @@ export const schools = [
 	// middle schools
 	{
 		"id": 2,
-		"name": "Cal Aero Preserve Academy",
+		"name": "Cal Aero Preserve Academy JH",
 		"repo": "lraj23/capa-clockdata",
 		"category": "middle",
 	},
