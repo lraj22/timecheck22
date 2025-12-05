@@ -207,6 +207,12 @@ datalist {
 	font-size: inherit;
 }
 
+#evalJs {
+	width: 100%;
+	height: 400px;
+	resize: vertical;
+}
+
 /* (timings) table */
 table {
 	width: 100%;

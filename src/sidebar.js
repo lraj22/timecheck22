@@ -8,7 +8,7 @@ export default function (dom, settings, updateSettings) {
 		"schedules": "Schedules",
 		"about": "About",
 		"scheduleManagers": "For Schedule Managers",
-		"developers": "Developers",
+		"dev": "Developers",
 	};
 	let currentPage = null;
 
@@ -126,6 +126,13 @@ export default function (dom, settings, updateSettings) {
 	dom.disableAnalytics.addEventListener("click", _ => {
 		localStorage.setItem("umami.disabled", "true");
 		alert("Analytics disabled.");
+	});
+	dom.evalBtn.addEventListener("click", _ => {
+		try {
+			eval(dom.evalJs.value);
+		} catch (e) {
+			alert(e);
+		}
 	});
 	
 	navigateToSidebarPage("home");

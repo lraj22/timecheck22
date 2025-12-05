@@ -21,14 +21,14 @@ var logIdNumber = 1;
  * This is to prevent regular users from running into unexpected errors.
  */
 export var ENVIRONMENT = localStorage.getItem("env");
+const realConsoleLog = console.log.bind(window.console);
 export function log (m, override) {
 	if (override || (ENVIRONMENT === "dev")) {
 		dom.consoleView.textContent = "[" + (logIdNumber++) + "] " + m;
-		console.log.apply(this, arguments);
-	} else {
-		console.log.apply(this, arguments);
 	}
+	realConsoleLog.apply(this, arguments);
 }
+console.log = log;
 
 
 

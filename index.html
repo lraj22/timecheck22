@@ -64,9 +64,6 @@
 	</head>
 	<body>
 		<div id="app">
-			<!-- dev console -->
-			<div id="consoleView"></div>
-			
 			<!-- this is where announcements appear -->
 			<div id="announcements"></div>
 			
@@ -232,6 +229,7 @@
 							<p>
 								<u>School schedule managers</u><br>
 								<span>Chino Hills High School: <a href="https://github.com/lraj22">Lakshya Raj</a></span><br>
+								<span>Ayala High School: <a href="https://github.com/ilovecats567">Sanchita Mahindrakar</a></span><br>
 								<span>Cal Aero Preserve Academy JH: <a href="https://github.com/lraj23">Lavith Raj</a></span><br>
 								<span>Want to add your school? <a href="https://github.com/lraj22/timecheck22/issues/new/choose">Open an issue on GitHub</a> and I'll work with you to get your school added :]</span><br>
 							</p>
@@ -247,11 +245,13 @@
 							<h2>Join us :D</h2>
 							<p>Want to add your school to TC22? Or maybe you just want to help keep your context up to date? You can <a href="https://github.com/lraj22/timecheck22/issues/new/choose">open an issue on GitHub</a> and request to be added. I'll get back to you as soon as possible!</p>
 						</div>
-						<div class="sbPage" data-page-name="developers">
+						<div class="sbPage" data-page-name="dev">
 							<p>Welp, I guess you found this page! It's okay, have a look around and try it out :P</p>
 							<button type="button" id="setEnv">Set 'env' environment</button><br>
 							<button type="button" id="enableAnalytics">Enable Umami analytics (default)</button><br>
-							<button type="button" id="disableAnalytics">Disable Umami analytics (development)</button><br>
+							<button type="button" id="disableAnalytics">Disable Umami analytics (development)</button><br><br>
+							<textarea name="evalJs" id="evalJs" placeholder="JavaScript to evaluate"></textarea><br>
+							<button type="button" id="evalBtn">Run JS</button>
 						</div>
 					</div>
 				</aside>
@@ -316,6 +316,9 @@
 		
 		<!-- snow -->
 		<div id="snow" data-fullscreen-hide-excepted="true"></div>
+		
+		<!-- dev console -->
+		<div id="consoleView" data-fullscreen-hide-excepted="true"></div>
 		
 		<!-- loading screen -->
 		<div id="loadingScreen">Loading...</div>
