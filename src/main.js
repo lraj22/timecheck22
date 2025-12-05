@@ -9,13 +9,22 @@ import {
 import { stringToLuxonDuration } from "./clockdata";
 import {
 	settings,
-	updateSettings,
 } from "./settings";
 import "./main.css";
-import activateSidebar from "./sidebar";
-activateSidebar(dom, settings, updateSettings); // runs sidebar component w/ necessary dependencies (the dom tree)
+import "./sidebar";
+// activateSidebar(dom, settings, updateSettings); // runs sidebar component w/ necessary dependencies (the dom tree)
 import audio from "./audio";
 import { stopwatchData, timerData } from "./widgets";
+
+// assign all imported properties to window for availability in eval
+// not all modules imported here because their exports are already taken above
+import * as utilExports from "./util";
+import * as clockdataExports from "./clockdata";
+import * as settingsExports from "./settings";
+import * as sidebarExports from "./sidebar";
+import * as migrateV1ToV2Exports from "./migrate-v1-to-v2";
+import * as luxonExports from "luxon";
+Object.assign(window, utilExports, clockdataExports, settingsExports, sidebarExports, migrateV1ToV2Exports, luxonExports);
 
 /////
 // Spooky theme will phase out of usage Dec 7, 2025 UTC.
@@ -184,6 +193,15 @@ document.querySelectorAll("[data-fullscreenable]").forEach(el => {
 			dom.fullscreen.classList.add("fullscreenPresent");
 		}
 	});
+});
+
+// developers
+dom.evalBtn.addEventListener("click", _ => {
+	try {
+		eval(dom.evalJs.value);
+	} catch (e) {
+		alert(e);
+	}
 });
 
 // all underlay managing code is here

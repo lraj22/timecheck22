@@ -1,8 +1,10 @@
 // migrate-v1-to-v2.js - script that converts context.json version 1 to version 2
 
-import "./context.css";
 import "./settings";
 import { cloneObj, dom, pad0 } from "./util";
+if (document.documentElement.getAttribute("data-css") === "context") {
+	import("./context.css");
+}
 
 // the function that actually does the magic!
 export function transform_v1_to_v2 (v1Context, updateLUI) {
