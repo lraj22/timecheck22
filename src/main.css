@@ -325,7 +325,7 @@ main {
 }
 
 .flatBtn.btnActive {
-	background-color: oklch(from var(--theme-bg) calc(l + calc(0.12 * var(--l-change-multiplier))) calc(c + 0.02) h);
+	background-color: oklch(from var(--theme-bg) calc(l + calc(0.15 * var(--l-change-multiplier))) calc(c + 0.02) h);
 }
 
 .flatBtn:active {
@@ -342,6 +342,36 @@ main {
 
 .flatBtn:focus-visible {
 	outline: 1px solid oklch(from var(--theme-fg) l c h / 0.525)!important;
+}
+
+/* [sidebar] dropdown code, adapted from w3schools's https://www.w3schools.com/howto/howto_css_dropdown.asp */
+.dropdown {
+	position: relative;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	right: 0;
+	background-color: oklch(from var(--theme-bg) calc(l + 0.1) 0.02 h);
+	min-width: 160px; /* fixed number; what can I do about this? It seems to work in most places */
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	z-index: 1;
+}
+
+.dropdown-content>* {
+	color: var(--theme-fg-darklight);
+	padding: 0.75rem 1rem;
+	text-decoration: none;
+	display: block;
+	cursor: pointer;
+}
+.dropdown-content>*:hover {
+	background-color: oklch(from var(--theme-bg) calc(l + 0.05) 0.02 h);
+}
+
+.dropdown:hover .dropdown-content, .dropbtn.btnActive+.dropdown-content {
+	display: block;
 }
 
 /* time elements */
@@ -446,12 +476,12 @@ body:has(#fullscreen.fullscreenPresent) *:not(#fullscreen):not(#fullscreen *):no
 }
 
 #stopwatch {
-	top: 10%;
+	top: 20%;
 	right: 1rem;
 }
 
 #timer {
-	top: 30%;
+	top: 40%;
 	right: 1rem;
 }
 

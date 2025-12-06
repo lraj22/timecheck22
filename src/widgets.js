@@ -23,10 +23,15 @@ function timeDiffToMs (timeDiff) {
 	}, 0);
 }
 
+dom.widgetsBtn.addEventListener("click", _ => {
+	dom.widgetsBtn.classList.toggle("btnActive");
+});
+
 // stopwatch
 dom.toggleStopwatch.addEventListener("click", function () {
-	let isOpen = dom.toggleStopwatch.classList.toggle("btnActive");
-	dom.toggleStopwatch.title = (isOpen ? "Close" : "Open") + " stopwatch";
+	let isOpen = (dom.toggleStopwatch.getAttribute("data-state") === "open");
+	dom.toggleStopwatch.textContent = (isOpen ? "Open" : "Close") + " stopwatch";
+	dom.toggleStopwatch.setAttribute("data-state", isOpen ? "closed" : "open");
 	dom.stopwatch.classList.toggle("hidden");
 });
 
@@ -59,8 +64,9 @@ dom.stopwatchBtnRestart.addEventListener("click", function () {
 
 // timer
 dom.toggleTimer.addEventListener("click", function () {
-	let isOpen = dom.toggleTimer.classList.toggle("btnActive");
-	dom.toggleTimer.title = (isOpen ? "Close" : "Open") + " timer";
+	let isOpen = (dom.toggleTimer.getAttribute("data-state") === "open");
+	dom.toggleTimer.textContent = (isOpen ? "Open" : "Close") + " timer";
+	dom.toggleTimer.setAttribute("data-state", isOpen ? "closed" : "open");
 	dom.timer.classList.toggle("hidden");
 });
 

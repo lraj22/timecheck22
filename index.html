@@ -260,8 +260,14 @@
 				<main>
 					<div id="buttonsBar">
 						<!-- in reality, the sidebar "button" will be a hoverable section on the left side of the screen and not a traditional button in the buttons bar. (concerns w/ this on small screen size?) -->
-						<button type="button" class="flatBtn" id="toggleStopwatch" title="Open stopwatch" data-icon="timer"></button>
-						<button type="button" class="flatBtn" id="toggleTimer" title="Open timer" data-icon="alarm"></button>
+						<div class="dropdown">
+							<button type="button" class="flatBtn dropbtn" id="widgetsBtn" title="Manage widgets" data-icon="widgets"></button>
+							<div class="dropdown-content">
+								<span id="toggleStopwatch" data-state="closed">Open stopwatch</span>
+								<span id="toggleTimer" data-state="closed">Open timer</span>
+								<!-- Coming soon? <span>Open notes</span> -->
+							</div>
+						</div>
 						<button type="button" class="flatBtn" id="toggleSidebar" title="Toggle sidebar" data-icon="menu"></button>
 					</div>
 					<div id="time" data-fullscreenable="true">--:--</div>
