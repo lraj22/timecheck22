@@ -5,6 +5,7 @@ import {
 	escapeHtml,
 	msToTimeDiff,
 	appliesStrarrListify,
+	popup,
 } from "./util";
 import { stringToLuxonDuration } from "./clockdata";
 import {
@@ -212,6 +213,27 @@ document.querySelectorAll("[data-fullscreenable]").forEach(el => {
 		dom.fullscreen.append(el);
 		dom.fullscreen.classList.add("fullscreenPresent");
 	});
+});
+
+// installer button
+let installPrompt = null;
+
+window.addEventListener("beforeinstallprompt", e => {
+	e.preventDefault();
+	installPrompt = e;
+	dom.downloadPwa.classList.remove("hidden");
+});
+window.addEventListener("appinstalled", _ => {
+	dom.downloadPwa.classList.add("hidden");
+});
+dom.downloadPwa.addEventListener("click", async _ => {
+	if (!installPrompt) return;
+	const result = await installPrompt.prompt(); // "accepted" | "dismissed"
+	console.log(result.outcome);
+	if (result.outcome === "accepted") {
+		popup("<p>Pin me to your taskbar or add me to your homescreen for easy access!<br><small>Click this popup to close it.</small></p>");
+	}
+	dom.downloadPwa.classList.add("hidden");
 });
 
 // developers

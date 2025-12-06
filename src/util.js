@@ -23,12 +23,12 @@ var logIdNumber = 1;
 export var ENVIRONMENT = localStorage.getItem("env");
 const realConsoleLog = console.log.bind(window.console);
 export function logVisible () {
-	dom.consoleView.textContent = "[" + (logIdNumber++) + "] " + m;
+	dom.consoleView.textContent = "[" + (logIdNumber++) + "] " + [...arguments].join(" ");
 	realConsoleLog.apply(this, arguments);
 }
 console.log = function log () {
 	if (ENVIRONMENT === "dev") {
-		dom.consoleView.textContent = "[" + (logIdNumber++) + "] " + m;
+		dom.consoleView.textContent = "[" + (logIdNumber++) + "] " + [...arguments].join(" ");
 	}
 	realConsoleLog.apply(this, arguments);
 };
@@ -174,6 +174,20 @@ export function updateTimingsTable () {
 	});
 }
 dom?.scheduleSelect?.addEventListener("change", updateTimingsTable);
+
+
+
+// misc functions
+export function popup (message) {
+	let popupEl = document.createElement("div");
+	popupEl.innerHTML = message;
+	
+	popupEl.style.cssText = `width: 600px; max-width: 80vw; position: fixed; top: 1rem; left: 1rem; border: 1px solid white; padding: 1rem; background-color: black; color: white`;
+	
+	popupEl.onclick = _ => popupEl.remove();
+	
+	document.body.appendChild(popupEl);
+}
 
 
 

@@ -1,7 +1,7 @@
 // spooky.js - adds some mischief for the spOooOOoooky season!
 
 import { settings, updateSettings } from "./settings";
-import { dom } from "./util";
+import { dom, popup } from "./util";
 
 const removalTimestamp = 1765065600000; // first millisecond of Dec 7, 2025 UTC
 const now = Date.now(); // current time
@@ -13,14 +13,7 @@ if (settings.backgroundTheme === "spooky") {
 		updateSettings(false);
 	} else {
 		// spooky's going to be removed; show them a popup
-		let popup = document.createElement("div");
-		popup.innerHTML = `<p><b>Spooky theme is disappearing!</b></p><p>Spooky theme will be removed soon, because Halloween's passed and Christmas is coming. If you enjoy seasonal themes, you might like our Winter theme! Regardless, this theme will be removed entirely in the coming days. I suggest switching themes right now so you don't get caught off guard when it happens. Click this popup to close it.</p>`;
-		
-		popup.style.cssText = `width: 600px; max-width: 80vw; position: fixed; top: 1rem; left: 1rem; border: 1px solid white; padding: 1rem; background-color: black; color: white`;
-		
-		popup.onclick = _ => popup.remove();
-		
-		document.body.appendChild(popup);
+		popup(`<p><b>Spooky theme is disappearing!</b></p><p>Spooky theme will be removed soon, because Halloween's passed and Christmas is coming. If you enjoy seasonal themes, you might like our Winter theme! Regardless, this theme will be removed entirely in the coming days. I suggest switching themes right now so you don't get caught off guard when it happens. Click this popup to close it.</p>`);
 	}
 }
 
