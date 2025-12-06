@@ -151,6 +151,29 @@ aside.sidebarVisible {
 	float: right;
 }
 
+.element-highlight {
+	animation-name: highlight-flash;
+	animation-duration: 0.5s;
+	animation-iteration-count: infinite;
+	animation-fill-mode: backwards;
+	animation-direction: alternate;
+	animation-timing-function: linear;
+}
+
+.element-highlight:hover {
+	animation-name: none;
+	border: 2px solid gold;
+	transform: translateY(-2px);
+}
+
+@keyframes highlight-flash {
+	from {
+		
+	} to {
+		border: 2px solid gold;
+	}
+}
+
 input[type=checkbox] {
 	margin-right: 0.5rem;
 }
@@ -327,7 +350,7 @@ main {
 	font-family: "Rampart One", var(--theme-font);
 }
 
-[data-setting-themeunderlay="lightspeed"] #time {
+[data-setting-themeunderlay="lightspeed"] main { /* lightspeed has a dark background, all main time parts must be light */
 	color: oklch(from var(--theme-bg) 0.9 c h);
 }
 

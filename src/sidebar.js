@@ -29,19 +29,30 @@ export function navigateToSidebarPage (page) {
 
 export function toggleSidebar (force) {
 	let isNowOpen = dom.sidebar.classList.toggle("sidebarVisible", force);
-	dom.toggleSidebar.setAttribute("data-icon", isNowOpen ? "left_panel_close" : "left_panel_open")
+	// dom.toggleSidebar.setAttribute("data-icon", isNowOpen ? "left_panel_close" : "left_panel_open")
+	if (!isNowOpen) {
+		dom.sidebar.querySelectorAll(".element-highlight").forEach(el => el.classList.remove("element-highlight"));
+	}
+	return isNowOpen;
 }
 
 // any element that has [data-navigate-to] attr may be clicked to navigate immediately
 document.querySelectorAll("[data-navigate-to]").forEach(el => {
 	el.setAttribute("tabindex", "0"); // make tab-focusable
 	el.addEventListener("click", function (e) {
-		navigateToSidebarPage(e.target.getAttribute("data-navigate-to"));
+		let page = e.target.getAttribute("data-navigate-to");
+		navigateToSidebarPage(page);
+		if (page === "school") {
+			dom.schoolSelect.focus();
+		}
 	});
 });
 
 // toggle sidebar
-dom.toggleSidebar.addEventListener("click", _ => toggleSidebar());
+dom.toggleSidebar.addEventListener("click", _ => {
+	toggleSidebar();
+	navigateToSidebarPage("home");
+});
 
 // back button
 dom.sbBack.addEventListener("click", function () {
@@ -93,11 +104,24 @@ dom.schoolSelect.addEventListener("change", function () {
 	updateSettings(true);
 });
 
+function removeHighlight () {
+	this.classList.remove("element-highlight");
+	this.removeEventListener("click", removeHighlight);
+}
+
 // enable clicking the middle status text
 dom.statusMiddle.addEventListener("click", function () {
-	toggleSidebar(true);
-	navigateToSidebarPage("school");
-	dom.schoolSelect.focus();
+	let schoolSelected = !this.querySelector("span.linklike");
+	if (schoolSelected) {
+		toggleSidebar(true);
+		navigateToSidebarPage("school");
+	} else {
+		console.log("ONBOARDING!");
+		toggleSidebar(true);
+		navigateToSidebarPage("home");
+		dom.schoolOption.classList.add("element-highlight");
+		dom.schoolOption.addEventListener("click", removeHighlight);
+	}
 });
 
 // settings
