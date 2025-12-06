@@ -440,7 +440,7 @@ body:has(#fullscreen.fullscreenPresent) *:not(#fullscreen):not(#fullscreen *):no
 	display: none;
 }
 
-#fullscreen.fullscreenPresent>* {
+#fullscreen.fullscreenPresent :last-child { /* last child is fullscreened element */
 	text-align: center!important;
 	position: static!important;
 }
@@ -452,6 +452,34 @@ body:has(#fullscreen.fullscreenPresent) *:not(#fullscreen):not(#fullscreen *):no
 
 #fullscreen.fullscreenPresent #time {
 	font-size: calc(10px + 20vw)!important; /* times usually are pretty short */
+}
+
+#actualFullscreen {
+	position: fixed!important;
+	top: 0.5rem;
+	right: 0.5rem;
+	display: none;
+}
+
+#fullscreen.fullscreenPresent #actualFullscreen {
+	display: block;
+}
+
+.hold-then-fade {
+	animation-name: hold-then-fade;
+	animation-duration: 1s;
+	animation-timing-function: linear;
+	animation-fill-mode: forwards;
+}
+
+@keyframes hold-then-fade {
+	from {
+		opacity: 1;
+	} 80% {
+		opacity: 1;
+	} to {
+		opacity: 0;
+	}
 }
 
 /* stopwatch & timer */

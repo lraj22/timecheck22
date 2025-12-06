@@ -176,22 +176,41 @@ function tick () {
 requestAnimationFrame(tick);
 
 // fullscreenable elements
+dom.fullscreen.addEventListener("click", _ => {
+	let placeholder = document.getElementById("fullscreenPlaceholder");
+	if (!placeholder) return; // if #fullscreen can get clicked, the placeholder should definitely exist
+	
+	// move element back to placeholder
+	placeholder.before(dom.fullscreen.lastChild); // i.e., first and only child
+	placeholder.remove();
+	dom.fullscreen.classList.remove("fullscreenPresent");
+});
+
+dom.actualFullscreen.addEventListener("click", e => {
+	e.stopPropagation();
+	if (!document.fullscreenElement) {
+		document.documentElement.requestFullscreen()
+			.then(_ => dom.actualFullscreen.setAttribute("data-icon", "fullscreen_exit"));
+	} else {
+		document.exitFullscreen()
+			.then(_ => dom.actualFullscreen.setAttribute("data-icon", "fullscreen"));
+	}
+});
+if (!document.fullscreenEnabled) {
+	dom.actualFullscreen.classList.add("hidden");
+}
+
 document.querySelectorAll("[data-fullscreenable]").forEach(el => {
 	el.addEventListener("click", _ => {
 		let placeholder = document.getElementById("fullscreenPlaceholder");
-		if (placeholder) {
-			// move element back to placeholder
-			placeholder.before(el);
-			placeholder.remove();
-			dom.fullscreen.classList.remove("fullscreenPresent");
-		} else {
-			// add placeholder for element later, move element to fullscreening area
-			placeholder = document.createElement("div");
-			placeholder.id = "fullscreenPlaceholder";
-			el.after(placeholder);
-			dom.fullscreen.append(el);
-			dom.fullscreen.classList.add("fullscreenPresent");
-		}
+		if (placeholder) return; // #fullscreen click handler will take care of it
+		
+		// add placeholder for element later, move element to fullscreening area
+		placeholder = document.createElement("div");
+		placeholder.id = "fullscreenPlaceholder";
+		el.after(placeholder);
+		dom.fullscreen.append(el);
+		dom.fullscreen.classList.add("fullscreenPresent");
 	});
 });
 

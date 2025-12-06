@@ -12,6 +12,12 @@ window.addEventListener("mousemove", event => {
 	document.documentElement.style.setProperty("--grid-speed-x", dx);
 	document.documentElement.style.setProperty("--grid-speed-y", dy);
 	document.documentElement.style.setProperty("--grid-animation-duration", (1 / scale) + "s");
+	
+	let fadeOutAnim = dom.actualFullscreen.getAnimations()[0];
+	if (fadeOutAnim) {
+		fadeOutAnim.cancel();
+		fadeOutAnim.play();
+	}
 });
 
 // lightspeed canvas underlay
