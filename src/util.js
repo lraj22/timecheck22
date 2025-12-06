@@ -22,13 +22,16 @@ var logIdNumber = 1;
  */
 export var ENVIRONMENT = localStorage.getItem("env");
 const realConsoleLog = console.log.bind(window.console);
-export function log (m, override) {
-	if (override || (ENVIRONMENT === "dev")) {
+export function logVisible () {
+	dom.consoleView.textContent = "[" + (logIdNumber++) + "] " + m;
+	realConsoleLog.apply(this, arguments);
+}
+console.log = function log () {
+	if (ENVIRONMENT === "dev") {
 		dom.consoleView.textContent = "[" + (logIdNumber++) + "] " + m;
 	}
 	realConsoleLog.apply(this, arguments);
-}
-console.log = log;
+};
 
 
 
