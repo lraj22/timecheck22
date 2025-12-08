@@ -122,6 +122,17 @@ export function setClockdata (newClockdata) { // when context is fetched, the ne
 // retrieve state from localforage
 const defaultState = {
 	"lastApiRequest": 0,
+	"widgets": {
+		"timer": {
+			"timeRemaining": 0,
+		},
+		"stopwatch": {
+			"total": null,
+		},
+		"notes": {
+			"content": null,
+		}
+	},
 };
 export var state = await localforage.getItem("state");
 if (!state) {
@@ -281,9 +292,16 @@ export function cloneObj (obj) {
 
 export function addObj (original, addme) {
 	var combined = cloneObj(original);
-	if (typeof addme !== "object") return combined;
+	if ((typeof original !== "object") || (original === null)) return cloneObj(addme);
+	if ((typeof addme !== "object") || (addme === null)) return combined;
 	for (var key in addme) {
-		if (addme.hasOwnProperty(key)) {
+		if (!addme.hasOwnProperty(key)) continue;
+		if (
+			(typeof combined[key] === "object") && (combined[key] !== null) &&
+			(typeof addme[key] === "object") && (addme[key] !== null)
+		) {
+			combined[key] = addObj(combined[key], addme[key]);
+		} else {
 			combined[key] = addme[key];
 		}
 	}

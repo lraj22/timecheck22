@@ -135,3 +135,27 @@ input, select, textarea {
 [data-setting-themeUnderlay="lightspeed"] #lightspeedCanvas {
 	display: block;
 }
+
+/* quill (include #notes before each to override quill default styles) */
+
+.ql-container {
+	overflow: auto;
+}
+
+.ql-toolbar, .ql-container, #notes .ql-tooltip {
+	background-color: oklch(from var(--theme-bg) calc(l + calc(0.03 * var(--l-change-multiplier))) c h);
+	color: var(--theme-fg-darklight);
+}
+
+#notes .ql-toolbar *, #notes .ql-container * { /* fix colors */
+	color: var(--theme-fg-darklight);
+	stroke: var(--theme-fg-darklight);
+}
+
+#notes .ql-picker-options {
+	background-color: oklch(from var(--theme-bg) calc(l - calc(0.05 * var(--l-change-multiplier))) c h);
+}
+
+#notes .ql-editor.ql-blank::before { /* placeholder when empty */
+	color: rgba(from var(--theme-fg-darklight) r g b / 0.6);
+}

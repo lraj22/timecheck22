@@ -1,17 +1,30 @@
 import audio from "./audio";
-import { dom, msToTimeDiff } from "./util";
+import { dom, msToTimeDiff, state, updateState } from "./util";
 
+const timePartMultipliers = [1e3, 60e3, 3600e3, 24 * 3600e3];
 export var stopwatchData = {
-	"total": 0,
+	"total": state.widgets.stopwatch.total || 0,
 };
+dom.stopwatchTime.textContent = timeDiffToMsInverse(stopwatchData.total, 2);
+if (state.widgets.stopwatch.total) {
+	dom.stopwatchBtnPause.classList.toggle("hidden", true);
+	dom.stopwatchBtnPlay.classList.toggle("hidden", false);
+	dom.stopwatchBtnRestart.classList.toggle("hidden", false);
+}
 export var timerData = {
 	"from": 10 * 60 * 1000,
-	"total": 10 * 60 * 1000,
+	"total": state.widgets.timer.timeRemaining || 10 * 60 * 1000,
 	"isMuted": false,
 };
+dom.timerTime.value = timeDiffToMsInverse(timerData.total);
+if (state.widgets.timer.timeRemaining) {
+	dom.timerTime.disabled = false;
+	dom.timerBtnPause.classList.toggle("hidden", true);
+	dom.timerBtnPlay.classList.toggle("hidden", false);
+	dom.timerBtnRestart.classList.toggle("hidden", false);
+}
 
 function timeDiffToMs (timeDiff) {
-	var multipliers = [1e3, 60e3, 3600e3, 24 * 3600e3];
 	var parts = timeDiff.replace(/[^\d:.]/g, "").split(":").reverse().map(function (part, i) {
 		if (i) part = part.replaceAll(".", "");
 		let dotIndex = part.indexOf(".");
@@ -19,13 +32,53 @@ function timeDiffToMs (timeDiff) {
 		return parseFloat(part || "0") || 0;
 	});
 	return parts.reduce(function (acc, curr, i) {
-		return acc + (curr * (multipliers[i] || 0));
+		return acc + (curr * (timePartMultipliers[i] || 0));
 	}, 0);
 }
 
-dom.widgetsBtn.addEventListener("click", _ => {
-	dom.widgetsBtn.classList.toggle("btnActive");
-});
+function timeDiffToMsInverse (ms, precision) {
+	let parts = [];
+	ms = Math.abs(ms);
+	if (typeof precision !== "number") {
+		if (ms === 0) precision = 0;
+		else if (ms < 1e3) precision = 3;
+		else if (ms < 5e3) precision = 2;
+		else if (ms < 10e3) precision = 1;
+		else precision = 0;
+	}
+	let loss = 3 - Math.max(0, Math.min(precision, 3));
+	ms = Math.floor(ms / (10 ** loss)) * (10 ** loss);
+	
+	let forceAllNext = false;
+	for (let i = 0; i < timePartMultipliers.length; i++) {
+		let multiplier = timePartMultipliers[timePartMultipliers.length - i - 1];
+		let amount = Math.floor(ms / multiplier);
+		if ((amount === 0) && (!forceAllNext)) continue;
+		
+		ms -= multiplier * amount;
+		amount = amount.toString().padStart(forceAllNext ? 2 : 1, "0");
+		if ((multiplier === 1e3) && ms) {
+			amount = amount + "." + Math.round(ms / (10 ** loss));
+		}
+		parts.push(amount);
+		forceAllNext = true;
+	}
+	if (parts.length === 0) parts = ["0"];
+	return parts.join(":");
+}
+
+function useNewTimerTime (updateFrom) {
+	if (timerData.running) return;
+	if (timerData.total === 0) {
+		dom.timerBtnPlay.classList.toggle("hidden", false);
+		dom.timerBtnPause.classList.toggle("hidden", true);
+		dom.timerBtnRestart.classList.toggle("hidden", true);
+		audio.stopReset("timerRing");
+	}
+	timerData.total = timeDiffToMs(dom.timerTime.value);
+	if (updateFrom) timerData.from = timerData.total;
+}
+useNewTimerTime(false);
 
 // stopwatch
 dom.toggleStopwatch.addEventListener("click", function () {
@@ -47,6 +100,8 @@ dom.stopwatchBtnPlay.addEventListener("click", function () {
 dom.stopwatchBtnPause.addEventListener("click", function () {
 	stopwatchData.total += performance.now() - stopwatchData.startTime;
 	stopwatchData.running = false;
+	state.widgets.stopwatch.total = stopwatchData.total;
+	updateState();
 	dom.stopwatchBtnPause.classList.toggle("hidden", true);
 	dom.stopwatchBtnPlay.classList.toggle("hidden", false);
 	dom.stopwatchBtnPlay.focus();
@@ -55,6 +110,8 @@ dom.stopwatchBtnPause.addEventListener("click", function () {
 dom.stopwatchBtnRestart.addEventListener("click", function () {
 	stopwatchData.total = 0;
 	stopwatchData.running = false;
+	state.widgets.stopwatch.total = 0;
+	updateState();
 	dom.stopwatchTime.textContent = "0.00";
 	dom.stopwatchBtnPlay.classList.toggle("hidden", false);
 	dom.stopwatchBtnPause.classList.toggle("hidden", true);
@@ -82,6 +139,8 @@ dom.timerBtnPlay.addEventListener("click", function () {
 
 dom.timerBtnPause.addEventListener("click", function () {
 	timerData.total -= performance.now() - timerData.startTime;
+	state.widgets.timer.timeRemaining = timerData.total;
+	updateState();
 	timerData.running = false;
 	dom.timerTime.disabled = false;
 	dom.timerBtnPause.classList.toggle("hidden", true);
@@ -92,6 +151,8 @@ dom.timerBtnPause.addEventListener("click", function () {
 dom.timerBtnRestart.addEventListener("click", function () {
 	timerData.total = timerData.from;
 	timerData.running = false;
+	state.widgets.timer.timeRemaining = 0;
+	updateState();
 	dom.timerTime.value = msToTimeDiff(timerData.from).replace("s", "");
 	dom.timerTime.disabled = false;
 	audio.stopReset("timerRing");
@@ -101,16 +162,7 @@ dom.timerBtnRestart.addEventListener("click", function () {
 	dom.timerBtnPlay.focus();
 });
 
-dom.timerTime.addEventListener("input", function () {
-	if (timerData.running) return;
-	if (timerData.total === 0) {
-		dom.timerBtnPlay.classList.toggle("hidden", false);
-		dom.timerBtnPause.classList.toggle("hidden", true);
-		dom.timerBtnRestart.classList.toggle("hidden", true);
-		audio.stopReset("timerRing");
-	}
-	timerData.from = timerData.total = timeDiffToMs(dom.timerTime.value);
-});
+dom.timerTime.addEventListener("input", _ => useNewTimerTime(true));
 
 dom.timerMute.addEventListener("click", function () {
 	var isMuted = !timerData.isMuted;
@@ -130,15 +182,127 @@ var resizer = new ResizeObserver(function (entries) {
 	});
 });
 
+// stopwatch & timer
 resizer.observe(dom.stopwatch);
 resizer.observe(dom.timer);
 adjustFontSize(dom.stopwatchTime);
 adjustFontSize(dom.timerTime);
 
+// notes
+const openingLines = [
+	"Type away, write your heart out.",
+	"Feeling inspired?",
+	"To write is to create meaning.",
+	"How's your day been?",
+	"Today's a great day to be kind.",
+	"A blank page is filled with opportunity.",
+];
+dom.toggleNotes.addEventListener("click", _ => {
+	let isOpen = (dom.toggleNotes.getAttribute("data-state") === "open");
+	dom.toggleNotes.textContent = (isOpen ? "Open" : "Close") + " notes";
+	dom.toggleNotes.setAttribute("data-state", isOpen ? "closed" : "open");
+	dom.notes.classList.toggle("hidden");
+	
+	setUpQuill(); // only happens once due to a safety check in function
+});
+
+let notesOpened = false;
+let Quill = null;
+let editor = null;
+let lastChanged = null;
+async function setUpQuill () {
+	if (notesOpened) return;
+	notesOpened = true;
+	
+	// only import quill when needed
+	Quill = (await import("quill")).default;
+	await import("quill/dist/quill.core.css");
+	await import("quill/dist/quill.snow.css");
+	editor = new Quill(dom.notesEditor, {
+		modules: {
+			toolbar: [
+				[
+					"bold",
+					"italic",
+					"underline",
+					"strike",
+				],
+				// [
+				// 	"blockquote",
+				// 	"code-block",
+				// ],
+				[
+					"link",
+					// "image",
+					// "video",
+					// "formula",
+				],
+				// [
+				// 	{ "list": "ordered"},
+				// 	{ "list": "bullet" },
+				// 	{ "list": "check" },
+				// ],
+				// [
+				// 	{ "script": "sub"},
+				// 	{ "script": "super" },
+				// ],
+				// [
+				// 	{ "indent": "-1"},
+				// 	{ "indent": "+1" },
+				// ],
+				[
+					{ "size": ["small", false, "large", "huge"] },
+				],
+				// [
+				// 	{ "header": [1, 2, 3, 4, 5, 6, false] },
+				// ],
+				[
+					{ "color": [] },
+					{ "background": [] },
+				],
+				// [
+				// 	{ "font": [] },
+				// ],
+				[
+					{ "align": [] },
+				],
+				[
+					"clean",
+				],
+			],
+		},
+		placeholder: openingLines[Math.floor(openingLines.length * Math.random())],
+		theme: "snow",
+	});
+	if (state.widgets.notes.content) {
+		editor.setContents(state.widgets.notes.content);
+	}
+	editor.on("text-change", async _ => {
+		dom.notesStatus.textContent = "* Saving changes...";
+		lastChanged = Date.now();
+	});
+}
+
+// updates
+function saveWidgetStates () {
+	let perfNow = performance.now();
+	state.widgets.stopwatch.total = stopwatchData.total + (stopwatchData.running ? (perfNow - stopwatchData.startTime) : 0);
+	state.widgets.timer.timeRemaining = timerData.total - (timerData.running ? (perfNow - timerData.startTime) : 0);
+	
+	if (editor && ((lastChanged + 500) < Date.now())) {
+		lastChanged = null;
+		state.widgets.notes.content = editor.getContents().ops;
+		dom.notesStatus.textContent = "Changes saved.";
+	}
+	updateState();
+}
+setInterval(saveWidgetStates, 2000);
+
+// all widgets
 makeDraggable(dom.stopwatch, dom.stopwatchDrag);
 makeDraggable(dom.timer, dom.timerDrag);
+makeDraggable(dom.notes, dom.notesDrag);
 
-// stopwatch & timer
 function makeDraggable(element, dragger) {
 	function mousemoveDrag (e) {
 		e.preventDefault();
@@ -164,7 +328,6 @@ function makeDraggable(element, dragger) {
 		document.onmousemove = mousemoveDrag;
 	});
 	
-	// TODO: fix touch events not working
 	dragger.addEventListener("touchstart", function (ev) {
 		document.body.classList.add("dragging");
 		dragger.addEventListener("touchmove", ontouchmove, {

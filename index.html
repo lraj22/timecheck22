@@ -25,7 +25,7 @@
 		<link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
 		
 		<!-- umami tracking -->
-		<script defer src="https://cloud.umami.is/script.js" data-website-id="b5d12824-9768-405c-90fa-1e5c51fbb248"></script>
+		<script defer src="https://cloud.umami.is/script.js" data-website-id="b5d12824-9768-405c-90fa-1e5c51fbb248" data-domains="timecheck22.lraj22.xyz"></script>
 		
 		<!-- basic styles (should not require anything to have loaded prior) -->
 		<style>
@@ -210,7 +210,7 @@
 							<div id="scheduleMessage"></div>
 						</div>
 						<div class="sbPage" data-page-name="about">
-							<p><span>TimeCheck 22, aka TC22.</span><br><small>Last updated December 5, 2025.</small></p>
+							<p><span>TimeCheck 22, aka TC22.</span><br><small>Last updated December 7, 2025.</small></p>
 							
 							<h2>Introduction</h2>
 							<p>Welcome to the about page! Not many people pass by here. You'll find information about the app, links to "secret" pages, and credits.</p>
@@ -266,7 +266,7 @@
 							<div class="dropdown-content">
 								<span id="toggleStopwatch" data-state="closed">Open stopwatch</span>
 								<span id="toggleTimer" data-state="closed">Open timer</span>
-								<!-- Coming soon? <span>Open notes</span> -->
+								<span id="toggleNotes">Open notes</span>
 							</div>
 						</div>
 						<button type="button" class="flatBtn" id="toggleSidebar" title="Toggle sidebar" data-icon="menu"></button>
@@ -288,7 +288,7 @@
 		
 		<!-- stopwatch -->
 		<div id="stopwatch" class="widget hidden">
-			<div id="stopwatchDrag" class="material-symbols-outlined">drag_handle</div>
+			<div id="stopwatchDrag" class="dragger material-symbols-outlined">drag_handle</div>
 			<div id="stopwatchTime">0.00</div>
 			<div class="widgetButtons">
 				<button type="button" id="stopwatchBtnPlay" title="Start/resume" class="btnClean material-symbols-outlined">play_arrow</button>
@@ -298,7 +298,7 @@
 		</div>
 		<!-- timer -->
 		<div id="timer" class="widget hidden">
-			<div id="timerDrag" class="material-symbols-outlined">drag_handle</div>
+			<div id="timerDrag" class="dragger material-symbols-outlined">drag_handle</div>
 			<input id="timerTime" value="10:00" placeholder="00:00:00">
 			<div class="widgetButtons">
 				<button type="button" id="timerBtnPlay" title="Start/resume" class="btnClean material-symbols-outlined">play_arrow</button>
@@ -306,6 +306,15 @@
 				<button type="button" id="timerBtnRestart" title="Reset" class="btnClean material-symbols-outlined hidden">replay</button>
 			</div>
 			<div id="timerMute" class="material-symbols-outlined" title="Click to mute the timer">volume_up</div>
+		</div>
+		<!-- notes -->
+		<div id="notes" class="widget hidden">
+			<div id="notesDrag" class="dragger material-symbols-outlined">drag_handle</div>
+			<div id="notesEditor"></div>
+			<p id="notesStatus">Changes saved.</p>
+			<div class="widgetButtons">
+				<!-- Coming soon? <button type="button" id="notesToSidebar" class="btnClean">Move to sidebar</button> -->
+			</div>
 		</div>
 		
 		<!-- fullscreen area -->
