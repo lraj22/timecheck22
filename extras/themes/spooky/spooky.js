@@ -1,7 +1,7 @@
 // spooky.js - adds some mischief for the spOooOOoooky season!
 
-import { settings, updateSettings } from "./settings";
-import { dom, popup } from "./util";
+import { settings, updateSettings } from "../../../src/settings";
+import { dom, popup } from "../../../src/util";
 
 const removalTimestamp = 1765065600000; // first millisecond of Dec 7, 2025 UTC
 const now = Date.now(); // current time

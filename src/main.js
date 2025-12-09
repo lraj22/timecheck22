@@ -13,7 +13,6 @@ import {
 } from "./settings";
 import "./main.css";
 import "./sidebar";
-// activateSidebar(dom, settings, updateSettings); // runs sidebar component w/ necessary dependencies (the dom tree)
 import audio from "./audio";
 import { stopwatchData, timerData } from "./widgets";
 
@@ -28,10 +27,13 @@ import * as luxonExports from "luxon";
 Object.assign(window, utilExports, clockdataExports, settingsExports, sidebarExports, migrateV1ToV2Exports, luxonExports);
 
 /////
-// Spooky theme will phase out of usage Dec 7, 2025 UTC.
-// Do NOT remove this import until far after that date passes, because ./spooky will be migrating users off of the spooky theme onto the default theme if they haven't already switched themselves.
-import "./spooky"; // spooky time!
-// You may, however, remove the jumpscare gif and audio once Dec 7, 2025 UTC arrives, since those will no longer be needed.
+// Spooky theme phased out of usage Dec 7, 2025 UTC.
+// This code migrates users off of the spooky theme, but we need a generic solution to fix bad settings to reasonable settings (like this automatically goes to "dark" theme). Once the described solution is built, we can remove this.
+if (settings.backgroundTheme === "spooky") {
+	settings.backgroundTheme = "dark";
+	updateSettings(false);
+	popup(`<p><b>Poof! Spooky theme's gone.</b></p><p>We noticed you were still using Spooky theme. As the seasons change, themes come and go, so unfortunately, Spooky theme is now gone. You can enable the Winter theme if you're interested in the new seasonal theme! We've set your theme to Dark for now, though, since that's the default. Click this popup to close it.</p>`);
+}
 /////
 
 function setContent (id, content) {
