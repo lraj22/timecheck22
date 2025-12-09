@@ -187,21 +187,10 @@ dom.fullscreen.addEventListener("click", _ => {
 	placeholder.before(dom.fullscreen.lastChild); // i.e., first and only child
 	placeholder.remove();
 	dom.fullscreen.classList.remove("fullscreenPresent");
+	dom.buttonsBar.classList.remove("hold-then-fade");
+	let fadeOutAnim = dom.buttonsBar.getAnimations()[0];
+	if (fadeOutAnim) fadeOutAnim.cancel();
 });
-
-dom.actualFullscreen.addEventListener("click", e => {
-	e.stopPropagation();
-	if (!document.fullscreenElement) {
-		document.documentElement.requestFullscreen()
-			.then(_ => dom.actualFullscreen.setAttribute("data-icon", "fullscreen_exit"));
-	} else {
-		document.exitFullscreen()
-			.then(_ => dom.actualFullscreen.setAttribute("data-icon", "fullscreen"));
-	}
-});
-if (!document.fullscreenEnabled) {
-	dom.actualFullscreen.classList.add("hidden");
-}
 
 document.querySelectorAll("[data-fullscreenable]").forEach(el => {
 	el.addEventListener("click", _ => {
@@ -214,6 +203,7 @@ document.querySelectorAll("[data-fullscreenable]").forEach(el => {
 		el.after(placeholder);
 		dom.fullscreen.append(el);
 		dom.fullscreen.classList.add("fullscreenPresent");
+		dom.buttonsBar.classList.add("hold-then-fade");
 	});
 });
 
@@ -237,6 +227,25 @@ dom.downloadPwa.addEventListener("click", async _ => {
 	}
 	dom.downloadPwa.classList.add("hidden");
 });
+
+// more menu
+dom.toggleFullscreen.addEventListener("click", e => {
+	e.stopPropagation();
+	if (!document.fullscreenElement) {
+		document.documentElement.requestFullscreen()
+			.then(_ => {
+				dom.toggleFullscreen.textContent = "Exit fullscreen";
+			});
+	} else {
+		document.exitFullscreen()
+			.then(_ => {
+				dom.toggleFullscreen.textContent = "Enter fullscreen";
+			});
+	}
+});
+if (!document.fullscreenEnabled) {
+	dom.toggleFullscreen.classList.add("hidden");
+}
 
 // developers
 dom.evalBtn.addEventListener("click", _ => {

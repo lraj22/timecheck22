@@ -6,6 +6,7 @@ const pageIdsToName = {
 	"settings": "Settings",
 	"school": "School",
 	"schedules": "Schedules",
+	"keyboardShortcuts": "Keyboard shortcuts",
 	"about": "About",
 	"scheduleManagers": "For Schedule Managers",
 	"dev": "Developers",

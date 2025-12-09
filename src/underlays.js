@@ -13,11 +13,11 @@ window.addEventListener("mousemove", event => {
 	document.documentElement.style.setProperty("--grid-speed-y", dy);
 	document.documentElement.style.setProperty("--grid-animation-duration", (1 / scale) + "s");
 	
-	if (dom.actualFullscreen) {
-		let fadeOutAnim = dom.actualFullscreen.getAnimations()[0];
+	if (dom.buttonsBar) {
+		let fadeOutAnim = dom.buttonsBar.getAnimations()[0];
 		if (fadeOutAnim) {
 			fadeOutAnim.cancel();
-			fadeOutAnim.play();
+			if (dom.buttonsBar.classList.contains("hold-then-fade")) fadeOutAnim.play();
 		}
 	}
 });

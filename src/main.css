@@ -83,7 +83,8 @@ aside, aside select, aside button, input {
 }
 
 aside.sidebarVisible {
-	display: block;
+	display: flex;
+	flex-direction: column;
 }
 
 #sidebarNavigation {
@@ -110,6 +111,7 @@ aside.sidebarVisible {
 
 #sidebarContent {
 	padding: 0 0 1rem 0;
+	flex-grow: 1;
 }
 
 .sbPage {
@@ -118,6 +120,23 @@ aside.sidebarVisible {
 
 .sbPage#currentSidebarPage {
 	display: block;
+}
+
+#sidebarContent:has(.sbPage.flexSbPage#currentSidebarPage) {
+	display: flex;
+}
+
+.sbPage.flexSbPage#currentSidebarPage {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+@media (max-width: 600px) {
+	#keyboardShortcutsOption {
+		display: none;
+	}
 }
 
 .sbOption {
@@ -184,8 +203,10 @@ input[type=checkbox] {
 }
 
 #sidebarContent hr {
-	margin: 0 -0.25rem;
 	opacity: 0.5;
+}
+#sidebarContent hr:not(.regularHrMargin) {
+	margin: 0 -0.25rem;
 }
 
 h2 {
@@ -303,7 +324,8 @@ main {
 	padding: 0.5rem;
 	box-sizing: border-box;
 	display: flex;
-	justify-content: flex-end;
+	justify-content: space-between;
+	z-index: 1;
 }
 
 .flatBtn {
@@ -344,8 +366,13 @@ main {
 	outline: 1px solid oklch(from var(--theme-fg) l c h / 0.525)!important;
 }
 
+:root:has(aside.sidebarVisible) #toggleSidebar, :root:has(#fullscreen.fullscreenPresent) #toggleSidebar { /* if sidebar is open, OR the app is in simulated fullscreen, don't show the toggle sidebar button */
+	display: none;
+}
+
 /* [sidebar] dropdown code, adapted from w3schools's https://www.w3schools.com/howto/howto_css_dropdown.asp */
 .dropdown {
+	display: inline-block;
 	position: relative;
 }
 
@@ -356,7 +383,23 @@ main {
 	background-color: oklch(from var(--theme-bg) calc(l + 0.1) 0.02 h);
 	min-width: 160px; /* fixed number; what can I do about this? It seems to work in most places */
 	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-	z-index: 1;
+	z-index: 5;
+}
+
+.dropdown-content:not(:has(:not(span.hidden)))::after {
+	content: "This menu is empty.";
+	display: none;
+	position: absolute;
+	right: 0;
+	background-color: oklch(from var(--theme-bg) calc(l + 0.1) 0.02 h);
+	min-width: 160px; /* fixed number; what can I do about this? It seems to work in most places */
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	z-index: 5;
+	color: var(--theme-fg-darklight);
+	padding: 0.75rem 1rem;
+	text-decoration: none;
+	display: block;
+	cursor: not-allowed;
 }
 
 .dropdown-content>* {
@@ -419,7 +462,6 @@ main {
 /* fullscreener */
 #fullscreen.fullscreenPresent {
 	font-size: calc(10px + 10vw)!important;
-	z-index: 1234569!important;
 	width: 100vw!important;
 	height: 100vh!important;
 	display: flex!important;
@@ -435,8 +477,8 @@ main {
 	box-sizing: border-box!important;
 }
 
-/* WARNING: this rule hides EVERYTHING else when an element is fullscreened */
-body:has(#fullscreen.fullscreenPresent) *:not(#fullscreen):not(#fullscreen *):not([data-fullscreen-hide-excepted="true"]) {
+/* WARNING: this rule hides almost EVERYTHING else when an element is fullscreened */
+body:has(#fullscreen.fullscreenPresent) #app :not([data-fullscreen-hide-excepted="true"]):not([data-fullscreen-hide-excepted="true"] *) {
 	display: none;
 }
 
@@ -452,17 +494,6 @@ body:has(#fullscreen.fullscreenPresent) *:not(#fullscreen):not(#fullscreen *):no
 
 #fullscreen.fullscreenPresent #time {
 	font-size: calc(10px + 20vw)!important; /* times usually are pretty short */
-}
-
-#actualFullscreen {
-	position: fixed!important;
-	top: 0.5rem;
-	right: 0.5rem;
-	display: none;
-}
-
-#fullscreen.fullscreenPresent #actualFullscreen {
-	display: block;
 }
 
 .hold-then-fade {
@@ -498,6 +529,7 @@ body:has(#fullscreen.fullscreenPresent) *:not(#fullscreen):not(#fullscreen *):no
 	min-height: 50px;
 	width: 200px;
 	max-width: 100vw;
+	z-index: 20;
 }
 
 .widget:hover {

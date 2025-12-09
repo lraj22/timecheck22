@@ -72,17 +72,27 @@
 				<!-- sidebar -->
 				<aside id="sidebar">
 					<div id="sidebarNavigation">
-						<button type="button" id="sbBack">arrow_back</button>
+						<button type="button" id="sbBack" title="Return home">arrow_back</button>
 						<p id="sidebarLocation">Home</p>
-						<button type="button" id="sbClose">close</button>
+						<button type="button" id="sbClose" title="Close sidebar">close</button>
 					</div>
-					<hr>
+					<div>
+						<hr>
+					</div>
 					<div id="sidebarContent">
-						<div class="sbPage" data-page-name="home" id="currentSidebarPage">
-							<div class="sbOption" data-navigate-to="settings" id="settingsOption">Settings</div>
-							<div class="sbOption" data-navigate-to="school" id="schoolOption">Set school</div>
-							<div class="sbOption" data-navigate-to="schedules" id="schedulesOption">View schedules</div>
-							<div class="sbOption" data-navigate-to="about" id="aboutOption">About TC22</div>
+						<div class="sbPage flexSbPage" data-page-name="home" id="currentSidebarPage">
+							<!-- top -->
+							<div>
+								<div class="sbOption" data-navigate-to="settings" id="settingsOption">Settings</div>
+								<div class="sbOption" data-navigate-to="school" id="schoolOption">Set school</div>
+								<div class="sbOption" data-navigate-to="schedules" id="schedulesOption">View schedules</div>
+							</div>
+							
+							<!-- bottom -->
+							<div>
+								<!-- Coming soon? <div class="sbOption" data-navigate-to="keyboardShortcuts" id="keyboardShortcutsOption">Keyboard shortcuts</div> -->
+								<div class="sbOption" data-navigate-to="about" id="aboutOption">About TC22</div>
+							</div>
 						</div>
 						<div class="sbPage" data-page-name="settings">
 							<p>Hi! You're in the settings right now.</p>
@@ -204,8 +214,10 @@
 							</table>
 							<div id="scheduleMessage"></div>
 						</div>
+						<div class="sbPage" data-page-name="keyboardShortcuts">
+						</div>
 						<div class="sbPage" data-page-name="about">
-							<p><span>TimeCheck 22, aka TC22.</span><br><small>Last updated December 8, 2025.</small></p>
+							<p><span>TimeCheck 22, aka TC22.</span><br><small>Last updated December 9, 2025.</small></p>
 							
 							<h2>Introduction</h2>
 							<p>Welcome to the about page! Not many people pass by here. You'll find information about the app, links to "secret" pages, and credits.</p>
@@ -253,19 +265,6 @@
 				
 				<!-- main view -->
 				<main>
-					<div id="buttonsBar">
-						<!-- in reality, the sidebar "button" will be a hoverable section on the left side of the screen and not a traditional button in the buttons bar. (concerns w/ this on small screen size?) -->
-						<button type="button" class="flatBtn hidden" id="downloadPwa" title="Get app" data-icon="download_2"></button>
-						<div class="dropdown">
-							<button type="button" class="flatBtn dropbtn" id="widgetsBtn" title="Manage widgets" data-icon="widgets"></button>
-							<div class="dropdown-content">
-								<span id="toggleStopwatch" data-state="closed">Open stopwatch</span>
-								<span id="toggleTimer" data-state="closed">Open timer</span>
-								<span id="toggleNotes">Open notes</span>
-							</div>
-						</div>
-						<button type="button" class="flatBtn" id="toggleSidebar" title="Toggle sidebar" data-icon="menu"></button>
-					</div>
 					<div id="time" data-fullscreenable="true">--:--</div>
 					<div id="period" data-fullscreenable="true"></div>
 					<div id="timeOver" data-fullscreenable="true"></div>
@@ -278,6 +277,33 @@
 				<span id="statusLeft">TimeCheck 22</span>
 				<span id="statusMiddle"></span>
 				<span id="date" data-fullscreenable="true"></span>
+			</div>
+		</div>
+		
+		<!-- buttons bar -->
+		<div id="buttonsBar">
+			<!-- left -->
+			<div>
+				<button type="button" class="flatBtn" id="toggleSidebar" title="Toggle sidebar" data-icon="menu"></button>
+			</div>
+			
+			<!-- right -->
+			<div>
+				<button type="button" class="flatBtn hidden" id="downloadPwa" title="Get app" data-icon="download_2"></button>
+				<div class="dropdown">
+					<button type="button" class="flatBtn dropbtn" id="widgetsBtn" title="Manage widgets" data-icon="widgets"></button>
+					<div class="dropdown-content">
+						<span id="toggleStopwatch" data-state="closed">Open stopwatch</span>
+						<span id="toggleTimer" data-state="closed">Open timer</span>
+						<span id="toggleNotes" class="hidden">Open notes</span>
+					</div>
+				</div>
+				<div class="dropdown">
+					<button type="button" class="flatBtn dropbtn" id="widgetsBtn" title="Options" data-icon="more_horiz"></button>
+					<div class="dropdown-content">
+						<span id="toggleFullscreen" data-state="regular">Enter fullscreen</span>
+					</div>
+				</div>
 			</div>
 		</div>
 		
@@ -313,18 +339,16 @@
 		</div>
 		
 		<!-- fullscreen area -->
-		<div id="fullscreen">
-			<button type="button" id="actualFullscreen" class="flatBtn hold-then-fade" data-icon="fullscreen" data-fullscreen-hide-excepted="true"></button>
-		</div>
+		<div id="fullscreen"></div>
 		
 		<!-- lightspeed underlay -->
-		<canvas id="lightspeedCanvas" data-fullscreen-hide-excepted="true"></canvas>
+		<canvas id="lightspeedCanvas"></canvas>
 		
 		<!-- snow -->
-		<div id="snow" data-fullscreen-hide-excepted="true"></div>
+		<div id="snow"></div>
 		
 		<!-- dev console -->
-		<div id="consoleView" data-fullscreen-hide-excepted="true"></div>
+		<div id="consoleView"></div>
 		
 		<!-- loading screen -->
 		<div id="loadingScreen">Loading...</div>
