@@ -221,7 +221,6 @@ window.addEventListener("appinstalled", _ => {
 dom.downloadPwa.addEventListener("click", async _ => {
 	if (!installPrompt) return;
 	const result = await installPrompt.prompt(); // "accepted" | "dismissed"
-	console.log(result.outcome);
 	if (result.outcome === "accepted") {
 		popup("<p>Pin me to your taskbar or add me to your homescreen for easy access!<br><small>Click this popup to close it.</small></p>");
 	}
@@ -242,6 +241,10 @@ dom.toggleFullscreen.addEventListener("click", e => {
 				dom.toggleFullscreen.textContent = "Enter fullscreen";
 			});
 	}
+});
+document.addEventListener("fullscreenchange", _ => {
+	if (!document.fullscreenElement) dom.toggleFullscreen.textContent = "Enter fullscreen";
+	else dom.toggleFullscreen.textContent = "Exit fullscreen";
 });
 if (!document.fullscreenEnabled) {
 	dom.toggleFullscreen.classList.add("hidden");
