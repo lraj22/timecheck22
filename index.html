@@ -69,12 +69,12 @@
 	<body>
 		<div id="app">
 			<!-- this is where announcements appear -->
-			<div id="announcements"></div>
+			<div id="announcements" class="simFullscreenHide"></div>
 			
 			<!-- main area (sidebar + main view) -->
 			<div id="colFlexMain">
 				<!-- sidebar -->
-				<aside id="sidebar">
+				<aside id="sidebar" class="simFullscreenHide">
 					<div id="sidebarNavigation">
 						<button type="button" id="sbBack" title="Return home">arrow_back</button>
 						<p id="sidebarLocation">Home</p>
@@ -269,45 +269,48 @@
 				
 				<!-- main view -->
 				<main>
-					<div id="time" data-fullscreenable="true">--:--</div>
-					<div id="period" data-fullscreenable="true"></div>
-					<div id="timeOver" data-fullscreenable="true"></div>
-					<div id="timeLeft" data-fullscreenable="true"></div>
+					<!-- buttons bar -->
+					<div id="buttonsBar">
+						<!-- left -->
+						<div>
+							<button type="button" class="flatBtn" id="toggleSidebar" title="Toggle sidebar" data-icon="menu"></button>
+						</div>
+						
+						<!-- right -->
+						<div>
+							<button type="button" class="flatBtn hidden" id="downloadPwa" title="Get app" data-icon="download_2"></button>
+							<div class="dropdown">
+								<button type="button" class="flatBtn dropbtn" id="widgetsBtn" title="Manage widgets" data-icon="widgets"></button>
+								<div class="dropdown-content">
+									<span id="toggleStopwatch" data-state="closed">Open stopwatch</span>
+									<span id="toggleTimer" data-state="closed">Open timer</span>
+									<span id="toggleNotes" data-state="closed">Open notes</span>
+								</div>
+							</div>
+							<div class="dropdown">
+								<button type="button" class="flatBtn dropbtn" id="moreBtn" title="Options" data-icon="more_horiz"></button>
+								<div class="dropdown-content">
+									<span id="toggleFullscreen" data-state="regular">Enter fullscreen</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- centered content -->
+					<div id="mainCenter" class="simFullscreenHide">
+						<div id="time" data-fullscreenable="true">--:--</div>
+						<div id="period" data-fullscreenable="true"></div>
+						<div id="timeOver" data-fullscreenable="true"></div>
+						<div id="timeLeft" data-fullscreenable="true"></div>
+					</div>
 				</main>
 			</div>
 			
 			<!-- status bar for general info -->
-			<div id="statusBar">
+			<div id="statusBar" class="simFullscreenHide">
 				<span id="statusLeft">TimeCheck 22</span>
 				<span id="statusMiddle"></span>
 				<span id="date" data-fullscreenable="true"></span>
-			</div>
-		</div>
-		
-		<!-- buttons bar -->
-		<div id="buttonsBar">
-			<!-- left -->
-			<div>
-				<button type="button" class="flatBtn" id="toggleSidebar" title="Toggle sidebar" data-icon="menu"></button>
-			</div>
-			
-			<!-- right -->
-			<div>
-				<button type="button" class="flatBtn hidden" id="downloadPwa" title="Get app" data-icon="download_2"></button>
-				<div class="dropdown">
-					<button type="button" class="flatBtn dropbtn" id="widgetsBtn" title="Manage widgets" data-icon="widgets"></button>
-					<div class="dropdown-content">
-						<span id="toggleStopwatch" data-state="closed">Open stopwatch</span>
-						<span id="toggleTimer" data-state="closed">Open timer</span>
-						<span id="toggleNotes" data-state="closed">Open notes</span>
-					</div>
-				</div>
-				<div class="dropdown">
-					<button type="button" class="flatBtn dropbtn" id="moreBtn" title="Options" data-icon="more_horiz"></button>
-					<div class="dropdown-content">
-						<span id="toggleFullscreen" data-state="regular">Enter fullscreen</span>
-					</div>
-				</div>
 			</div>
 		</div>
 		

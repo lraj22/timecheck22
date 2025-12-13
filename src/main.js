@@ -285,7 +285,7 @@ if (ENVIRONMENT === "dev") {
 	userInfo.profile = localStorage.getItem("profile");
 }
 userInfo.schoolId = settings.schoolId;
-userInfo.schoolName = schoolIdMappings[settings.schoolId] ? schoolIdMappings[settings.schoolId].name : "";
+userInfo.schoolName = schools[schoolIdMappings[settings.schoolId]]?.name;
 umami.identify(userInfo);
 
 // all underlay managing code is here

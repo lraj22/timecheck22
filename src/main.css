@@ -308,11 +308,15 @@ tbody:empty::after {
 
 main {
 	flex-grow: 1;
+	position: relative; /* keeps #buttonsBar below announcements */
+}
+
+#mainCenter {
+	height: 100%;
 	display: flex;
 	flex-flow: column;
 	justify-content: center;
 	align-items: center;
-	position: relative;
 }
 
 /* buttons! */
@@ -477,8 +481,7 @@ main {
 	box-sizing: border-box!important;
 }
 
-/* WARNING: this rule hides almost EVERYTHING else when an element is fullscreened */
-body:has(#fullscreen.fullscreenPresent) #app :not([data-fullscreen-hide-excepted="true"]):not([data-fullscreen-hide-excepted="true"] *) {
+body:has(#fullscreen.fullscreenPresent) .simFullscreenHide:not(#fullscreen *) {
 	display: none;
 }
 
