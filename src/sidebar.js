@@ -1,5 +1,5 @@
 import { settings, updateSettings } from "./settings";
-import { dom, schools } from "./util";
+import { dom, schoolIdMappings, schools } from "./util";
 
 const pageIdsToName = {
 	"home": "Home",
@@ -26,14 +26,22 @@ export function navigateToSidebarPage (page) {
 	dom.sidebarLocation.textContent = pageIdsToName[page]; // change breadcrumbs title
 	dom.sbBack.style.visibility = (page !== "home") ? "visible" : "hidden"; // change back button visibility
 	currentPage = page.toString(); // change 'currentPage' (w/ duplicate variable)
+	
+	umami.track("sidebar-page-navigated", {
+		"page": page,
+	});
 }
 
 export function toggleSidebar (force) {
 	let isNowOpen = dom.sidebar.classList.toggle("sidebarVisible", force);
-	// dom.toggleSidebar.setAttribute("data-icon", isNowOpen ? "left_panel_close" : "left_panel_open")
 	if (!isNowOpen) {
 		dom.sidebar.querySelectorAll(".element-highlight").forEach(el => el.classList.remove("element-highlight"));
 	}
+	
+	umami.track("sidebar-toggled", {
+		"isOpenNow": isNowOpen,
+	});
+	
 	return isNowOpen;
 }
 
@@ -103,6 +111,11 @@ schools.forEach(({ id, name, repo, category }) => {
 dom.schoolSelect.addEventListener("change", function () {
 	settings.schoolId = dom.schoolSelect.selectedOptions[0].getAttribute("data-school-id");
 	updateSettings(true);
+	
+	umami.track("school-selected", {
+		"name": schoolIdMappings[settings.schoolId].name,
+		"schoolId": settings.schoolId,
+	});
 });
 
 function removeHighlight () {
@@ -116,12 +129,20 @@ dom.statusMiddle.addEventListener("click", function () {
 	if (schoolSelected) {
 		toggleSidebar(true);
 		navigateToSidebarPage("school");
+		
+		umami.track("school-name-clicked", {
+			"alreadySelected": true,
+		});
 	} else {
 		console.log("ONBOARDING!");
 		toggleSidebar(true);
 		navigateToSidebarPage("home");
 		dom.schoolOption.classList.add("element-highlight");
 		dom.schoolOption.addEventListener("click", removeHighlight);
+		
+		umami.track("school-name-clicked", {
+			"alreadySelected": false,
+		});
 	}
 });
 
@@ -131,6 +152,11 @@ document.querySelectorAll("[data-setting-name]").forEach(settingInput => {
 	settingInput.addEventListener("change", _ => {
 		settings[settingName] = ((settingInput.type === "checkbox") ? settingInput.checked : settingInput.value);
 		updateSettings();
+		
+		umami.track("setting-changed", {
+			"setting": settingName,
+			"newValue": settings[settingName],
+		});
 	});
 });
 

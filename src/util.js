@@ -25,6 +25,13 @@ export function logVisible () {
 	dom.consoleView.textContent = "[" + (logIdNumber++) + "] " + [...arguments].join(" ");
 	console.log.apply(this, arguments);
 }
+// analytics backup
+if (!("umami" in window)) {
+	window.umami = {
+		"identify": _ => {},
+		"track": _ => {},
+	};
+}
 
 
 

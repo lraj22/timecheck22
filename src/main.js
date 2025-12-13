@@ -6,6 +6,8 @@ import {
 	msToTimeDiff,
 	appliesStrarrListify,
 	popup,
+	ENVIRONMENT,
+	schoolIdMappings,
 } from "./util";
 import { stringToLuxonDuration } from "./clockdata";
 import {
@@ -181,15 +183,20 @@ requestAnimationFrame(tick);
 // fullscreenable elements
 dom.fullscreen.addEventListener("click", _ => {
 	let placeholder = document.getElementById("fullscreenPlaceholder");
-	if (!placeholder) return; // if #fullscreen can get clicked, the placeholder should definitely exist
+	if (!placeholder) return; // if #fullscreen can get clicked, the placeholder should definitely exist. this is just a sanity check
 	
 	// move element back to placeholder
+	let fullscreenedElId = dom.fullscreen.lastChild.id;
 	placeholder.before(dom.fullscreen.lastChild); // i.e., first and only child
 	placeholder.remove();
 	dom.fullscreen.classList.remove("fullscreenPresent");
 	dom.buttonsBar.classList.remove("hold-then-fade");
 	let fadeOutAnim = dom.buttonsBar.getAnimations()[0];
 	if (fadeOutAnim) fadeOutAnim.cancel();
+	
+	umami.track("simulated-fullscreen-exited", {
+		"id": fullscreenedElId,
+	});
 });
 
 document.querySelectorAll("[data-fullscreenable]").forEach(el => {
@@ -204,6 +211,10 @@ document.querySelectorAll("[data-fullscreenable]").forEach(el => {
 		dom.fullscreen.append(el);
 		dom.fullscreen.classList.add("fullscreenPresent");
 		dom.buttonsBar.classList.add("hold-then-fade");
+		
+		umami.track("simulated-fullscreen-entered", {
+			"id": el.id,
+		});
 	});
 });
 
@@ -225,6 +236,10 @@ dom.downloadPwa.addEventListener("click", async _ => {
 		popup("<p>Pin me to your taskbar or add me to your homescreen for easy access!<br><small>Click this popup to close it.</small></p>");
 	}
 	dom.downloadPwa.classList.add("hidden");
+	
+	umami.track("get-pwa-clicked", {
+		"outcome": result.outcome,
+	});
 });
 
 // more menu
@@ -241,6 +256,10 @@ dom.toggleFullscreen.addEventListener("click", e => {
 				dom.toggleFullscreen.textContent = "Enter fullscreen";
 			});
 	}
+	
+	umami.track("toggle-fullscreen-clicked", {
+		"attemptedNewState": (document.fullscreenElement ? "no-fullscreen" : "fullscreen"),
+	});
 });
 document.addEventListener("fullscreenchange", _ => {
 	if (!document.fullscreenElement) dom.toggleFullscreen.textContent = "Enter fullscreen";
@@ -258,6 +277,16 @@ dom.evalBtn.addEventListener("click", _ => {
 		alert(e);
 	}
 });
+
+// analytics
+let userInfo = {};
+if (ENVIRONMENT === "dev") {
+	userInfo.env = "dev";
+	userInfo.profile = localStorage.getItem("profile");
+}
+userInfo.schoolId = settings.schoolId;
+userInfo.schoolName = schoolIdMappings[settings.schoolId] ? schoolIdMappings[settings.schoolId].name : "";
+umami.identify(userInfo);
 
 // all underlay managing code is here
 import "./underlays";

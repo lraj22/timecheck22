@@ -25,7 +25,11 @@
 		<link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
 		
 		<!-- umami tracking -->
-		<script defer src="https://cloud.umami.is/script.js" data-website-id="b5d12824-9768-405c-90fa-1e5c51fbb248" data-domains="timecheck22.lraj22.xyz"></script>
+		<!-- <script defer src="https://cloud.umami.is/script.js" data-website-id="b5d12824-9768-405c-90fa-1e5c51fbb248" data-domains="timecheck22.lraj22.xyz"></script> -->
+		<script defer data-website-id="b5d12824-9768-405c-90fa-1e5c51fbb248" data-domains="timecheck22.lraj22.xyz">
+			// src: https://cloud.umami.is/script.js; last updated Dec 13, 2025
+			!function(){"use strict";(t=>{const{screen:{width:e,height:a},navigator:{language:r,doNotTrack:n,msDoNotTrack:i},location:o,document:c,history:s,top:u,doNotTrack:d}=t,{currentScript:l,referrer:h}=c;if(!l)return;const{hostname:f,href:m,origin:p}=o,y=m.startsWith("data:")?void 0:t.localStorage,g="data-",b="true",$=l.getAttribute.bind(l),v=$(`${g}website-id`),w=$(`${g}host-url`),S=$(`${g}before-send`),k=$(`${g}tag`)||void 0,N="false"!==$(`${g}auto-track`),T=$(`${g}do-not-track`)===b,A=$(`${g}exclude-search`)===b,j=$(`${g}exclude-hash`)===b,x=$(`${g}domains`)||"",L=$(`${g}fetch-credentials`)||"omit",E=x.split(",").map(t=>t.trim()),K=`${(w||"https://api-gateway.umami.dev").replace(/\/$/,"")}/api/send`,O=`${e}x${a}`,U=/data-umami-event-([\w-_]+)/,_=`${g}umami-event`,D=300,P=t=>{if(!t)return t;try{const e=new URL(t,o.href);return A&&(e.search=""),j&&(e.hash=""),e.toString()}catch{return t}},R=()=>({website:v,screen:O,language:r,title:c.title,hostname:f,url:G,referrer:H,tag:k,id:F||void 0}),W=(t,e,a)=>{a&&(H=G,G=P(new URL(a,o.href).toString()),G!==H&&setTimeout(J,D))},B=()=>Q||!v||y?.getItem("umami.disabled")||x&&!E.includes(f)||T&&(()=>{const t=d||n||i;return 1===t||"1"===t||"yes"===t})(),C=async(e,a="event")=>{if(B())return;const r=t[S];if("function"==typeof r&&(e=await Promise.resolve(r(a,e))),e)try{const t=await fetch(K,{keepalive:!0,method:"POST",body:JSON.stringify({type:a,payload:e}),headers:{"Content-Type":"application/json",...void 0!==z&&{"x-umami-cache":z}},credentials:L}),r=await t.json();r&&(Q=!!r.disabled,z=r.cache)}catch(t){}},I=()=>{M||(M=!0,J(),(()=>{const t=(t,e,a)=>{const r=t[e];return(...e)=>(a.apply(null,e),r.apply(t,e))};s.pushState=t(s,"pushState",W),s.replaceState=t(s,"replaceState",W)})(),(()=>{const t=async t=>{const e=t.getAttribute(_);if(e){const a={};return t.getAttributeNames().forEach(e=>{const r=e.match(U);r&&(a[r[1]]=t.getAttribute(e))}),J(e,a)}};c.addEventListener("click",async e=>{const a=e.target,r=a.closest("a,button");if(!r)return t(a);const{href:n,target:i}=r;if(r.getAttribute(_)){if("BUTTON"===r.tagName)return t(r);if("A"===r.tagName&&n){const a="_blank"===i||e.ctrlKey||e.shiftKey||e.metaKey||e.button&&1===e.button;return a||e.preventDefault(),t(r).then(()=>{a||(("_top"===i?u.location:o).href=n)})}}},!0)})())},J=(t,e)=>C("string"==typeof t?{...R(),name:t,data:e}:"object"==typeof t?{...t}:"function"==typeof t?t(R()):R()),q=(t,e)=>("string"==typeof t&&(F=t),z="",C({...R(),data:"object"==typeof t?t:e},"identify"));t.umami||(t.umami={track:J,identify:q});let z,F,G=P(m),H=P(h.startsWith(p)?"":h),M=!1,Q=!1;N&&!B()&&("complete"===c.readyState?I():c.addEventListener("readystatechange",I,!0))})(window)}();
+		</script>
 		
 		<!-- basic styles (should not require anything to have loaded prior) -->
 		<style>
@@ -184,7 +188,7 @@
 						</div>
 						<div class="sbPage" data-page-name="school">
 							<p>Welcome! Select your school here. This will set the clock to the current schedule.</p>
-							<select name="school" id="schoolSelect">
+							<select name="school" id="schoolSelect" title="Select your school.">
 								<option value="" data-school-id="-1">None</option>
 								<optgroup label="High schools" id="schoolSelectHighGroup">
 									<!-- List of high schools will be added here programmatically -->
@@ -199,7 +203,7 @@
 						<div class="sbPage" data-page-name="schedules">
 							<p>View your school's schedules here.</p>
 							<!-- List of schedules will be added here programmatically -->
-							<select name="schedule" id="scheduleSelect"></select>
+							<select name="schedule" id="scheduleSelect" title="Pick a schedule to view."></select>
 							<br><br>
 							<table>
 								<thead>
@@ -217,7 +221,7 @@
 						<div class="sbPage" data-page-name="keyboardShortcuts">
 						</div>
 						<div class="sbPage" data-page-name="about">
-							<p><span>TimeCheck 22, aka TC22.</span><br><small>Last updated December 10, 2025.</small></p>
+							<p><span>TimeCheck 22, aka TC22.</span><br><small>Last updated December 13, 2025.</small></p>
 							
 							<h2>Introduction</h2>
 							<p>Welcome to the about page! Not many people pass by here. You'll find information about the app, links to "secret" pages, and credits.</p>
@@ -295,11 +299,11 @@
 					<div class="dropdown-content">
 						<span id="toggleStopwatch" data-state="closed">Open stopwatch</span>
 						<span id="toggleTimer" data-state="closed">Open timer</span>
-						<span id="toggleNotes" class="hidden">Open notes</span>
+						<span id="toggleNotes" data-state="closed">Open notes</span>
 					</div>
 				</div>
 				<div class="dropdown">
-					<button type="button" class="flatBtn dropbtn" id="widgetsBtn" title="Options" data-icon="more_horiz"></button>
+					<button type="button" class="flatBtn dropbtn" id="moreBtn" title="Options" data-icon="more_horiz"></button>
 					<div class="dropdown-content">
 						<span id="toggleFullscreen" data-state="regular">Enter fullscreen</span>
 					</div>

@@ -86,6 +86,10 @@ dom.toggleStopwatch.addEventListener("click", function () {
 	dom.toggleStopwatch.textContent = (isOpen ? "Open" : "Close") + " stopwatch";
 	dom.toggleStopwatch.setAttribute("data-state", isOpen ? "closed" : "open");
 	dom.stopwatch.classList.toggle("hidden");
+	
+	umami.track("stopwatch-toggled", {
+		"newState": isOpen ? "closed" : "open",
+	});
 });
 
 dom.stopwatchBtnPlay.addEventListener("click", function () {
@@ -95,6 +99,11 @@ dom.stopwatchBtnPlay.addEventListener("click", function () {
 	dom.stopwatchBtnPause.classList.toggle("hidden", false);
 	dom.stopwatchBtnRestart.classList.toggle("hidden", false);
 	dom.stopwatchBtnPause.focus();
+	
+	umami.track("stopwatch-used", {
+		"event": "play",
+		"currentTime": timeDiffToMsInverse(stopwatchData.total, 2),
+	});
 });
 
 dom.stopwatchBtnPause.addEventListener("click", function () {
@@ -105,6 +114,11 @@ dom.stopwatchBtnPause.addEventListener("click", function () {
 	dom.stopwatchBtnPause.classList.toggle("hidden", true);
 	dom.stopwatchBtnPlay.classList.toggle("hidden", false);
 	dom.stopwatchBtnPlay.focus();
+	
+	umami.track("stopwatch-used", {
+		"event": "pause",
+		"currentTime": timeDiffToMsInverse(stopwatchData.total, 2),
+	});
 });
 
 dom.stopwatchBtnRestart.addEventListener("click", function () {
@@ -117,6 +131,11 @@ dom.stopwatchBtnRestart.addEventListener("click", function () {
 	dom.stopwatchBtnPause.classList.toggle("hidden", true);
 	dom.stopwatchBtnRestart.classList.toggle("hidden", true);
 	dom.stopwatchBtnPlay.focus();
+	
+	umami.track("stopwatch-used", {
+		"event": "restart",
+		"currentTime": timeDiffToMsInverse(stopwatchData.total, 2),
+	});
 });
 
 // timer
@@ -125,6 +144,10 @@ dom.toggleTimer.addEventListener("click", function () {
 	dom.toggleTimer.textContent = (isOpen ? "Open" : "Close") + " timer";
 	dom.toggleTimer.setAttribute("data-state", isOpen ? "closed" : "open");
 	dom.timer.classList.toggle("hidden");
+	
+	umami.track("timer-toggled", {
+		"newState": isOpen ? "closed" : "open",
+	});
 });
 
 dom.timerBtnPlay.addEventListener("click", function () {
@@ -135,6 +158,11 @@ dom.timerBtnPlay.addEventListener("click", function () {
 	dom.timerBtnPause.classList.toggle("hidden", false);
 	dom.timerBtnRestart.classList.toggle("hidden", false);
 	dom.timerBtnPause.focus();
+	
+	umami.track("timer-used", {
+		"event": "play",
+		"currentTime": timeDiffToMsInverse(timerData.total),
+	});
 });
 
 dom.timerBtnPause.addEventListener("click", function () {
@@ -146,6 +174,11 @@ dom.timerBtnPause.addEventListener("click", function () {
 	dom.timerBtnPause.classList.toggle("hidden", true);
 	dom.timerBtnPlay.classList.toggle("hidden", false);
 	dom.timerBtnPlay.focus();
+	
+	umami.track("timer-used", {
+		"event": "pause",
+		"currentTime": timeDiffToMsInverse(timerData.total),
+	});
 });
 
 dom.timerBtnRestart.addEventListener("click", function () {
@@ -160,6 +193,11 @@ dom.timerBtnRestart.addEventListener("click", function () {
 	dom.timerBtnPause.classList.toggle("hidden", true);
 	dom.timerBtnRestart.classList.toggle("hidden", true);
 	dom.timerBtnPlay.focus();
+	
+	umami.track("timer-restart", {
+		"event": "restart",
+		"currentTime": timeDiffToMsInverse(timerData.total),
+	});
 });
 
 dom.timerTime.addEventListener("input", _ => useNewTimerTime(true));
@@ -170,6 +208,11 @@ dom.timerMute.addEventListener("click", function () {
 	dom.timerMute.textContent = isMuted ? "volume_off" : "volume_up";
 	dom.timerMute.title = isMuted ? "Click to unmute the timer" : "Click to mute the timer";
 	if (isMuted) audio.stopReset("timerRing");
+	
+	umami.track("timer-used", {
+		"event": isMuted ? "mute" : "unmute",
+		"running": timerData.running,
+	});
 });
 
 // activate stopwatch & dom.timer
@@ -204,6 +247,10 @@ dom.toggleNotes.addEventListener("click", _ => {
 	dom.notes.classList.toggle("hidden");
 	
 	setUpQuill(); // only happens once due to a safety check in function
+	
+	umami.track("notes-toggled", {
+		"newState": isOpen ? "closed" : "open",
+	});
 });
 
 let notesOpened = false;
@@ -293,6 +340,10 @@ function saveWidgetStates () {
 		lastChanged = null;
 		state.widgets.notes.content = editor.getContents().ops;
 		dom.notesStatus.textContent = "Changes saved.";
+		
+		umami.track("notes-updated", {
+			"length": editor.getLength(),
+		});
 	}
 	updateState();
 }
