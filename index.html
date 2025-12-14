@@ -94,7 +94,7 @@
 							
 							<!-- bottom -->
 							<div>
-								<!-- Coming soon? <div class="sbOption" data-navigate-to="keyboardShortcuts" id="keyboardShortcutsOption">Keyboard shortcuts</div> -->
+								<div class="sbOption" data-navigate-to="keyboardShortcuts" id="keyboardShortcutsOption">Keyboard shortcuts</div>
 								<div class="sbOption" data-navigate-to="about" id="aboutOption">About TC22</div>
 							</div>
 						</div>
@@ -219,6 +219,46 @@
 							<div id="scheduleMessage"></div>
 						</div>
 						<div class="sbPage" data-page-name="keyboardShortcuts">
+							<h2>General</h2>
+							<p><code>[Shift]</code> + <code>f</code>: Toggle fullscreen.</p>
+							<p><code>[Ctrl/Cmd]</code> + <code>Slash (/)</code>: Open keyboard shortcuts.</p>
+							<p><code>[Escape]</code>: Unfocus current input. Allows you to use melodies.</p>
+							
+							<hr>
+							<h2>Fullscreen</h2>
+							<p><code>ff</code>: Toggle browser fullscreen.</p>
+							<p><code>ft</code>: Show time in big display.</p>
+							<p><code>fo</code>: Show time over in big display.</p>
+							<p><code>fl</code>: Show time left in big display.</p>
+							<p><code>fp</code>: Show current period in big display.</p>
+							<p><code>fd</code>: Show today's date in big display.</p>
+							<p><code>fx</code>: Exit big display.</p>
+							
+							<hr>
+							<h2>Widgets</h2>
+							<p>Stopwatch</p>
+							<p><code>wst</code> or <code>w s Enter</code>: Toggle stopwatch.</p>
+							<p><code>wss</code>: Stopwatch start/stop.</p>
+							<p><code>wsr</code>: Stopwatch reset.</p>
+							
+							<p>Timer</p>
+							<p><code>wtt</code> or <code>w t Enter</code>: Toggle timer.</p>
+							<p><code>wtf</code>: Focus time input.</p>
+							<p><code>wts</code>: Timer start/stop.</p>
+							<p><code>wtr</code>: Timer reset.</p>
+							<p><code>wtm</code>: Timer mute/unmute.</p>
+							
+							<p>Notes</p>
+							<p><code>wnt</code> or <code>w n Enter</code>: Toggle notes.</p>
+							
+							<p>General</p>
+							<p><code>w [s/t/n] [1/2]</code>: Press selected button (1 or 2) of selected widget (<b>s</b>topwatch, <b>t</b>imer, <b>n</b>otes)</p>
+							
+							<hr>
+							<h2>Help</h2>
+							<p>Keyboard shortcuts are either <b>Chords</b> or <b>Melodies</b>. You can use either.</p>
+							<p><b>Chords are when you press many keys at once.</b> For example <code>Shift + f</code> is a chord; press both <code>Shift</code> and <code>f</code> at the same time to activate the keybind (toggle fullcreen). Chords usually have a <code>+</code> sign between the keys.</p>
+							<p><b>Melodies are when keys are pressed in sequence, but not necessarily at the same time.</b> For example, <code>wst</code> (<u>w</u>idget --&gt; <u>s</u>topwatch --&gt; <u>t</u>oggle) is a melody. Press those keys in order, and voila! The stopwatch widget will appear/disappear.</p>
 						</div>
 						<div class="sbPage" data-page-name="about">
 							<p><span>TimeCheck 22, aka TC22.</span><br><small>Last updated December 13, 2025.</small></p>
@@ -320,9 +360,9 @@
 				<div id="stopwatchDrag" class="dragger material-symbols-outlined">drag_handle</div>
 				<div id="stopwatchTime">0.00</div>
 				<div class="widgetButtons">
-					<button type="button" id="stopwatchBtnPlay" title="Start/resume" class="btnClean material-symbols-outlined">play_arrow</button>
-					<button type="button" id="stopwatchBtnPause" title="Pause" class="btnClean material-symbols-outlined hidden">pause</button>
-					<button type="button" id="stopwatchBtnRestart" title="Reset" class="btnClean material-symbols-outlined hidden">replay</button>
+					<button type="button" id="stopwatchBtnStart" title="[S]tart/resume" class="btnClean material-symbols-outlined">play_arrow</button>
+					<button type="button" id="stopwatchBtnStop" title="[S]top" class="btnClean material-symbols-outlined hidden">pause</button>
+					<button type="button" id="stopwatchBtnReset" title="[R]eset" class="btnClean material-symbols-outlined hidden">replay</button>
 				</div>
 			</div>
 			<div class="closer"></div>
@@ -334,9 +374,9 @@
 				<div id="timerDrag" class="dragger material-symbols-outlined">drag_handle</div>
 				<input id="timerTime" value="10:00" placeholder="00:00:00">
 				<div class="widgetButtons">
-					<button type="button" id="timerBtnPlay" title="Start/resume" class="btnClean material-symbols-outlined">play_arrow</button>
-					<button type="button" id="timerBtnPause" title="Pause" class="btnClean material-symbols-outlined hidden">pause</button>
-					<button type="button" id="timerBtnRestart" title="Reset" class="btnClean material-symbols-outlined hidden">replay</button>
+					<button type="button" id="timerBtnStart" title="[S]tart/resume" class="btnClean material-symbols-outlined">play_arrow</button>
+					<button type="button" id="timerBtnStop" title="[S]top" class="btnClean material-symbols-outlined hidden">pause</button>
+					<button type="button" id="timerBtnReset" title="[R]eset" class="btnClean material-symbols-outlined hidden">replay</button>
 				</div>
 			</div>
 			<div id="timerMute" class="material-symbols-outlined" title="Click to mute the timer">volume_up</div>

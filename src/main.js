@@ -17,6 +17,7 @@ import "./main.css";
 import "./sidebar";
 import audio from "./audio";
 import { stopwatchData, timerData } from "./widgets";
+import "./keybinds";
 
 // assign all imported properties to window for availability in eval
 // not all modules imported here because their exports are already taken above
@@ -85,9 +86,9 @@ function tick () {
 			timerData.running = false;
 			timerData.total = 0;
 			timerTime.disabled = false;
-			timerBtnPlay.classList.toggle("hidden", true);
-			timerBtnPause.classList.toggle("hidden", true);
-			timerBtnRestart.classList.toggle("hidden", false);
+			timerBtnStart.classList.toggle("hidden", true);
+			timerBtnStop.classList.toggle("hidden", true);
+			timerBtnReset.classList.toggle("hidden", false);
 			if (!timerData.isMuted) audio.play("timerRing");
 		}
 		timeLeft = Math.floor(timeLeft);
@@ -183,7 +184,7 @@ requestAnimationFrame(tick);
 // fullscreenable elements
 dom.fullscreen.addEventListener("click", _ => {
 	let placeholder = document.getElementById("fullscreenPlaceholder");
-	if (!placeholder) return; // if #fullscreen can get clicked, the placeholder should definitely exist. this is just a sanity check
+	if (!placeholder) return; // melody 'fx' clicks this, so we MUST check that it's actually open before closing it.
 	
 	// move element back to placeholder
 	let fullscreenedElId = dom.fullscreen.lastChild.id;

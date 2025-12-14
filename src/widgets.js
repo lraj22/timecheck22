@@ -7,9 +7,9 @@ export var stopwatchData = {
 };
 dom.stopwatchTime.textContent = timeDiffToMsInverse(stopwatchData.total, 2);
 if (state.widgets.stopwatch.total) {
-	dom.stopwatchBtnPause.classList.toggle("hidden", true);
-	dom.stopwatchBtnPlay.classList.toggle("hidden", false);
-	dom.stopwatchBtnRestart.classList.toggle("hidden", false);
+	dom.stopwatchBtnStop.classList.toggle("hidden", true);
+	dom.stopwatchBtnStart.classList.toggle("hidden", false);
+	dom.stopwatchBtnReset.classList.toggle("hidden", false);
 }
 export var timerData = {
 	"from": 10 * 60 * 1000,
@@ -19,9 +19,9 @@ export var timerData = {
 dom.timerTime.value = timeDiffToMsInverse(timerData.total);
 if (state.widgets.timer.timeRemaining) {
 	dom.timerTime.disabled = false;
-	dom.timerBtnPause.classList.toggle("hidden", true);
-	dom.timerBtnPlay.classList.toggle("hidden", false);
-	dom.timerBtnRestart.classList.toggle("hidden", false);
+	dom.timerBtnStop.classList.toggle("hidden", true);
+	dom.timerBtnStart.classList.toggle("hidden", false);
+	dom.timerBtnReset.classList.toggle("hidden", false);
 }
 
 function timeDiffToMs (timeDiff) {
@@ -70,9 +70,9 @@ function timeDiffToMsInverse (ms, precision) {
 function useNewTimerTime (updateFrom) {
 	if (timerData.running) return;
 	if (timerData.total === 0) {
-		dom.timerBtnPlay.classList.toggle("hidden", false);
-		dom.timerBtnPause.classList.toggle("hidden", true);
-		dom.timerBtnRestart.classList.toggle("hidden", true);
+		dom.timerBtnStart.classList.toggle("hidden", false);
+		dom.timerBtnStop.classList.toggle("hidden", true);
+		dom.timerBtnReset.classList.toggle("hidden", true);
 		audio.stopReset("timerRing");
 	}
 	timerData.total = timeDiffToMs(dom.timerTime.value);
@@ -121,48 +121,48 @@ const togglers = {
 // stopwatch
 dom.toggleStopwatch.addEventListener("click", _ => togglers.stopwatch("widgetMenu"));
 
-dom.stopwatchBtnPlay.addEventListener("click", function () {
+dom.stopwatchBtnStart.addEventListener("click", function () {
 	stopwatchData.startTime = performance.now();
 	stopwatchData.running = true;
-	dom.stopwatchBtnPlay.classList.toggle("hidden", true);
-	dom.stopwatchBtnPause.classList.toggle("hidden", false);
-	dom.stopwatchBtnRestart.classList.toggle("hidden", false);
-	dom.stopwatchBtnPause.focus();
+	dom.stopwatchBtnStart.classList.toggle("hidden", true);
+	dom.stopwatchBtnStop.classList.toggle("hidden", false);
+	dom.stopwatchBtnReset.classList.toggle("hidden", false);
+	dom.stopwatchBtnStop.focus();
 	
 	umami.track("stopwatch-used", {
-		"event": "play",
+		"event": "start",
 		"currentTime": timeDiffToMsInverse(stopwatchData.total, 2),
 	});
 });
 
-dom.stopwatchBtnPause.addEventListener("click", function () {
+dom.stopwatchBtnStop.addEventListener("click", function () {
 	stopwatchData.total += performance.now() - stopwatchData.startTime;
 	stopwatchData.running = false;
 	state.widgets.stopwatch.total = stopwatchData.total;
 	updateState();
-	dom.stopwatchBtnPause.classList.toggle("hidden", true);
-	dom.stopwatchBtnPlay.classList.toggle("hidden", false);
-	dom.stopwatchBtnPlay.focus();
+	dom.stopwatchBtnStop.classList.toggle("hidden", true);
+	dom.stopwatchBtnStart.classList.toggle("hidden", false);
+	dom.stopwatchBtnStart.focus();
 	
 	umami.track("stopwatch-used", {
-		"event": "pause",
+		"event": "stop",
 		"currentTime": timeDiffToMsInverse(stopwatchData.total, 2),
 	});
 });
 
-dom.stopwatchBtnRestart.addEventListener("click", function () {
+dom.stopwatchBtnReset.addEventListener("click", function () {
 	stopwatchData.total = 0;
 	stopwatchData.running = false;
 	state.widgets.stopwatch.total = 0;
 	updateState();
 	dom.stopwatchTime.textContent = "0.00";
-	dom.stopwatchBtnPlay.classList.toggle("hidden", false);
-	dom.stopwatchBtnPause.classList.toggle("hidden", true);
-	dom.stopwatchBtnRestart.classList.toggle("hidden", true);
-	dom.stopwatchBtnPlay.focus();
+	dom.stopwatchBtnStart.classList.toggle("hidden", false);
+	dom.stopwatchBtnStop.classList.toggle("hidden", true);
+	dom.stopwatchBtnReset.classList.toggle("hidden", true);
+	dom.stopwatchBtnStart.focus();
 	
 	umami.track("stopwatch-used", {
-		"event": "restart",
+		"event": "reset",
 		"currentTime": timeDiffToMsInverse(stopwatchData.total, 2),
 	});
 });
@@ -170,38 +170,38 @@ dom.stopwatchBtnRestart.addEventListener("click", function () {
 // timer
 dom.toggleTimer.addEventListener("click", _ => togglers.timer("widgetMenu"));
 
-dom.timerBtnPlay.addEventListener("click", function () {
+dom.timerBtnStart.addEventListener("click", function () {
 	timerData.startTime = performance.now();
 	timerData.running = true;
 	dom.timerTime.disabled = true;
-	dom.timerBtnPlay.classList.toggle("hidden", true);
-	dom.timerBtnPause.classList.toggle("hidden", false);
-	dom.timerBtnRestart.classList.toggle("hidden", false);
-	dom.timerBtnPause.focus();
+	dom.timerBtnStart.classList.toggle("hidden", true);
+	dom.timerBtnStop.classList.toggle("hidden", false);
+	dom.timerBtnReset.classList.toggle("hidden", false);
+	dom.timerBtnStop.focus();
 	
 	umami.track("timer-used", {
-		"event": "play",
+		"event": "start",
 		"currentTime": timeDiffToMsInverse(timerData.total),
 	});
 });
 
-dom.timerBtnPause.addEventListener("click", function () {
+dom.timerBtnStop.addEventListener("click", function () {
 	timerData.total -= performance.now() - timerData.startTime;
 	state.widgets.timer.timeRemaining = timerData.total;
 	updateState();
 	timerData.running = false;
 	dom.timerTime.disabled = false;
-	dom.timerBtnPause.classList.toggle("hidden", true);
-	dom.timerBtnPlay.classList.toggle("hidden", false);
-	dom.timerBtnPlay.focus();
+	dom.timerBtnStop.classList.toggle("hidden", true);
+	dom.timerBtnStart.classList.toggle("hidden", false);
+	dom.timerBtnStart.focus();
 	
 	umami.track("timer-used", {
-		"event": "pause",
+		"event": "stop",
 		"currentTime": timeDiffToMsInverse(timerData.total),
 	});
 });
 
-dom.timerBtnRestart.addEventListener("click", function () {
+dom.timerBtnReset.addEventListener("click", function () {
 	timerData.total = timerData.from;
 	timerData.running = false;
 	state.widgets.timer.timeRemaining = 0;
@@ -209,13 +209,13 @@ dom.timerBtnRestart.addEventListener("click", function () {
 	dom.timerTime.value = msToTimeDiff(timerData.from).replace("s", "");
 	dom.timerTime.disabled = false;
 	audio.stopReset("timerRing");
-	dom.timerBtnPlay.classList.toggle("hidden", false);
-	dom.timerBtnPause.classList.toggle("hidden", true);
-	dom.timerBtnRestart.classList.toggle("hidden", true);
-	dom.timerBtnPlay.focus();
+	dom.timerBtnStart.classList.toggle("hidden", false);
+	dom.timerBtnStop.classList.toggle("hidden", true);
+	dom.timerBtnReset.classList.toggle("hidden", true);
+	dom.timerBtnStart.focus();
 	
-	umami.track("timer-restart", {
-		"event": "restart",
+	umami.track("timer-reset", {
+		"event": "reset",
 		"currentTime": timeDiffToMsInverse(timerData.total),
 	});
 });
@@ -264,7 +264,7 @@ dom.toggleNotes.addEventListener("click", _ => togglers.notes("widgetMenu"));
 
 let notesOpened = false;
 let Quill = null;
-let editor = null;
+export let editor = null;
 let lastChanged = null;
 async function setUpQuill () {
 	if (notesOpened) return;
@@ -337,6 +337,7 @@ async function setUpQuill () {
 		dom.notesStatus.textContent = "* Saving changes...";
 		lastChanged = Date.now();
 	});
+	editor.focus();
 }
 
 // updates

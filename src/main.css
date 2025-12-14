@@ -139,6 +139,11 @@ aside.sidebarVisible {
 	}
 }
 
+.sbPage[data-page-name="keyboardShortcuts"] code {
+	background-color: oklch(from var(--theme-bg) calc(l - calc(0.03 * var(--l-change-multiplier))) c h);
+	padding: 0.5rem;
+}
+
 .sbOption {
 	padding: 1rem;
 	background-color: oklch(from var(--theme-bg) calc(l + calc(0.05 * var(--l-change-multiplier))) c h);

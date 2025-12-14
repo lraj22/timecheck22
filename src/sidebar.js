@@ -13,7 +13,7 @@ const pageIdsToName = {
 };
 let currentPage = null;
 
-export function navigateToSidebarPage (page) {
+export function navigateToSidebarPage (page, lackedUserInteraction) {
 	if (!(page in pageIdsToName)) {
 		console.error(`Invalid page '${page}' sent to navigateToSidebarPage.`);
 		return;
@@ -27,7 +27,7 @@ export function navigateToSidebarPage (page) {
 	dom.sbBack.style.visibility = (page !== "home") ? "visible" : "hidden"; // change back button visibility
 	currentPage = page.toString(); // change 'currentPage' (w/ duplicate variable)
 	
-	umami.track("sidebar-page-navigated", {
+	if (lackedUserInteraction) umami.track("sidebar-page-navigated", {
 		"page": page,
 	});
 }
@@ -181,4 +181,4 @@ dom.disableAnalytics.addEventListener("click", _ => {
 	alert("Analytics disabled.");
 });
 
-navigateToSidebarPage("home");
+navigateToSidebarPage("home", true);
