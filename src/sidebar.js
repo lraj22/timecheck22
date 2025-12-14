@@ -84,6 +84,7 @@ dom.sidebarLocation.addEventListener("dblclick", _ => {
 	);
 	if (foundPage) {
 		navigateToSidebarPage(foundPage[0]);
+		toggleSidebar(true);
 	} else {
 		alert("That page wasn't found.");
 	}
@@ -127,16 +128,16 @@ function removeHighlight () {
 dom.statusMiddle.addEventListener("click", function () {
 	let schoolSelected = !this.querySelector("span.linklike");
 	if (schoolSelected) {
-		toggleSidebar(true);
 		navigateToSidebarPage("school");
+		toggleSidebar(true);
 		
 		umami.track("school-name-clicked", {
 			"alreadySelected": true,
 		});
 	} else {
 		console.log("ONBOARDING!");
-		toggleSidebar(true);
 		navigateToSidebarPage("home");
+		toggleSidebar(true);
 		dom.schoolOption.classList.add("element-highlight");
 		dom.schoolOption.addEventListener("click", removeHighlight);
 		
