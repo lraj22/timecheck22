@@ -315,34 +315,46 @@
 		</div>
 		
 		<!-- stopwatch -->
-		<div id="stopwatch" class="widget hidden">
-			<div id="stopwatchDrag" class="dragger material-symbols-outlined">drag_handle</div>
-			<div id="stopwatchTime">0.00</div>
-			<div class="widgetButtons">
-				<button type="button" id="stopwatchBtnPlay" title="Start/resume" class="btnClean material-symbols-outlined">play_arrow</button>
-				<button type="button" id="stopwatchBtnPause" title="Pause" class="btnClean material-symbols-outlined hidden">pause</button>
-				<button type="button" id="stopwatchBtnRestart" title="Reset" class="btnClean material-symbols-outlined hidden">replay</button>
+		<div id="stopwatch" class="widget v-hidden">
+			<div class="widgetContent">
+				<div id="stopwatchDrag" class="dragger material-symbols-outlined">drag_handle</div>
+				<div id="stopwatchTime">0.00</div>
+				<div class="widgetButtons">
+					<button type="button" id="stopwatchBtnPlay" title="Start/resume" class="btnClean material-symbols-outlined">play_arrow</button>
+					<button type="button" id="stopwatchBtnPause" title="Pause" class="btnClean material-symbols-outlined hidden">pause</button>
+					<button type="button" id="stopwatchBtnRestart" title="Reset" class="btnClean material-symbols-outlined hidden">replay</button>
+				</div>
 			</div>
+			<div class="closer"></div>
+			<div class="resizer"></div>
 		</div>
 		<!-- timer -->
-		<div id="timer" class="widget hidden">
-			<div id="timerDrag" class="dragger material-symbols-outlined">drag_handle</div>
-			<input id="timerTime" value="10:00" placeholder="00:00:00">
-			<div class="widgetButtons">
-				<button type="button" id="timerBtnPlay" title="Start/resume" class="btnClean material-symbols-outlined">play_arrow</button>
-				<button type="button" id="timerBtnPause" title="Pause" class="btnClean material-symbols-outlined hidden">pause</button>
-				<button type="button" id="timerBtnRestart" title="Reset" class="btnClean material-symbols-outlined hidden">replay</button>
+		<div id="timer" class="widget v-hidden">
+			<div class="widgetContent">
+				<div id="timerDrag" class="dragger material-symbols-outlined">drag_handle</div>
+				<input id="timerTime" value="10:00" placeholder="00:00:00">
+				<div class="widgetButtons">
+					<button type="button" id="timerBtnPlay" title="Start/resume" class="btnClean material-symbols-outlined">play_arrow</button>
+					<button type="button" id="timerBtnPause" title="Pause" class="btnClean material-symbols-outlined hidden">pause</button>
+					<button type="button" id="timerBtnRestart" title="Reset" class="btnClean material-symbols-outlined hidden">replay</button>
+				</div>
 			</div>
 			<div id="timerMute" class="material-symbols-outlined" title="Click to mute the timer">volume_up</div>
+			<div class="closer"></div>
+			<div class="resizer"></div>
 		</div>
 		<!-- notes -->
-		<div id="notes" class="widget hidden">
-			<div id="notesDrag" class="dragger material-symbols-outlined">drag_handle</div>
-			<div id="notesEditor"></div>
-			<p id="notesStatus">Changes saved.</p>
-			<div class="widgetButtons">
-				<!-- Coming soon? <button type="button" id="notesToSidebar" class="btnClean">Move to sidebar</button> -->
+		<div id="notes" class="widget v-hidden">
+			<div class="widgetContent">
+				<div id="notesDrag" class="dragger material-symbols-outlined">drag_handle</div>
+				<div id="notesEditor"></div>
+				<p id="notesStatus">Changes saved.</p>
+				<div class="widgetButtons">
+					<!-- Coming soon? <button type="button" id="notesToSidebar" class="btnClean">Move to sidebar</button> -->
+				</div>
 			</div>
+			<div class="closer"></div>
+			<div class="resizer"></div>
 		</div>
 		
 		<!-- fullscreen area -->

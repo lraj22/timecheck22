@@ -1,5 +1,5 @@
 import audio from "./audio";
-import { dom, msToTimeDiff, state, updateState } from "./util";
+import { dom, doOnLoad, msToTimeDiff, state, updateState } from "./util";
 
 const timePartMultipliers = [1e3, 60e3, 3600e3, 24 * 3600e3];
 export var stopwatchData = {
@@ -80,17 +80,46 @@ function useNewTimerTime (updateFrom) {
 }
 useNewTimerTime(false);
 
+const togglers = {
+	"stopwatch": function (source) {
+		let isOpen = (dom.toggleStopwatch.getAttribute("data-state") === "open");
+		dom.toggleStopwatch.textContent = (isOpen ? "Open" : "Close") + " stopwatch";
+		dom.toggleStopwatch.setAttribute("data-state", isOpen ? "closed" : "open");
+		dom.stopwatch.classList.toggle("v-hidden");
+		
+		umami.track("stopwatch-toggled", {
+			"newState": isOpen ? "closed" : "open",
+			"source": source,
+		});
+	},
+	"timer": function (source) {
+		let isOpen = (dom.toggleTimer.getAttribute("data-state") === "open");
+		dom.toggleTimer.textContent = (isOpen ? "Open" : "Close") + " timer";
+		dom.toggleTimer.setAttribute("data-state", isOpen ? "closed" : "open");
+		dom.timer.classList.toggle("v-hidden");
+		
+		umami.track("timer-toggled", {
+			"newState": isOpen ? "closed" : "open",
+			"source": source,
+		});
+	},
+	"notes": function (source) {
+		let isOpen = (dom.toggleNotes.getAttribute("data-state") === "open");
+		dom.toggleNotes.textContent = (isOpen ? "Open" : "Close") + " notes";
+		dom.toggleNotes.setAttribute("data-state", isOpen ? "closed" : "open");
+		dom.notes.classList.toggle("v-hidden");
+		
+		setUpQuill(); // only happens once due to a safety check in function
+		
+		umami.track("notes-toggled", {
+			"newState": isOpen ? "closed" : "open",
+			"source": source,
+		});
+	},
+};
+
 // stopwatch
-dom.toggleStopwatch.addEventListener("click", function () {
-	let isOpen = (dom.toggleStopwatch.getAttribute("data-state") === "open");
-	dom.toggleStopwatch.textContent = (isOpen ? "Open" : "Close") + " stopwatch";
-	dom.toggleStopwatch.setAttribute("data-state", isOpen ? "closed" : "open");
-	dom.stopwatch.classList.toggle("hidden");
-	
-	umami.track("stopwatch-toggled", {
-		"newState": isOpen ? "closed" : "open",
-	});
-});
+dom.toggleStopwatch.addEventListener("click", _ => togglers.stopwatch("widgetMenu"));
 
 dom.stopwatchBtnPlay.addEventListener("click", function () {
 	stopwatchData.startTime = performance.now();
@@ -139,16 +168,7 @@ dom.stopwatchBtnRestart.addEventListener("click", function () {
 });
 
 // timer
-dom.toggleTimer.addEventListener("click", function () {
-	let isOpen = (dom.toggleTimer.getAttribute("data-state") === "open");
-	dom.toggleTimer.textContent = (isOpen ? "Open" : "Close") + " timer";
-	dom.toggleTimer.setAttribute("data-state", isOpen ? "closed" : "open");
-	dom.timer.classList.toggle("hidden");
-	
-	umami.track("timer-toggled", {
-		"newState": isOpen ? "closed" : "open",
-	});
-});
+dom.toggleTimer.addEventListener("click", _ => togglers.timer("widgetMenu"));
 
 dom.timerBtnPlay.addEventListener("click", function () {
 	timerData.startTime = performance.now();
@@ -240,18 +260,7 @@ const openingLines = [
 	"Today's a great day to be kind.",
 	"A blank page is filled with opportunity.",
 ];
-dom.toggleNotes.addEventListener("click", _ => {
-	let isOpen = (dom.toggleNotes.getAttribute("data-state") === "open");
-	dom.toggleNotes.textContent = (isOpen ? "Open" : "Close") + " notes";
-	dom.toggleNotes.setAttribute("data-state", isOpen ? "closed" : "open");
-	dom.notes.classList.toggle("hidden");
-	
-	setUpQuill(); // only happens once due to a safety check in function
-	
-	umami.track("notes-toggled", {
-		"newState": isOpen ? "closed" : "open",
-	});
-});
+dom.toggleNotes.addEventListener("click", _ => togglers.notes("widgetMenu"));
 
 let notesOpened = false;
 let Quill = null;
@@ -350,13 +359,18 @@ function saveWidgetStates () {
 setInterval(saveWidgetStates, 2000);
 
 // all widgets
-makeDraggable(dom.stopwatch, dom.stopwatchDrag);
-makeDraggable(dom.timer, dom.timerDrag);
-makeDraggable(dom.notes, dom.notesDrag);
+const widgets = [dom.stopwatch, dom.timer, dom.notes];
+widgets.forEach(widget => {
+	makeDraggable(widget, dom[widget.id + "Drag"]);
+	makeResizableDiv(widget);
+	widget.querySelector(".closer").addEventListener("click", _ => {
+		togglers[widget.id]("closeBtn");
+	});
+});
 
 function makeDraggable(element, dragger) {
 	function mousemoveDrag (e) {
-		e.preventDefault();
+		if ("preventDefault" in e) e.preventDefault();
 		posX1 = mouseX - e.clientX;
 		posY1 = mouseY - e.clientY;
 		mouseX = e.clientX;
@@ -365,7 +379,15 @@ function makeDraggable(element, dragger) {
 		element.style.left = (element.offsetLeft - posX1) + "px";
 	}
 	
-	var posX1 = 0, posY1 = 0, mouseX = 0, mouseY = 0;
+	var posX1, posY1, mouseX, mouseY;
+	doOnLoad(_ => {
+		let boundingRect = element.getBoundingClientRect();
+		posX1 = 0, posY1 = 0, mouseX = boundingRect.x, mouseY = boundingRect.y;
+		mousemoveDrag({
+			"clientX": mouseX,
+			"clientY": mouseY,
+		});
+	});
 	dragger.addEventListener("mousedown", function (e) {
 		e.preventDefault();
 		document.body.classList.add("dragging");
@@ -386,16 +408,17 @@ function makeDraggable(element, dragger) {
 		});
 		dragger.addEventListener("touchend", ontouchend);
 		dragger.addEventListener("touchcancel", ontouchend);
+		if (ev.targetTouches[0]) {
+			mouseX = ev.targetTouches[0].clientX;
+			mouseY = ev.targetTouches[0].clientY;
+		}
 	
 		function ontouchmove (e) {
 			e.preventDefault();
 			let total = e.targetTouches.length;
 			for (let i = 0; i < total; i++) {
 				let target = e.targetTouches[i];
-				var x = target.clientX - dragger.clientWidth/2 + "px";
-				var y = target.clientY - dragger.clientHeight/2 + "px";
-				element.style.left = x;
-				element.style.top = y;
+				mousemoveDrag(target);
 			}
 		}
 		
@@ -404,6 +427,61 @@ function makeDraggable(element, dragger) {
 			dragger.removeEventListener("touchmove", ontouchmove);
 			dragger.removeEventListener("touchend", ontouchend);
 			dragger.removeEventListener("touchcancel", ontouchend);
+		}
+	
+	});
+}
+
+function makeResizableDiv (element) {
+	if (!element) return;
+	const resizer = element.querySelector(".resizer");
+	if (!resizer) return;
+	
+	function mousemoveDrag (e) {
+		if (typeof e.preventDefault === "function") e.preventDefault();
+		
+		let newWidth = e.pageX - element.getBoundingClientRect().left;
+		let newHeight = e.pageY - element.getBoundingClientRect().top;
+		newWidth = Math.max(minWidth, newWidth);
+		newHeight = Math.max(minHeight, newHeight);
+		element.style.width = newWidth + "px";
+		element.style.height = newHeight + "px";
+	}
+	
+	const minWidth = parseFloat(getComputedStyle(element).minWidth);
+	const minHeight = parseFloat(getComputedStyle(element).minHeight);
+	resizer.addEventListener("mousedown", e => {
+		e.preventDefault();
+		function mousemoveUp () {
+			window.removeEventListener("mouseup", mousemoveUp);
+			window.removeEventListener("mousemove", mousemoveDrag);
+		}
+		window.addEventListener("mouseup", mousemoveUp);
+		window.addEventListener("mousemove", mousemoveDrag);
+	});
+	
+	resizer.addEventListener("touchstart", _ => {
+		document.body.classList.add("dragging");
+		resizer.addEventListener("touchmove", ontouchmove, {
+			"passive": false,
+		});
+		resizer.addEventListener("touchend", ontouchend);
+		resizer.addEventListener("touchcancel", ontouchend);
+	
+		function ontouchmove (e) {
+			e.preventDefault();
+			let total = e.targetTouches.length;
+			for (let i = 0; i < total; i++) {
+				let target = e.targetTouches[i];
+				mousemoveDrag(target);
+			}
+		}
+		
+		function ontouchend () {
+			document.body.classList.remove("dragging");
+			resizer.removeEventListener("touchmove", ontouchmove);
+			resizer.removeEventListener("touchend", ontouchend);
+			resizer.removeEventListener("touchcancel", ontouchend);
 		}
 	
 	});

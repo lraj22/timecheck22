@@ -283,6 +283,9 @@ let userInfo = {};
 if (ENVIRONMENT === "dev") {
 	userInfo.env = "dev";
 	userInfo.profile = localStorage.getItem("profile");
+} else {
+	if (location.hostname === "timecheck22.lraj22.xyz") userInfo.env = "prod";
+	else userInfo.env = `unknown (${location.host})`;
 }
 userInfo.schoolId = settings.schoolId;
 userInfo.schoolName = schools[schoolIdMappings[settings.schoolId]]?.name;

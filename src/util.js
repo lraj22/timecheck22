@@ -199,6 +199,12 @@ export function popup (message) {
 	
 	document.body.appendChild(popupEl);
 }
+let hasLoaded = document.readyState === "complete";
+if (!hasLoaded) window.addEventListener("load", _ => hasLoaded = true);
+export function doOnLoad (fn) {
+	if (hasLoaded) requestAnimationFrame(fn);
+	else window.addEventListener("load", _ => requestAnimationFrame(fn));
+}
 
 
 

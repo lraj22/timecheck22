@@ -145,7 +145,8 @@ aside.sidebarVisible {
 	border-radius: 0.5rem;
 	border: 1px solid rgba(255, 255, 255, 0.255);
 	cursor: pointer;
-	transition: all 250ms;
+	transition-property: background-color, padding-left, outline, border;
+	transition-duration: 250ms;
 	margin-bottom: 0.5rem;
 	position: relative;
 }
@@ -516,7 +517,7 @@ body:has(#fullscreen.fullscreenPresent) .simFullscreenHide:not(#fullscreen *) {
 	}
 }
 
-/* stopwatch & timer */
+/* widgets */
 .widget {
 	background-color: var(--theme-bg);
 	border: 1px solid rgba(127, 127, 127, 0.5);
@@ -524,15 +525,20 @@ body:has(#fullscreen.fullscreenPresent) .simFullscreenHide:not(#fullscreen *) {
 	padding: 0.5rem;
 	padding-top: 0;
 	position: fixed;
-	resize: both;
-	overflow: hidden;
-	display: flex;
-	flex-direction: column;
 	min-width: 100px;
 	min-height: 50px;
 	width: 200px;
 	max-width: 100vw;
+	box-sizing: border-box;
 	z-index: 20;
+}
+
+.widgetContent {
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
 }
 
 .widget:hover {
@@ -555,7 +561,6 @@ body:has(#fullscreen.fullscreenPresent) .simFullscreenHide:not(#fullscreen *) {
 	min-width: 200px;
 	width: 400px;
 	height: 300px;
-	/* overflow: unset; TODO: this is needed for popups in the editor to overflow out of the notes box; however, we can't have it because it would force the resize: both to turn into resize: none, which is currently more important */
 }
 
 .dragger {
@@ -568,6 +573,44 @@ body:has(#fullscreen.fullscreenPresent) .simFullscreenHide:not(#fullscreen *) {
 
 .dragging {
 	cursor: grabbing!important;
+}
+
+.widget .resizer {
+	position: absolute;
+	background: var(--theme-bg);
+	width: 30px; /* if changing this, update widgets.js too */
+	height: 30px;
+	border-radius: 50%;
+	border: 3px solid var(--theme-fg);
+	box-sizing: border-box;
+	bottom: -15px;
+	right: -15px;
+	cursor: se-resize;
+	opacity: 0;
+}
+
+.widget:hover .resizer, .widget:hover .closer {
+	opacity: 1;
+}
+
+.widget .closer {
+	position: absolute;
+	background: oklch(from var(--theme-bg) calc(l + calc(var(--l-change-multiplier) * 0.05)) c h);
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	box-sizing: border-box;
+	top: -10px;
+	left: -10px;
+	cursor: pointer;
+	opacity: 0;
+	text-align: center;
+	line-height: 20px;
+	color: red;
+}
+
+.widget .closer::after {
+	content: "×";
 }
 
 #stopwatchTime, #timerTime {
@@ -622,7 +665,8 @@ body:has(#fullscreen.fullscreenPresent) .simFullscreenHide:not(#fullscreen *) {
 	border: none;
 	border-radius: 0.15rem;
 	cursor: pointer;
-	transition: all 100ms;
+	transition-property: background-color, color, box-shadow, top, outline;
+	transition-duration: 100ms;
 	
 	/* these styles make it a "pressable" button */
 	padding: 0.4em 1em;
