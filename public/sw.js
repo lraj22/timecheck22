@@ -1,15 +1,35 @@
 // Establish a cache name
-const cacheName = "TC22Cache_Nov2025_v1";
+const cacheName = "TC22Cache_Dec2025_v1";
 const base = "/";
 const cachedItems = [
+	// main page
 	"index.html",
+	
+	// js
 	"main.js",
-	"shared/settings.js",
+	"shared/_commonjsHelpers.js",
+	"shared/underlays.js",
+	"shared/quill.js",
+	"shared/migrate-v1-to-v2.js",
+	
+	// css
 	"main.css",
+	"quill.css",
+	"quill2.css",
+	
+	// assets
 	"favicon.ico",
 	"favicons/favicon-32.png",
 	"favicons/favicon-16.png",
 	"sw.js",
+	
+	// extras (context editor)
+	"context.html",
+	"contextEditor.js",
+	"context.css",
+	
+	// extras (migrate v1 to v2)
+	"migrate-v1-to-v2.html",
 ].map(item => base + item);
 
 var debugLogs = false;
