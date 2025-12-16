@@ -60,6 +60,8 @@ window.addEventListener("keydown", e => {
 	})) {
 		currentMelody = [];
 		document?.activeElement?.blur?.(); // blur document if necessary
+		e.preventDefault();
+		return;
 	}
 	
 	if (e.target.matches("input, select, textarea, .ql-editor")) return; // don't trigger shortcuts when focused in editing area
@@ -85,6 +87,7 @@ window.addEventListener("keydown", e => {
 	
 	if (actionComplete) {
 		currentMelody = []; // they hit a valid chord, not attempting to do a melody
+		e.preventDefault();
 		return;
 	}
 	
@@ -92,8 +95,9 @@ window.addEventListener("keydown", e => {
 	if (eventChordMatch(e, { "shift": null, })) { // aka, no modifiers, just a key
 		if (e.key !== "Shift") {
 			currentMelody.push(e.key.toLowerCase());
-			console.log(e.key); // testing only
+			// console.log(e.key); // testing only
 		}
+		e.preventDefault();
 	} else return; // unmatched chords should not accidentally hit melodies
 	
 	function simFullscreenEl (el) {
@@ -173,7 +177,6 @@ window.addEventListener("keydown", e => {
 	else matchedSomething = false;
 	
 	if (matchedSomething) {
-		e.preventDefault();
 		currentMelody = [];
 	}
 });
