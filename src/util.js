@@ -65,13 +65,13 @@ export const schools = [
 	// high schools
 	{
 		"id": 1,
-		"name": "Chino Hills High School",
+		"name": "Chino Hills High School (California)",
 		"repo": "lraj22/chhs-clockdata",
 		"category": "high",
 	},
 	{
 		"id": 3,
-		"name": "Ayala High School",
+		"name": "Ayala High School (California)",
 		"repo": "ilovecats567/ayalahs-clockdata",
 		"category": "high",
 	},
@@ -79,8 +79,14 @@ export const schools = [
 	// middle schools
 	{
 		"id": 2,
-		"name": "Cal Aero Preserve Academy JH",
+		"name": "Cal Aero Preserve Academy JH (California)",
 		"repo": "lraj23/capa-clockdata",
+		"category": "middle",
+	},
+	{
+		"id": 4,
+		"name": "Ruth Fox Middle School (Michigan)",
+		"repo": "IonixV/rfms-clockdata",
 		"category": "middle",
 	},
 	
