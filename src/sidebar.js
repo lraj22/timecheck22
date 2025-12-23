@@ -13,7 +13,7 @@ const pageIdsToName = {
 };
 let currentPage = null;
 
-export function navigateToSidebarPage (page, lackedUserInteraction) {
+export function navigateToSidebarPage (page, opts) {
 	if (!(page in pageIdsToName)) {
 		console.error(`Invalid page '${page}' sent to navigateToSidebarPage.`);
 		return;
@@ -27,7 +27,8 @@ export function navigateToSidebarPage (page, lackedUserInteraction) {
 	dom.sbBack.style.visibility = (page !== "home") ? "visible" : "hidden"; // change back button visibility
 	currentPage = page.toString(); // change 'currentPage' (w/ duplicate variable)
 	
-	if (lackedUserInteraction) umami.track("sidebar-page-navigated", {
+	if (typeof opts !== "object") opts = {};
+	if (!opts.noAnalytics) umami.track("sidebar-page-navigated", {
 		"page": page,
 	});
 }
@@ -182,4 +183,6 @@ dom.disableAnalytics.addEventListener("click", _ => {
 	alert("Analytics disabled.");
 });
 
-navigateToSidebarPage("home", true);
+navigateToSidebarPage("home", {
+	"noAnalytics": true, // this should not count as navigating to a page (it happens every page load)
+});

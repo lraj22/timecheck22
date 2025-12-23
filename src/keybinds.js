@@ -116,34 +116,6 @@ window.addEventListener("keydown", e => {
 		navigateToSidebarPage("keyboardShortcuts");
 		toggleSidebar(true);
 	}
-	// actual fullscreen
-	else if (eventMelodyMatch("ff")) dom.toggleFullscreen.click(); // [f]ullscreen [f]or real (actual system fullscreen)
-	// simulated fullscreen
-	else if (eventMelodyMatch("ft")) simFullscreenEl(dom.time); // [f]ullscreen [t]ime
-	else if (eventMelodyMatch("fo")) simFullscreenEl(dom.timeOver); // [f]ullscreen time [o]ver
-	else if (eventMelodyMatch("fl")) simFullscreenEl(dom.timeLeft); // [f]ullscreen time [l]eft
-	else if (eventMelodyMatch("fp")) simFullscreenEl(dom.period); // [f]ullscreen [p]eriod
-	else if (eventMelodyMatch("fd")) simFullscreenEl(dom.date); // [f]ullscreen [d]ate
-	else if (eventMelodyMatch("fx")) dom.fullscreen.click(); // [f]ullscreen e[x]it
-	// sidebar
-	else if (eventMelodyMatch("st")) dom.toggleSidebar.click(); // [s]idebar [t]oggle
-	else if (eventMelodyMatch(["s", "enter"])) toggleSidebar(true); // [s]idebar open ([enter]=force open)
-	else if (eventMelodyMatch("sx")) dom.sbClose.click(); // [s]idebar e[x]it
-	else if (eventMelodyMatch(["s", "backspace"])) dom.sbBack.click(); // [s]idebar [backspace]=back
-	else if (eventMelodyMatch("s ")) dom.sidebarLocation.dispatchEvent(new MouseEvent("dblclick")); // [s]idebar page ([space]=input)
-	else if (eventMelodyMatch("sa")) { // [s]idebar open [a]bout page
-		navigateToSidebarPage("about");
-		toggleSidebar(true);
-	}
-	else if (/s\d+enter$/.test(currentMelody.join(""))) { // [s]idebar go to [number] page ([enter]=confirm)
-		let optionNumber = parseInt(/s(\d+)enter$/.exec(currentMelody.join(""))[1]);
-		let options = document.querySelectorAll(`.sbPage[data-page-name="home"] .sbOption`);
-		optionNumber = Math.max(1, Math.min(optionNumber, options.length));
-		options[optionNumber - 1].click();
-		let pageId = options[optionNumber - 1].getAttribute("data-navigate-to");
-		toggleSidebar(true);
-		document.querySelector(`[data-page-name="${pageId}"]`).focus();
-	}
 	// widgets
 	else if (eventMelodyMatch("wst", ["w", "s", "enter"])) dom.toggleStopwatch.click(); // [w]idget [s]topwatch [t]oggle
 	else if (eventMelodyMatch("wss")) (dom.stopwatchBtnStart.classList.contains("hidden") ? dom.stopwatchBtnStop : dom.stopwatchBtnStart).click(); // [w]idget [s]topwatch [s]tart/stop
@@ -172,6 +144,34 @@ window.addEventListener("keydown", e => {
 		buttonNumber = Math.max(1, Math.min(buttonNumber, buttons.length));
 		buttons[buttonNumber - 1].click();
 		buttons[buttonNumber - 1].focus();
+	}
+	// actual fullscreen
+	else if (eventMelodyMatch("ff")) dom.toggleFullscreen.click(); // [f]ullscreen [f]or real (actual system fullscreen)
+	// simulated fullscreen
+	else if (eventMelodyMatch("ft")) simFullscreenEl(dom.time); // [f]ullscreen [t]ime
+	else if (eventMelodyMatch("fo")) simFullscreenEl(dom.timeOver); // [f]ullscreen time [o]ver
+	else if (eventMelodyMatch("fl")) simFullscreenEl(dom.timeLeft); // [f]ullscreen time [l]eft
+	else if (eventMelodyMatch("fp")) simFullscreenEl(dom.period); // [f]ullscreen [p]eriod
+	else if (eventMelodyMatch("fd")) simFullscreenEl(dom.date); // [f]ullscreen [d]ate
+	else if (eventMelodyMatch("fx")) dom.fullscreen.click(); // [f]ullscreen e[x]it
+	// sidebar
+	else if (eventMelodyMatch("st")) dom.toggleSidebar.click(); // [s]idebar [t]oggle
+	else if (eventMelodyMatch(["s", "enter"])) toggleSidebar(true); // [s]idebar open ([enter]=force open)
+	else if (eventMelodyMatch("sx")) dom.sbClose.click(); // [s]idebar e[x]it
+	else if (eventMelodyMatch(["s", "backspace"])) dom.sbBack.click(); // [s]idebar [backspace]=back
+	else if (eventMelodyMatch("s ")) dom.sidebarLocation.dispatchEvent(new MouseEvent("dblclick")); // [s]idebar page ([space]=input)
+	else if (eventMelodyMatch("sa")) { // [s]idebar open [a]bout page
+		navigateToSidebarPage("about");
+		toggleSidebar(true);
+	}
+	else if (/s\d+enter$/.test(currentMelody.join(""))) { // [s]idebar go to [number] page ([enter]=confirm)
+		let optionNumber = parseInt(/s(\d+)enter$/.exec(currentMelody.join(""))[1]);
+		let options = document.querySelectorAll(`.sbPage[data-page-name="home"] .sbOption`);
+		optionNumber = Math.max(1, Math.min(optionNumber, options.length));
+		options[optionNumber - 1].click();
+		let pageId = options[optionNumber - 1].getAttribute("data-navigate-to");
+		toggleSidebar(true);
+		document.querySelector(`[data-page-name="${pageId}"]`).focus();
 	}
 	// nothing :[
 	else matchedSomething = false;
