@@ -7,20 +7,20 @@ Keeping track of school schedules can be confusing, especially when a special sc
 ## Features
 
 Current features:
-- See the time.
-- Customize the time display in settings.
-- Select a school in the 'Schools' tab and automatically follow its time!
-- Check out all of the schedules the school has in the 'Schedules' tab.
-- Change your theme to Dark/Light/Automatic, Misty Rose, or even Winter!
-- Enable fancy underlays like Grid and Lightspeed.
-- Adjust the colors and font to your liking.
-- Use the simple, no-confusion stopwatch & timer widgets.
-- Easy to use editor for the people who edit the schedules behind the scenes.
+- 🕓 See the time. Well, obviously.
+- 🔧 Customize the time display in settings.
+- 🏫 Select a school in the 'Schools' tab and automatically follow its time!
+- 🔍 Check out all of the schedules the school has in the 'Schedules' tab.
+- 🌓 Change your theme to Dark/Light/Automatic, Misty Rose, or even Winter!
+- ✨ Enable fancy underlays like Grid and Lightspeed.
+- 🎨 Adjust the colors and font to your liking.
+- ⏱ Use the dead simple stopwatch & timer widgets.
+- 📝 Note down your thoughts with the aptly named Notes widget - doubles as a todo list!
+- ⚙ Easy to use editor for the people who edit the schedules behind the scenes.
 
 Planned features:
-- Going to add more schools!
-- Notes app, doubles as a todo list.
-- You can suggest new features in the Issues tab. :D
+- [ ] ➕ Going to add more schools!
+- [ ] 💬 You can suggest new features in the Issues tab. :D
 
 ## What is context?
 
