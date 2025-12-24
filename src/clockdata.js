@@ -3,8 +3,15 @@
 import { DateTime, Interval } from "luxon";
 
 export default class Clockdata {
-	// {object} matchers - object of named functions that process the matching patterns
+	/**
+	 * @type {object} named functions that process the matching patterns
+	 */
 	matchers = {};
+	
+	/**
+	 * @type {string|null} current division, if any
+	 */
+	divisionId = null;
 	
 	// if you want custom parsing functions, just set it here
 	instantParser = null;
@@ -13,6 +20,7 @@ export default class Clockdata {
 	/**
 	 * Sets clockdata and matchers initially. Uses {}, or clockdata object when provided
 	 * @param {object} [cd] - Optional clockdata to set
+	 * @returns {void}
 	 */
 	constructor (cd) {
 		if (typeof cd === "object") {
@@ -51,6 +59,32 @@ export default class Clockdata {
 				...this.clockdata.matchers,
 			};
 		}
+	}
+	
+	/**
+	 * Sets the division ID used by the instance
+	 * @param {string|null} divId - division ID
+	 * @returns {void}
+	 */
+	setDivisionId (divId) {
+		this.divisionId = divId;
+	}
+	
+	/**
+	 * Gets the current division data, optionally by ID
+	 * @param {string|null} [divId] - the division ID to get (defaults to current)
+	 * @returns {object} division data if found, otherwise undefined
+	 */
+	getDivisionData (divId) {
+		let divisionToFind = null;
+		if (divId || (divId === null)) divisionToFind = divId;
+		else if (this.divisionId) divisionToFind = this.divisionId;
+		
+		return (this.getDivisions().find(division => {
+			if ((typeof division === "object") && ("details" in division) && ("division_id" in division.details)) {
+				return division.details.division_id === divisionToFind;
+			}
+		}) || {});
 	}
 	
 	/**
@@ -118,11 +152,9 @@ export default class Clockdata {
 	 * @returns {object|null} Full day override, or null if none/unavailable
 	 */
 	getFdoByDay (day) {
-		if (!("full_day_overrides" in this.clockdata)) return null;
-		
 		let now = this.getNowLuxon(day);
 		
-		for (let override of this.clockdata.full_day_overrides) {
+		for (let override of this.getFullDayOverrides()) {
 			for (let applyRule of override.applies) { // each FDO can have multiple apply blocks, go through them all
 				let appliesRange = (this.intervalParser || stringToLuxonDuration)(applyRule, this.getTimezone());
 				if (!appliesRange.contains(now)) continue; // if this applies block doesn't work, continue to next
@@ -232,11 +264,44 @@ export default class Clockdata {
 	}
 	
 	/**
+	 * Get ID of school
+	 * @returns {number|undefined} ID of school, or undefined if not available
+	 */
+	getSchoolId () {
+		// school ID can't be overridden by division
+		if (typeof this.clockdata.metadata !== "object") return undefined;
+		return (this.clockdata.metadata.school_id || undefined);
+	}
+	
+	/**
+	 * Get school name
+	 * @returns {string|undefined} School name, or undefined if not available
+	 */
+	getSchoolName () {
+		let division = this.getDivisionData();
+		let divisionSchoolName = (typeof division.metadata === "object") ? division.metadata.school_name : undefined;
+		let globalSchoolName = (typeof this.clockdata.metadata === "object") ? this.clockdata.metadata.school_name : undefined;
+		return (divisionSchoolName || globalSchoolName || undefined);
+	}
+	
+	/**
+	 * Get short school name
+	 * @returns {string|undefined} School name, or undefined if not available
+	 */
+	getSchoolShortName () {
+		let division = this.getDivisionData();
+		let divisionSchoolShortName = (typeof division.metadata === "object") ? division.metadata.short_name : undefined;
+		let globalSchoolShortName = (typeof this.clockdata.metadata === "object") ? this.clockdata.metadata.short_name : undefined;
+		return (divisionSchoolShortName || globalSchoolShortName || undefined);
+	}
+	
+	/**
 	 * Get timezone of school (if available)
 	 * @returns {string|undefined} Timezone of school (like "America/Los_Angeles"), or undefined if not available
 	 */
 	getTimezone () {
 		let timezone = undefined;
+		// timezone can't be overridden by division
 		if (("metadata" in this.clockdata) && ("timezone" in this.clockdata.metadata)) {
 			timezone = this.clockdata.metadata.timezone;
 		}
@@ -244,11 +309,21 @@ export default class Clockdata {
 	}
 	
 	/**
+	 * Returns all divisions data
+	 * @returns {object[]} All divisions data
+	 */
+	getDivisions () {
+		return (this.clockdata.divisions || []);
+	}
+	
+	/**
 	 * Returns all announcements
 	 * @returns {object[]} All announcements
 	 */
 	getAnnouncements () {
-		return (this.clockdata.announcements || []);
+		let divisionAnnouncements = (this.getDivisionData().announcements || []);
+		let globalAnnouncements = (this.clockdata.announcements || []);
+		return [...divisionAnnouncements, ...globalAnnouncements];
 	}
 	
 	/**
@@ -256,7 +331,29 @@ export default class Clockdata {
 	 * @returns {object[]} All scheduling rules
 	 */
 	getSchedulingRules () {
-		return this.clockdata.scheduling_rules || this.clockdata.schedulingRules || [];
+		let divisionSchedulingRules = (this.getDivisionData().scheduling_rules || []);
+		let globalSchedulingRules = (this.clockdata.scheduling_rules || this.clockdata.schedulingRules || []);
+		return [...divisionSchedulingRules, ...globalSchedulingRules];
+	}
+	
+	/**
+	 * Returns all schedules
+	 * @returns {object[]} All schedules
+	 */
+	getSchedules () {
+		let divisionSchedules = (this.getDivisionData().schedules || []);
+		let globalSchedules = (this.clockdata.schedules || []);
+		return [...divisionSchedules, ...globalSchedules];
+	}
+	
+	/**
+	 * Returns all full day overrides
+	 * @returns {object[]} All full day overrides
+	 */
+	getFullDayOverrides () {
+		let divisionFullDayOverrides = (this.getDivisionData().full_day_overrides || []);
+		let globalFullDayOverrides = (this.clockdata.full_day_overrides || []);
+		return [...divisionFullDayOverrides, ...globalFullDayOverrides];
 	}
 	
 	/**
@@ -264,7 +361,9 @@ export default class Clockdata {
 	 * @returns {object[]} All timeframe overrides
 	 */
 	getTimeframeOverrides () {
-		return (this.clockdata.timeframe_overrides || []);
+		let divisionTimeframeOverrides = (this.getDivisionData().timeframe_overrides || []);
+		let globalTimeframeOverrides = (this.clockdata.timeframe_overrides || []);
+		return [...divisionTimeframeOverrides, ...globalTimeframeOverrides];
 	}
 	
 	/**
@@ -273,12 +372,10 @@ export default class Clockdata {
 	 * @returns {object} Schedule (none schedule when not found)
 	 */
 	getScheduleById (id) {
-		if (!("schedules" in this.clockdata)) return {
+		return (this.getSchedules().find(schedule => schedule.id === id) || {
 			...noneSchedule,
 			"isOverride": false,
-		};
-		
-		return (this.clockdata.schedules.find(schedule => schedule.id === id) || noneSchedule);
+		});
 	}
 }
 

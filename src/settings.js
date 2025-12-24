@@ -72,9 +72,7 @@ export async function fetchContext (options) {
 		(("schoolId" in settings) && (settings.schoolId in schoolIdMappings))
 	) { // use school context url
 		if (schoolId.toString() === "-1") {
-			setClockdata({
-				"hasNothing": true,
-			});
+			setClockdata({});
 			return;
 		}
 		targetUrl = `https://raw.githubusercontent.com/${schools[schoolIdMappings[schoolId]].repo}/refs/heads/main/context.json`;

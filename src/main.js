@@ -1,6 +1,7 @@
 import {
 	clockdata,
 	dom,
+	clockdataSetYet,
 	updateTimingsTable,
 	escapeHtml,
 	msToTimeDiff,
@@ -105,8 +106,8 @@ function tick () {
 	// if clockdata has loaded
 	let cd = clockdata.clockdata;
 	if ("version" in cd) {
-		setContent("statusMiddle", (isSmallScreen) ? (cd.metadata.short_name || cd.metadata.shortName) : (cd.metadata.school_name || cd.metadata.school));
-	} else if (cd.hasNothing) { // special property if clockdata is loaded but empty (no school selected instead of not loaded yet)
+		setContent("statusMiddle", isSmallScreen ? clockdata.getSchoolShortName() : clockdata.getSchoolName());
+	} else if (clockdataSetYet) { // special property if clockdata is loaded but empty (no school selected instead of not loaded yet)
 		if (dom.statusMiddle.textContent !== "Select school") {
 			setHtml("statusMiddle", `<span tabindex="0" role="link" class="linklike">Select school</span>`);
 		}
@@ -162,7 +163,7 @@ function tick () {
 		
 		// write sidebar message
 		let fdoOccasion = (("override" in todaysSchedule) ? (todaysSchedule.override.occasion || todaysSchedule.override.name) : null);
-		let currentScheduleMsg = `<p>Today, ${escapeHtml(cd.metadata.short_name || cd.metadata.shortName)} is on <b>${escapeHtml(todaysSchedule.label)}</b> ${fdoOccasion ? "override schedule" : "schedule"}.${fdoOccasion ? (` The reason for this is ${escapeHtml(fdoOccasion)}, which is during ${appliesStrarrListify(todaysSchedule.override.applies)}.`) : ""}</p>`;
+		let currentScheduleMsg = `<p>Today, ${escapeHtml(clockdata.getSchoolShortName())} is on <b>${escapeHtml(todaysSchedule.label)}</b> ${fdoOccasion ? "override schedule" : "schedule"}.${fdoOccasion ? (` The reason for this is ${escapeHtml(fdoOccasion)}, which is during ${appliesStrarrListify(todaysSchedule.override.applies)}.`) : ""}</p>`;
 		if (timeFound && timeFound.isOverride) {
 			currentScheduleMsg += `<p>Currently, though, the schedule is on the following timeframe: <b>${escapeHtml(timeFound.occasion || timeFound.name)}</b>. It lasts from ${appliesStrarrListify(timeFound.duration)}.</p>`;
 		}

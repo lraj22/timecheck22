@@ -103,9 +103,11 @@ export const schoolIdMappings = Object.fromEntries(schools.map((school, index) =
 
 
 // clockdata & state related functions
+export let clockdataSetYet = false;
 export function setClockdata (newClockdata) { // when context is fetched, the new clockdata is applied!
 	let data = cloneObj(newClockdata || {});
 	clockdata.setClockdata(data);
+	clockdataSetYet = true;
 	
 	if (!("schedules" in data)) {
 		data.schedules = [];

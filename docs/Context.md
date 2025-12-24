@@ -12,6 +12,10 @@ Are you looking to convert your `"version": 1` context to `"version": 2` context
 
 It can do all the work automatically!
 
+## NOTICE: v2 to v3?
+
+v3 context might be coming soon! This guide will be updated accordingly when the time comes.
+
 ## Basic fields
 
 The context file is a JSON file called `context.json`. Wow, I couldn't have guessed! It comprises of some basic fields in the format below:
@@ -27,6 +31,8 @@ The context file is a JSON file called `context.json`. Wow, I couldn't have gues
 		"timezone": "America/Los_Angeles"
 	},
 	
+	"divisions": [],
+	
 	"announcements": [],
 	
 	"scheduling_rules": [],
@@ -41,13 +47,62 @@ The context file is a JSON file called `context.json`. Wow, I couldn't have gues
 ```
 
 These are the most basic fields:
-- `version`: Version of the context file. Should be `2`, since that's the latest. ~~I doubt this will change, but it's there.~~ Correction: I changed it from 1 to 2! If you still have a version 1 context, use the automatic 
+- `version`: Version of the context file. Should be `2`, since that's the latest. ~~I doubt this will change, but it's there.~~ Correction: I changed it from 1 to 2! If you still have a version 1 context, use the automatic context upgrade tool.
 - `last_updated_id`: A generic marker for when the file was last updated. Includes full year, month, then day, and then a two digit number representing the update number (`01` for first update that day, up to `99`). If for some reason you've updated more than 99 times, you can just switch to a larger ID, like `0100` to `9999`. This is just for recordkeeping and isn't actually used anywhere (yet?).
 - `metadata` contains basic properties related to the school itself.
 	- `school_id`: A unique ID given to each school to manage caching of responses. Nothing will explode if two schools use the same ID (see IAQ #1), but it should be different for each school in each context file.
 	- `school_name`: Name of the school, as commonly known by students there. For example: If your school is called "Ruben S. Ayala High School" but everyone calls it "Ayala High School", it would make sense to just put "Ayala High School" as the name, even though that's not the actual name.
 	- `short_name`: A very short form (like initials or so) of the school. For example, Chino Hills High School would be CHHS. This does not need to be unique.
 	- `timezone`: the timezone of the school. The clock is always in the timezone of the selected school. If no school is selected, the clock uses the user's local timezone.
+
+## Divisions
+
+This won't be used by all schools. However, some schools have different schedules for different groups of students, usually separated by grade level. For this reason, I called this "divisions" -- let me know if you have a better idea! For example, Ruth Fox Middle School has lunch break at different times for 7th and 8th graders. So, selecting just your school (RFMS) is not sufficient; one must also select a division.
+
+For schools to which this does not apply, leave this as an empty array (`[]`). The UI will not show anything about divisions. Divisions that exist are treated as additions/overrides to the global defaults. For example, any schedules defined here will only be available to reference in its respective division, any scheduling rules will only apply to users in this division, etc. Divisions can add to/override anything except for `metadata.school_id` and `metadata.timezone`. However, every field is optional. Here's an example of a completely filled out division for 9th graders of an exemplar high school.
+
+```json
+{
+	// ...
+	
+	"divisions": [
+		{
+			"details": {
+				"division_name": "9th graders",
+				"division_id": "9"
+			},
+			"metadata": {
+				"school_name": "Test HS for 9th graders",
+				"short_name": "THS/9"
+			},
+			"announcements": [
+				{
+					"message": "Only 9th graders can see this!",
+					"applies": ["8 am -- 4 pm"]
+				}
+			],
+			"scheduling_rules": [
+				// include exclusively relevant scheduling rules here...
+			],
+			"schedules": [
+				// include exclusively relevant schedules here...
+			],
+			"full_day_overrides": [
+				// include exclusively relevant FDOs here...
+			],
+			"timeframe_overrides": [
+				// include exclusively relevant TFOs here...
+			]
+		}
+		
+		// ... there would likely be similar divisions for 10th, 11th, and 12th ...
+	],
+	
+	// ...
+}
+```
+
+If a division has no particular scheduling rules to add, it can just completely exclude that field instead of leaving it as an empty array/object. Up to you!
 
 ## Announcements
 
@@ -437,6 +492,7 @@ In effect it's the same as writing `XXXX-XX-XX -- 2025-11-29` (start of 29 === e
 	],
 	
 	// ...
+}
 ```
 
 You don't actually need to specify an `id`, since this is a one-time use schedule. Also, you can leave out the `label` if you're fine with it automatically using the `occasion` key of the override as the label. But be sure to have the `timings`, since that will dictate the schedule that overrides the entire day. In my opinion, it's easier to just define this schedule in the `schedules` key and just specify the ID when needed, but it's up to you on what you think makes the most sense.
