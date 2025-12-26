@@ -127,11 +127,6 @@ dom.divisionSelect.addEventListener("change", _ => {
 	updateState();
 });
 
-function removeHighlight () {
-	this.classList.remove("element-highlight");
-	this.removeEventListener("click", removeHighlight);
-}
-
 // enable clicking the middle status text
 dom.statusMiddle.addEventListener("click", function () {
 	let schoolSelected = !this.querySelector("span.linklike");

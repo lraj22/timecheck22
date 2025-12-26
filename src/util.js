@@ -128,9 +128,11 @@ export function setClockdata (newClockdata) { // when context is fetched, the ne
 		dom.divisionSelectText.classList.remove("hidden");
 		dom.divisionSelect.innerHTML = "";
 		let selectedDivisionId = state.savedDivisions[settings.schoolId];
+		let pickedOne = null;
 		if (!selectedDivisionId) {
 			// no saved one? take the first division ID we can find
 			selectedDivisionId = divisions.find(division => division?.details?.division_id)?.details?.division_id;
+			pickedOne = false;
 		}
 		clockdata.setDivisionId(selectedDivisionId);
 		divisions.forEach(division => {
@@ -139,8 +141,14 @@ export function setClockdata (newClockdata) { // when context is fetched, the ne
 			option.textContent = division?.details?.division_label || "Untitled division";
 			option.value = divisionId;
 			option.selected = (divisionId === selectedDivisionId);
+			if ((pickedOne === null) && (divisionId === selectedDivisionId)) pickedOne = true;
 			dom.divisionSelect.appendChild(option);
 		});
+		console.log(selectedDivisionId, pickedOne);
+		if (!pickedOne) {
+			dom.divisionSelect.classList.add("element-highlight");
+			dom.divisionSelect.addEventListener("click", removeHighlight);
+		}
 	}
 	
 	// update the schedules
@@ -228,6 +236,10 @@ dom?.scheduleSelect?.addEventListener("change", updateTimingsTable);
 
 
 // misc functions
+export function removeHighlight () {
+	this.classList.remove("element-highlight");
+	this.removeEventListener("click", removeHighlight);
+}
 export function popup (message) {
 	let popupEl = document.createElement("div");
 	popupEl.innerHTML = message;
