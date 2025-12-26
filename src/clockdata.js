@@ -41,7 +41,7 @@ export default class Clockdata {
 	/**
 	 * Sets clockdata (and matchers in clockdata if any).
 	 * @param {object} cd - Optional clockdata to set
-	 * @returns {undefined} No return value
+	 * @returns {void}
 	 */
 	setClockdata (cd) {
 		if (typeof cd !== "object") {
@@ -280,7 +280,9 @@ export default class Clockdata {
 	getSchoolName () {
 		let division = this.getDivisionData();
 		let divisionSchoolName = (typeof division.metadata === "object") ? division.metadata.school_name : undefined;
+		let divisionShortLabel = (typeof division.metadata === "object") ? division.details.division_short_label : undefined;
 		let globalSchoolName = (typeof this.clockdata.metadata === "object") ? this.clockdata.metadata.school_name : undefined;
+		if (divisionShortLabel) globalSchoolName = globalSchoolName + ` (${divisionShortLabel})`;
 		return (divisionSchoolName || globalSchoolName || undefined);
 	}
 	

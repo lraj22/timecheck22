@@ -75,6 +75,12 @@ export const schools = [
 		"repo": "ilovecats567/ayalahs-clockdata",
 		"category": "high",
 	},
+	// {
+	// 	"id": 6,
+	// 	"name": "Chino High School/BST (California)",
+	// 	"repo": "~/chsbst-clockdata",
+	// 	"category": "high",
+	// },
 	
 	// middle schools
 	{
@@ -89,6 +95,12 @@ export const schools = [
 		"repo": "IonixV/rfms-clockdata",
 		"category": "middle",
 	},
+	// {
+	// 	"id": 5,
+	// 	"name": "Yorktown Middle School (Virginia)",
+	// 	"repo": "~/yms-clockdata",
+	// 	"category": "middle",
+	// },
 	
 	// testing
 	{
@@ -109,22 +121,40 @@ export function setClockdata (newClockdata) { // when context is fetched, the ne
 	clockdata.setClockdata(data);
 	clockdataSetYet = true;
 	
-	if (!("schedules" in data)) {
-		data.schedules = [];
+	// show division menu if necessary
+	let divisions = clockdata.getDivisions();
+	if (divisions.length === 0) dom.divisionSelectText.classList.add("hidden");
+	else {
+		dom.divisionSelectText.classList.remove("hidden");
+		dom.divisionSelect.innerHTML = "";
+		let selectedDivisionId = state.savedDivisions[settings.schoolId];
+		if (!selectedDivisionId) {
+			// no saved one? take the first division ID we can find
+			selectedDivisionId = divisions.find(division => division?.details?.division_id)?.details?.division_id;
+		}
+		clockdata.setDivisionId(selectedDivisionId);
+		divisions.forEach(division => {
+			let option = document.createElement("option");
+			let divisionId = (division?.details?.division_id || "no_id_provided")
+			option.textContent = division?.details?.division_label || "Untitled division";
+			option.value = divisionId;
+			option.selected = (divisionId === selectedDivisionId);
+			dom.divisionSelect.appendChild(option);
+		});
 	}
-	// update the schedules
-	let schedules = data.schedules;
-	schedules.push(noneSchedule);
 	
-	if (!("scheduleSelect" in dom)) return;
-	dom.scheduleSelect.innerHTML = `<option>Current schedule</option>`;
-	schedules.forEach(schedule => {
-		let option = document.createElement("option");
-		option.textContent = schedule.label;
-		option.value = schedule.id;
-		dom.scheduleSelect.appendChild(option);
-	});
-	updateTimingsTable();
+	// update the schedules
+	if ("scheduleSelect" in dom) {
+		let schedules = [...clockdata.getSchedules(), noneSchedule];
+		dom.scheduleSelect.innerHTML = `<option>Current schedule</option>`;
+		schedules.forEach(schedule => {
+			let option = document.createElement("option");
+			option.textContent = schedule.label;
+			option.value = schedule.id;
+			dom.scheduleSelect.appendChild(option);
+		});
+		updateTimingsTable();
+	}
 }
 
 // retrieve state from localforage
@@ -141,6 +171,7 @@ const defaultState = {
 			"content": null,
 		}
 	},
+	"savedDivisions": {},
 };
 export var state = await localforage.getItem("state");
 if (!state) {

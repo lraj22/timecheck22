@@ -1,5 +1,5 @@
 import { settings, updateSettings } from "./settings";
-import { dom, schoolIdMappings, schools } from "./util";
+import { clockdata, dom, schoolIdMappings, schools, updateState } from "./util";
 
 const pageIdsToName = {
 	"home": "Home",
@@ -115,9 +115,16 @@ dom.schoolSelect.addEventListener("change", function () {
 	updateSettings(true);
 	
 	umami.track("school-selected", {
-		"name": schoolIdMappings[settings.schoolId].name,
+		"name": schools[schoolIdMappings[settings.schoolId]].name,
 		"schoolId": settings.schoolId,
 	});
+});
+// update division state when changed
+dom.divisionSelect.addEventListener("change", _ => {
+	let divisionId = dom.divisionSelect.selectedOptions[0].value;
+	state.savedDivisions[settings.schoolId] = divisionId;
+	clockdata.setDivisionId(dom.divisionSelect.selectedOptions[0].value);
+	updateState();
 });
 
 function removeHighlight () {

@@ -168,7 +168,17 @@ function applySettings (fetchAfterwards) {
 		}
 	}
 	
-	if (fetchAfterwards) fetchContext();
+	if (!fetchAfterwards) return;
+	try {
+		let localClockdataList = JSON.parse(localStorage.getItem("useLocalClockdata"));
+		let repoIdentifier = schools[schoolIdMappings[settings.schoolId]].repo.split("/")[1].split("-")[0]; // aka take the chhs in lraj22/chhs-clockdata
+		if (localClockdataList.includes("*") || localClockdataList.includes(repoIdentifier)) fetchContext({
+			"targetUrl": `./clockdata/${repoIdentifier}-clockdata/context.json`,
+		});
+		else fetchContext();
+	} catch (e) {
+		fetchContext();
+	}
 }
 export async function updateSettings (fetchAfterwards, updatedSettings) {
 	if (updatedSettings) settings = cloneObj(updateSettings);

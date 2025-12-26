@@ -68,7 +68,8 @@ For schools to which this does not apply, leave this as an empty array (`[]`). T
 	"divisions": [
 		{
 			"details": {
-				"division_name": "9th graders",
+				"division_label": "9th graders",
+				"division_short_label": "9th",
 				"division_id": "9"
 			},
 			"metadata": {
@@ -102,7 +103,11 @@ For schools to which this does not apply, leave this as an empty array (`[]`). T
 }
 ```
 
-If a division has no particular scheduling rules to add, it can just completely exclude that field instead of leaving it as an empty array/object. Up to you!
+If a division has no particular scheduling rules to add, it can just completely exclude that field instead of leaving it as an empty array/object. Up to you! However, there are some mandatory fields:
+- `details`: This key only appears under `division` and does not override anything, just provides details about the division shown to the user.
+	- `division_label`: How the division appears to the user. Make it something user-friendly! Ex. "9th grade" and not "9_grd"
+	- `division_short_label`: This field is optional. If you don't override `metadata.school_name`, this will appear in parentheses after the school name like this: "Chino Hills High School" becomes "Chino Hills High School (9th)" if you set this to "9th".
+	- `division_id`: How the division is managed internally. Once set, never change it! If you change it, everyone who had that division will suddenly no longer have a division.
 
 ## Announcements
 
