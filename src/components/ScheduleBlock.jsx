@@ -26,9 +26,17 @@ export default function ScheduleBlock ({ schedules, setSchedules, index }) {
 	}
 	
 	return (
-		<div className="schedule">
-			<span>Schedule ID: </span>
-			<input type="text" name="id" value={schedule.id || ""} onChange={e => updateSchedule("id", e.target.value)} /><br />
+		<details className="schedule">
+			<summary>
+				<span>Schedule ID: </span>
+				<input type="text" name="id" value={schedule.id || ""} onChange={e => updateSchedule("id", e.target.value)} />
+				<br />
+				<button type="button" onClick={_ => moveSchedule(index, -1)} disabled={index === 0}>Move up</button>
+				<button type="button" onClick={_ => moveSchedule(index, 1)} disabled={index === (schedules.length - 1)}>Move down</button>
+				<button type="button" className="danger" onClick={_ => removeSchedule()}>Delete schedule</button>
+			</summary>
+			<hr />
+			
 			<span>Schedule label (name): </span>
 			<input type="text" name="label" value={schedule.label || ""} onChange={e => updateSchedule("label", e.target.value)} /><br />
 			<span>Timings:</span>
@@ -41,10 +49,6 @@ export default function ScheduleBlock ({ schedules, setSchedules, index }) {
 				"label": "Period Label",
 				"applies": "10:00 -- 11:00",
 			}])}>Add timing</button>
-			<br /><br />
-			<button type="button" onClick={_ => moveSchedule(index, -1)} disabled={index === 0}>Move up</button>
-			<button type="button" onClick={_ => moveSchedule(index, 1)} disabled={index === (schedules.length - 1)}>Move down</button>
-			<button type="button" className="danger" onClick={_ => removeSchedule()}>Delete schedule</button>
-		</div>
+		</details>
 	);
 }

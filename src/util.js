@@ -122,32 +122,33 @@ export function setClockdata (newClockdata) { // when context is fetched, the ne
 	clockdataSetYet = true;
 	
 	// show division menu if necessary
-	let divisions = clockdata.getDivisions();
-	if (divisions.length === 0) dom.divisionSelectText.classList.add("hidden");
-	else {
-		dom.divisionSelectText.classList.remove("hidden");
-		dom.divisionSelect.innerHTML = "";
-		let selectedDivisionId = state.savedDivisions[settings.schoolId];
-		let pickedOne = null;
-		if (!selectedDivisionId) {
-			// no saved one? take the first division ID we can find
-			selectedDivisionId = divisions.find(division => division?.details?.division_id)?.details?.division_id;
-			pickedOne = false;
-		}
-		clockdata.setDivisionId(selectedDivisionId);
-		divisions.forEach(division => {
-			let option = document.createElement("option");
-			let divisionId = (division?.details?.division_id || "no_id_provided")
-			option.textContent = division?.details?.division_label || "Untitled division";
-			option.value = divisionId;
-			option.selected = (divisionId === selectedDivisionId);
-			if ((pickedOne === null) && (divisionId === selectedDivisionId)) pickedOne = true;
-			dom.divisionSelect.appendChild(option);
-		});
-		console.log(selectedDivisionId, pickedOne);
-		if (!pickedOne) {
-			dom.divisionSelect.classList.add("element-highlight");
-			dom.divisionSelect.addEventListener("click", removeHighlight);
+	if (("divisionSelect" in dom) && ("divisionSelectText" in dom)) {
+		let divisions = clockdata.getDivisions();
+		if (divisions.length === 0) dom.divisionSelectText.classList.add("hidden");
+		else {
+			dom.divisionSelectText.classList.remove("hidden");
+			dom.divisionSelect.innerHTML = "";
+			let selectedDivisionId = state.savedDivisions[settings.schoolId];
+			let pickedOne = null;
+			if (!selectedDivisionId) {
+				// no saved one? take the first division ID we can find
+				selectedDivisionId = divisions.find(division => division?.details?.division_id)?.details?.division_id;
+				pickedOne = false;
+			}
+			clockdata.setDivisionId(selectedDivisionId);
+			divisions.forEach(division => {
+				let option = document.createElement("option");
+				let divisionId = (division?.details?.division_id || "no_id_provided")
+				option.textContent = division?.details?.division_label || "Untitled division";
+				option.value = divisionId;
+				option.selected = (divisionId === selectedDivisionId);
+				if ((pickedOne === null) && (divisionId === selectedDivisionId)) pickedOne = true;
+				dom.divisionSelect.appendChild(option);
+			});
+			if (!pickedOne) {
+				dom.divisionSelect.classList.add("element-highlight");
+				dom.divisionSelect.addEventListener("click", removeHighlight);
+			}
 		}
 	}
 	

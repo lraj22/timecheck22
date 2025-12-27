@@ -62,9 +62,13 @@ export default function FdoBlock ({ fullDayOverrides, setFullDayOverrides, index
 	}
 	
 	return (
-		<div className="announcement">
-			<span>Occasion: </span>
-			<input type="text" value={fdo.occasion} name="fdoOccasion" onChange={e => setOccasion(e.target.value)} /><br />
+		<details className="announcement">
+			<summary>
+				<span>Occasion: </span>
+				<input type="text" value={fdo.occasion} name="fdoOccasion" onChange={e => setOccasion(e.target.value)} /><br />
+				<button type="button" onClick={_ => removeFdo(index)} className="danger">Delete FDO</button>
+			</summary>
+			<hr />
 			
 			<span>Applies: </span>
 			<input type="date" value={start} name="fdoStart" onChange={e => setStartISO(e.target.value)} />
@@ -73,9 +77,7 @@ export default function FdoBlock ({ fullDayOverrides, setFullDayOverrides, index
 			<span> (excluded)</span><br /><br />
 			
 			<span>Schedule ID: </span>
-			<input type="text" value={fdo.schedule} name="fdoSchedule" onChange={e => setSchedule(e.target.value)} /><br />
-			
-			<button type="button" onClick={_ => removeFdo(index)} className="danger">Delete FDO</button>
-		</div>
+			<input type="text" value={fdo.schedule} name="fdoSchedule" onChange={e => setSchedule(e.target.value)} />
+		</details>
 	);
 }

@@ -63,9 +63,13 @@ export default function TfoBlock ({ timeframeOverrides, setTimeframeOverrides, i
 	}
 	
 	return (
-		<div className="announcement">
-			<span>Occasion: </span>
-			<input type="text" value={tfo.occasion} name="tfoOccasion" onChange={e => setOccasion(e.target.value)} /><br />
+		<details className="announcement">
+			<summary>
+				<span>Occasion: </span>
+				<input type="text" value={tfo.occasion} name="tfoOccasion" onChange={e => setOccasion(e.target.value)} /><br />
+				<button type="button" onClick={_ => removeTfo(index)} className="danger">Delete TFO</button>
+			</summary>
+			<hr />
 			
 			<span>Period name: </span>
 			<input type="text" value={tfo.label} name="tfoLabel" onChange={e => setLabel(e.target.value)} /><br />
@@ -74,8 +78,6 @@ export default function TfoBlock ({ timeframeOverrides, setTimeframeOverrides, i
 			<input type="datetime-local" value={start} name="tfoStart" onChange={e => setStartISO(e.target.value)} />
 			<span> to </span>
 			<input type="datetime-local" value={end} name="tfoEnd" onChange={e => setEndISO(e.target.value)} /><br /><br />
-			
-			<button type="button" onClick={_ => removeTfo(index)} className="danger">Delete TFO</button>
-		</div>
+		</details>
 	);
 }

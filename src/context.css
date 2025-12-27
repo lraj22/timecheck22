@@ -86,6 +86,10 @@ button + button {
 	margin-left: 0.5rem;
 }
 
+details hr {
+	margin: 1rem 0;
+}
+
 .danger {
 	color: red;
 }

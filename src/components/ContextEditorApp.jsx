@@ -11,6 +11,7 @@ import { stringToLuxonDuration } from "../clockdata";
 import TfoBlock from "./TfoBlock";
 import { transform_v1_to_v2 } from "../migrate-v1-to-v2";
 
+let uniqueId = 1e6; // just some big number so that each new item can have its own key
 export default function ContextEditorApp () {
 	let [version, setVersion] = useState("N (automatically upgrades to 2)");
 	let [lastUpdated, setLastUpdated] = useState("YYYY-MM-DD-XX");
@@ -88,13 +89,22 @@ export default function ContextEditorApp () {
 			setSchedulingRules(context.scheduling_rules || context.schedulingRules || []);
 		}
 		if ("schedules" in context) {
-			setSchedules(context.schedules);
+			setSchedules(context.schedules.map((schedule, i) => ({
+				...schedule,
+				"_key": i,
+			})));
 		}
 		if ("full_day_overrides" in context) {
-			setFullDayOverrides(context.full_day_overrides);
+			setFullDayOverrides(context.full_day_overrides.map((fdo, i) => ({
+				...fdo,
+				"_key": i,
+			})));
 		}
 		if ("timeframe_overrides" in context) {
-			setTimeframeOverrides(context.timeframe_overrides);
+			setTimeframeOverrides(context.timeframe_overrides.map((tfo, i) => ({
+				...tfo,
+				"_key": i,
+			})));
 		}
 	}
 	
@@ -136,7 +146,7 @@ export default function ContextEditorApp () {
 			"timeframe_overrides": sortedTfos,
 		});
 		
-		setEditResult(JSON.stringify(result, null, "\t") + "\n");
+		setEditResult(JSON.stringify(result, (key, value) => ((key !== "_key") ? value : undefined), "\t") + "\n");
 	}
 	
 	return (
@@ -206,14 +216,15 @@ export default function ContextEditorApp () {
 				{
 					schedules.map((schedule, i) => {
 						if (schedule.id === "none") return; // do not show 'none' schedule, they can't edit it
-						return <ScheduleBlock schedules={schedules} setSchedules={setSchedules} timezone={timezone} index={i} key={i} />;
+						return <ScheduleBlock schedules={schedules} setSchedules={setSchedules} timezone={timezone} index={i} key={schedule._key} />;
 					})
 				}
 				<button type="button" onClick={_ => {
 					setSchedules([...schedules, {
 						"id": "custom",
 						"label": "Custom Schedule",
-						"timings": []
+						"timings": [],
+						"_key": uniqueId++,
 					}]);
 				}}>Add schedule</button>
 			</div>
@@ -222,7 +233,7 @@ export default function ContextEditorApp () {
 			<div>
 				{
 					fullDayOverrides.map((fdo, i) => {
-						return <FdoBlock fullDayOverrides={fullDayOverrides} setFullDayOverrides={setFullDayOverrides} index={i} key={i} />
+						return <FdoBlock fullDayOverrides={fullDayOverrides} setFullDayOverrides={setFullDayOverrides} index={i} key={fdo._key} />
 					})
 				}
 				<button type="button" onClick={_ => {
@@ -230,6 +241,7 @@ export default function ContextEditorApp () {
 						"occasion": "New FDO",
 						"applies": [now.startOf("day").toFormat("yyyy-MM-dd") + " -- " + now.startOf("day").plus({ "days": 1 }).toFormat("yyyy-MM-dd")],
 						"schedule": "none",
+						"_key": uniqueId++,
 					}]);
 				}}>Add full day override</button>
 			</div>
@@ -238,7 +250,7 @@ export default function ContextEditorApp () {
 			<div>
 				{
 					timeframeOverrides.map((tfo, i) => {
-						return <TfoBlock timeframeOverrides={timeframeOverrides} setTimeframeOverrides={setTimeframeOverrides} index={i} key={i} />;
+						return <TfoBlock timeframeOverrides={timeframeOverrides} setTimeframeOverrides={setTimeframeOverrides} index={i} key={tfo._key} />;
 					})
 				}
 				<button type="button" onClick={_ => {
@@ -246,6 +258,7 @@ export default function ContextEditorApp () {
 						"occasion": "New TFO",
 						"label": "Example",
 						"applies": [now.startOf("hour").toFormat("yyyy-MM-dd/HH:mm") + " -- " + now.startOf("hour").plus({ "hours": 1 }).toFormat("yyyy-MM-dd/HH:mm")],
+						"_key": uniqueId++,
 					}]);
 				}}>Add timeframe override</button>
 			</div>
