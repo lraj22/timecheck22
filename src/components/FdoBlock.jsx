@@ -3,9 +3,9 @@ import { stringToLuxonDuration } from "../clockdata";
 import { DateTime } from "luxon";
 
 export default function FdoBlock ({ fullDayOverrides, setFullDayOverrides, index, timezone }) {
-	let fdo = fullDayOverrides[index];
+	let thisFdo = fullDayOverrides[index];
 	const contextFormat = "yyyy-MM-dd";
-	let { s, e } = stringToLuxonDuration(fdo.applies[0]);
+	let { s, e } = stringToLuxonDuration(thisFdo.applies[0]);
 	let [start, setStart] = useState(s.toFormat(contextFormat));
 	let [end, setEnd] = useState(e.toFormat(contextFormat));
 	
@@ -65,7 +65,7 @@ export default function FdoBlock ({ fullDayOverrides, setFullDayOverrides, index
 		<details className="announcement">
 			<summary>
 				<span>Occasion: </span>
-				<input type="text" value={fdo.occasion} name="fdoOccasion" onChange={e => setOccasion(e.target.value)} /><br />
+				<input type="text" value={thisFdo.occasion} name="fdoOccasion" onChange={e => setOccasion(e.target.value)} /><br />
 				<button type="button" onClick={_ => removeFdo(index)} className="danger">Delete FDO</button>
 			</summary>
 			<hr />
@@ -77,7 +77,7 @@ export default function FdoBlock ({ fullDayOverrides, setFullDayOverrides, index
 			<span> (excluded)</span><br /><br />
 			
 			<span>Schedule ID: </span>
-			<input type="text" value={fdo.schedule} name="fdoSchedule" onChange={e => setSchedule(e.target.value)} />
+			<input type="text" value={thisFdo.schedule} name="fdoSchedule" onChange={e => setSchedule(e.target.value)} />
 		</details>
 	);
 }

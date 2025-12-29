@@ -4,8 +4,8 @@ import { stringToLuxonDuration } from "../clockdata";
 import { DateTime } from "luxon";
 
 export default function AnnouncementBlock ({ announcements, setAnnouncements, index, timezone }) {
-	let announcement = announcements[index];
-	let { s, e } = stringToLuxonDuration(announcement.applies[0]);
+	let thisAnnouncement = announcements[index];
+	let { s, e } = stringToLuxonDuration(thisAnnouncement.applies[0]);
 	let [start, setStart] = useState(luxonToDatetimelocal(s));
 	let [end, setEnd] = useState(luxonToDatetimelocal(e));
 	const contextFormat = "yyyy-MM-dd/HH:mm";
@@ -56,7 +56,7 @@ export default function AnnouncementBlock ({ announcements, setAnnouncements, in
 	return (
 		<div className="announcement">
 			<span>Message: </span>
-			<input type="text" value={announcement.message} name="announcementMessage" onChange={e => setMessage(e.target.value)} /><br />
+			<input type="text" value={thisAnnouncement.message} name="announcementMessage" onChange={e => setMessage(e.target.value)} /><br />
 			
 			<span>Applies: </span>
 			<input type="datetime-local" value={start} name="announcementStart" onChange={e => setStartISO(e.target.value)} />

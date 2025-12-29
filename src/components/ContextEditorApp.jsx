@@ -10,6 +10,7 @@ import { DateTime } from "luxon";
 import { stringToLuxonDuration } from "../clockdata";
 import TfoBlock from "./TfoBlock";
 import { transform_v1_to_v2 } from "../migrate-v1-to-v2";
+import DivisionBlock from "./DivisionBlock";
 
 let uniqueId = 1e6; // just some big number so that each new item can have its own key
 export default function ContextEditorApp () {
@@ -19,6 +20,7 @@ export default function ContextEditorApp () {
 	let [commonName, setCommonName] = useState("");
 	let [shortName, setShortName] = useState("");
 	let [timezone, setTimezone] = useState("");
+	let [divisions, setDivisions] = useState([]);
 	let [announcements, setAnnouncements] = useState([]);
 	let [schedulingRules, setSchedulingRules] = useState([]);
 	let [schedules, setSchedules] = useState([]);
@@ -38,6 +40,7 @@ export default function ContextEditorApp () {
 		setCommonName("");
 		setShortName("");
 		setTimezone("");
+		setDivisions([]);
 		setAnnouncements([]);
 		setSchedulingRules([]);
 		setSchedules([]);
@@ -73,6 +76,15 @@ export default function ContextEditorApp () {
 				setTimezone(context.metadata.timezone);
 			}
 		}
+		if ("divisions" in context) {
+			setDivisions(context.divisions.map(division => ({
+				"division_label": division?.details?.division_label || "Untitled division",
+				"division_short_label": division?.details?.division_short_label || "",
+				"division_id": division?.details?.division_id || "no_id_provided",
+				"school_name": division?.metadata?.school_name || "",
+				"short_name": division?.metadata?.short_name || "",
+			})));
+		}
 		if ("announcements" in context) {
 			let newAnnouncements = [];
 			context.announcements.forEach(announcement => {
@@ -80,30 +92,39 @@ export default function ContextEditorApp () {
 					newAnnouncements.push({
 						"message": announcement.message,
 						"applies": [appliesRange],
+						"_key": uniqueId++,
+						"_division_id": "",
 					});
 					setAnnouncements(newAnnouncements);
 				});
 			});
 		}
 		if (("scheduling_rules" in context) || ("schedulingRules" in context)) {
-			setSchedulingRules(context.scheduling_rules || context.schedulingRules || []);
+			setSchedulingRules((context.scheduling_rules || context.schedulingRules || []).map((schedulingRule, i) => ({
+				...schedulingRule,
+				"_key": i,
+				"_division_id": "",
+			})));
 		}
 		if ("schedules" in context) {
 			setSchedules(context.schedules.map((schedule, i) => ({
 				...schedule,
 				"_key": i,
+				"_division_id": "",
 			})));
 		}
 		if ("full_day_overrides" in context) {
 			setFullDayOverrides(context.full_day_overrides.map((fdo, i) => ({
 				...fdo,
 				"_key": i,
+				"_division_id": "",
 			})));
 		}
 		if ("timeframe_overrides" in context) {
 			setTimeframeOverrides(context.timeframe_overrides.map((tfo, i) => ({
 				...tfo,
 				"_key": i,
+				"_division_id": "",
 			})));
 		}
 	}
@@ -139,14 +160,45 @@ export default function ContextEditorApp () {
 				"short_name": shortName || "EHS",
 				"timezone": timezone || "America/Los_Angeles",
 			},
-			"announcements": announcements,
-			"scheduling_rules": schedulingRules,
-			"schedules": schedules,
-			"full_day_overrides": sortedFdos,
-			"timeframe_overrides": sortedTfos,
+			"division": divisions.map(divisionObj => {
+				let division = {};
+				division.details = {
+					"division_label": divisionObj.division_label || "Untitled division",
+					"division_short_label": (divisionObj.renameState === "shortLabel") ? (divisionObj.division_short_label || undefined) : undefined,
+					"division_id": divisionObj.division_id || "no_id_provided",
+				};
+				if (divisionObj.school_name || divisionObj.short_name) {
+					division.metadata = {
+						"school_name": (divisionObj.renameState === "full") ? (divisionObj.school_name || undefined) : undefined,
+						"short_name": divisionObj.short_name || undefined,
+					};
+				}
+				
+				let divisionAnnouncements = announcements.filter(announcement => announcement._division_id === divisionObj.division_id);
+				if (divisionAnnouncements.length) division.announcements = divisionAnnouncements;
+				
+				let divisionSchedulingRules = schedulingRules.filter(schedulingRule => schedulingRule._division_id === divisionObj.division_id);
+				if (divisionSchedulingRules.length) division.schedulingRules = divisionSchedulingRules;
+				
+				let divisionSchedules = schedules.filter(schedule => schedule._division_id === divisionObj.division_id);
+				if (divisionSchedules.length) division.schedules = divisionSchedules;
+				
+				let divisionFdos = sortedFdos.filter(fdo => fdo._division_id === divisionObj.division_id);
+				if (divisionFdos.length) division.full_day_overrides = divisionFdos;
+				
+				let divisionTfos = sortedTfos.filter(tfo => tfo._division_id === divisionObj.division_id);
+				if (divisionTfos.length) division.full_day_overrides = divisionTfos;
+				
+				return division;
+			}),
+			"announcements": announcements.filter(announcement => announcement._division_id === ""),
+			"scheduling_rules": schedulingRules.filter(schedulingRule => schedulingRule._division_id === ""),
+			"schedules": schedules.filter(schedule => schedule._division_id === ""),
+			"full_day_overrides": sortedFdos.filter(fdo => fdo._division_id === ""),
+			"timeframe_overrides": sortedTfos.filter(tfo => tfo._division_id === ""),
 		});
 		
-		setEditResult(JSON.stringify(result, (key, value) => ((key !== "_key") ? value : undefined), "\t") + "\n");
+		setEditResult(JSON.stringify(result, (key, value) => ((key.startsWith("_")) ? undefined : value), "\t") + "\n");
 	}
 	
 	return (
@@ -156,7 +208,9 @@ export default function ContextEditorApp () {
 			<p>Welcome to the context editor! This page is for School Managers. <a href="./">Click here to return to the clock.</a></p>
 			<p>You can load context in various ways. Start blank, load from text, or by school.</p>
 			
-			<p>Warning: This is a new feature and therefore may still have some issues.</p>
+			<p>Warning: This Context Editor is relatively new and therefore may still have some issues.</p>
+			
+			<p><b>Divisions as a feature is not yet complete. It will not work!</b></p>
 			
 			<ContextSelector establishContext={establishContext} />
 			
@@ -177,6 +231,25 @@ export default function ContextEditorApp () {
 			<p>School's local timezone: <input type="text" placeholder="Continent/City" name="timezone" value={timezone} onChange={e => setTimezone(e.target.value)} /><br />
 			<small>Timezones should look something like this: <code>America/Los_Angeles</code>. Don't know yours? Use <a href="https://zones.arilyn.cc/" target="_blank">this tool</a> to find your school's timezone, hit "Copy", and then paste that here.</small></p>
 			
+			<h3>Divisions</h3>
+			<p>This is optional! Some schools have different schedules for different groups of students. For example, 7th graders having a different schedule than 8th graders. If your school has such a division of schedules between students, you can define each division here.</p>
+			<div>
+				{
+					divisions.map((_, i) => {
+						return <DivisionBlock divisions={divisions} setDivisions={setDivisions} index={i} key={i} />
+					})
+				}
+				<button type="button" onClick={_ => {
+					setDivisions([...divisions, {
+						"division_label": "",
+						"division_short_label": "",
+						"division_id": "",
+						"school_name": "",
+						"short_name": "",
+					}]);
+				}}>Add division</button>
+			</div>
+			
 			<h3>Announcements</h3>
 			<p>These show at the top of everyone's screen when they apply, and can't be cleared. They disappear automatically once they expire. Having more than one active at a time is kinda annoying, but you can schedule multiple here without them all appearing at once!</p>
 			<div>
@@ -189,6 +262,7 @@ export default function ContextEditorApp () {
 					setAnnouncements([...announcements, {
 						"message": "New Announcement",
 						"applies": ["00:00 -- 23:59"],
+						"_division_id": "",
 					}]);
 				}}>Add announcement</button>
 			</div>
@@ -206,6 +280,7 @@ export default function ContextEditorApp () {
 						"matcher": "dayOfTheWeek",
 						"pattern": "",
 						"schedule": "",
+						"_division_id": "",
 					}]);
 				}}>Add rule</button>
 			</div>
@@ -225,6 +300,7 @@ export default function ContextEditorApp () {
 						"label": "Custom Schedule",
 						"timings": [],
 						"_key": uniqueId++,
+						"_division_id": "",
 					}]);
 				}}>Add schedule</button>
 			</div>
@@ -242,6 +318,7 @@ export default function ContextEditorApp () {
 						"applies": [now.startOf("day").toFormat("yyyy-MM-dd") + " -- " + now.startOf("day").plus({ "days": 1 }).toFormat("yyyy-MM-dd")],
 						"schedule": "none",
 						"_key": uniqueId++,
+						"_division_id": "",
 					}]);
 				}}>Add full day override</button>
 			</div>
@@ -259,6 +336,7 @@ export default function ContextEditorApp () {
 						"label": "Example",
 						"applies": [now.startOf("hour").toFormat("yyyy-MM-dd/HH:mm") + " -- " + now.startOf("hour").plus({ "hours": 1 }).toFormat("yyyy-MM-dd/HH:mm")],
 						"_key": uniqueId++,
+						"_division_id": "",
 					}]);
 				}}>Add timeframe override</button>
 			</div>

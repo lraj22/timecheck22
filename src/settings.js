@@ -78,6 +78,18 @@ export async function fetchContext (options) {
 		targetUrl = `https://raw.githubusercontent.com/${schools[schoolIdMappings[schoolId]].repo}/refs/heads/main/context.json`;
 		usingApi = true;
 	}
+	
+	if (usingApi) {
+		try {
+			let localClockdataList = JSON.parse(localStorage.getItem("useLocalClockdata"));
+			let repoIdentifier = schools[schoolIdMappings[settings.schoolId]].repo.split("/")[1].split("-")[0]; // aka take the chhs in lraj22/chhs-clockdata
+			if (localClockdataList.includes("*") || localClockdataList.includes(repoIdentifier)) {
+				targetUrl = `./clockdata/${repoIdentifier}-clockdata/context.json`;
+				options.ignoreRateLimits = true; // local = no API overuse! yay!!!
+			}
+		} catch (_) {}
+	}
+	
 	// console.log("target:", targetUrl);
 	// console.log("current data:", clockdata);
 	if (!targetUrl) return;
@@ -168,17 +180,7 @@ function applySettings (fetchAfterwards) {
 		}
 	}
 	
-	if (!fetchAfterwards) return;
-	try {
-		let localClockdataList = JSON.parse(localStorage.getItem("useLocalClockdata"));
-		let repoIdentifier = schools[schoolIdMappings[settings.schoolId]].repo.split("/")[1].split("-")[0]; // aka take the chhs in lraj22/chhs-clockdata
-		if (localClockdataList.includes("*") || localClockdataList.includes(repoIdentifier)) fetchContext({
-			"targetUrl": `./clockdata/${repoIdentifier}-clockdata/context.json`,
-		});
-		else fetchContext();
-	} catch (e) {
-		fetchContext();
-	}
+	if (fetchAfterwards) fetchContext();
 }
 export async function updateSettings (fetchAfterwards, updatedSettings) {
 	if (updatedSettings) settings = cloneObj(updateSettings);
