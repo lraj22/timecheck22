@@ -83,50 +83,50 @@ export default function ContextEditorApp () {
 				"division_id": division?.details?.division_id || "no_id_provided",
 				"school_name": division?.metadata?.school_name || "",
 				"short_name": division?.metadata?.short_name || "",
+				"_key": uniqueId++,
 			})));
+		} else context.divisions = [];
+		
+		if (!("announcements" in context)) context.announcements = [];
+		if (!(("scheduling_rules" in context) || ("schedulingRules" in context))) context.scheduling_rules = (context.scheduling_rules || context.schedulingRules || []);
+		if (!("schedules" in context)) context.schedules = [];
+		if (!("full_day_overrides" in context)) context.full_day_overrides = [];
+		if (!("timeframe_overrides" in context)) context.timeframe_overrides = [];
+		
+		function nodivisionify (items) {
+			return items.map(item => ({
+				...item,
+				"_key": uniqueId++,
+				"_division_id": "",
+			}));
 		}
-		if ("announcements" in context) {
-			let newAnnouncements = [];
-			context.announcements.forEach(announcement => {
-				announcement.applies.forEach((appliesRange) => {
-					newAnnouncements.push({
-						"message": announcement.message,
-						"applies": [appliesRange],
-						"_key": uniqueId++,
-						"_division_id": "",
-					});
-					setAnnouncements(newAnnouncements);
+		function undivisionify (divisionProp) {
+			return context.divisions.map(division => {
+				return (division[divisionProp] || []).map(item => ({
+					...item,
+					"_key": uniqueId++,
+					"_division_id": division?.details?.division_id || "no_id_provided",
+				}));
+			}).flat();
+		}
+		let announcementsToAdd = [...nodivisionify(context.announcements), ...undivisionify("announcements")];
+		let newAnnouncements = [];
+		announcementsToAdd.forEach(announcement => {
+			announcement.applies.forEach((appliesRange) => {
+				newAnnouncements.push({
+					"message": announcement.message,
+					"applies": [appliesRange],
+					"_key": announcement._key,
+					"_division_id": announcement._division_id,
 				});
+				setAnnouncements(newAnnouncements);
 			});
-		}
-		if (("scheduling_rules" in context) || ("schedulingRules" in context)) {
-			setSchedulingRules((context.scheduling_rules || context.schedulingRules || []).map((schedulingRule, i) => ({
-				...schedulingRule,
-				"_key": i,
-				"_division_id": "",
-			})));
-		}
-		if ("schedules" in context) {
-			setSchedules(context.schedules.map((schedule, i) => ({
-				...schedule,
-				"_key": i,
-				"_division_id": "",
-			})));
-		}
-		if ("full_day_overrides" in context) {
-			setFullDayOverrides(context.full_day_overrides.map((fdo, i) => ({
-				...fdo,
-				"_key": i,
-				"_division_id": "",
-			})));
-		}
-		if ("timeframe_overrides" in context) {
-			setTimeframeOverrides(context.timeframe_overrides.map((tfo, i) => ({
-				...tfo,
-				"_key": i,
-				"_division_id": "",
-			})));
-		}
+		});
+		
+		setSchedulingRules([...nodivisionify(context.scheduling_rules), ...undivisionify("scheduling_rules")]);
+		setSchedules([...nodivisionify(context.schedules), ...undivisionify("schedules")]);
+		setFullDayOverrides([...nodivisionify(context.full_day_overrides), ...undivisionify("full_day_overrides")]);
+		setTimeframeOverrides([...nodivisionify(context.timeframe_overrides), ...undivisionify("timeframe_overrides")]);
 	}
 	
 	function output () {
@@ -160,7 +160,7 @@ export default function ContextEditorApp () {
 				"short_name": shortName || "EHS",
 				"timezone": timezone || "America/Los_Angeles",
 			},
-			"division": divisions.map(divisionObj => {
+			"divisions": divisions.map(divisionObj => {
 				let division = {};
 				division.details = {
 					"division_label": divisionObj.division_label || "Untitled division",
@@ -208,9 +208,7 @@ export default function ContextEditorApp () {
 			<p>Welcome to the context editor! This page is for School Managers. <a href="./">Click here to return to the clock.</a></p>
 			<p>You can load context in various ways. Start blank, load from text, or by school.</p>
 			
-			<p>Warning: This Context Editor is relatively new and therefore may still have some issues.</p>
-			
-			<p><b>Divisions as a feature is not yet complete. It will not work!</b></p>
+			<p>Warning: This Context Editor is relatively new and therefore may still have some issues. Divisions in particular have not been fully tested and may cause issues! If you find any bugs with this: (1) I'm sorry 😭 and (2) let me (Lakshya) know!</p>
 			
 			<ContextSelector establishContext={establishContext} />
 			
@@ -235,17 +233,18 @@ export default function ContextEditorApp () {
 			<p>This is optional! Some schools have different schedules for different groups of students. For example, 7th graders having a different schedule than 8th graders. If your school has such a division of schedules between students, you can define each division here.</p>
 			<div>
 				{
-					divisions.map((_, i) => {
-						return <DivisionBlock divisions={divisions} setDivisions={setDivisions} index={i} key={i} />
+					divisions.map((division, i) => {
+						return <DivisionBlock divisions={divisions} setDivisions={setDivisions} index={i} key={division._key} />
 					})
 				}
 				<button type="button" onClick={_ => {
 					setDivisions([...divisions, {
-						"division_label": "",
+						"division_label": "Untitled division",
 						"division_short_label": "",
-						"division_id": "",
+						"division_id": "no_id_provided",
 						"school_name": "",
 						"short_name": "",
+						"_key": uniqueId++,
 					}]);
 				}}>Add division</button>
 			</div>
@@ -254,8 +253,8 @@ export default function ContextEditorApp () {
 			<p>These show at the top of everyone's screen when they apply, and can't be cleared. They disappear automatically once they expire. Having more than one active at a time is kinda annoying, but you can schedule multiple here without them all appearing at once!</p>
 			<div>
 				{
-					announcements.map((_, i) => {
-						return <AnnouncementBlock announcements={announcements} setAnnouncements={setAnnouncements} timezone={timezone} index={i} key={i} />;
+					announcements.map((announcement, i) => {
+						return <AnnouncementBlock announcements={announcements} setAnnouncements={setAnnouncements} divisions={divisions} timezone={timezone} index={i} key={announcement._key} />;
 					})
 				}
 				<button type="button" onClick={_ => {
@@ -271,8 +270,8 @@ export default function ContextEditorApp () {
 			<p>The first scheduling rule to match will take effect, so make sure you put a rule for Thursday (<code>4</code>) before a rule for Monday - Friday (<code>1 -- 5</code>), or it will never take effect. If no rule matches, no schedule will happen (schedule ID: <code>none</code>). For example, Saturday & Sunday (<code>6 -- 7</code>) probably don't need a special schedule if you don't have school on those days, so it's fine if they don't have a rule matching them.</p>
 			<div>
 				{
-					schedulingRules.map((_, i) => {
-						return <SchedulingRuleBlock schedulingRules={schedulingRules} setSchedulingRules={setSchedulingRules} index={i} key={i} />;
+					schedulingRules.map((schedulingRule, i) => {
+						return <SchedulingRuleBlock schedulingRules={schedulingRules} setSchedulingRules={setSchedulingRules} divisions={divisions} index={i} key={schedulingRule._key} />;
 					})
 				}
 				<button type="button" onClick={_ => {
@@ -309,7 +308,7 @@ export default function ContextEditorApp () {
 			<div>
 				{
 					fullDayOverrides.map((fdo, i) => {
-						return <FdoBlock fullDayOverrides={fullDayOverrides} setFullDayOverrides={setFullDayOverrides} index={i} key={fdo._key} />
+						return <FdoBlock fullDayOverrides={fullDayOverrides} setFullDayOverrides={setFullDayOverrides} divisions={divisions} index={i} key={fdo._key} />
 					})
 				}
 				<button type="button" onClick={_ => {
@@ -327,7 +326,7 @@ export default function ContextEditorApp () {
 			<div>
 				{
 					timeframeOverrides.map((tfo, i) => {
-						return <TfoBlock timeframeOverrides={timeframeOverrides} setTimeframeOverrides={setTimeframeOverrides} index={i} key={tfo._key} />;
+						return <TfoBlock timeframeOverrides={timeframeOverrides} setTimeframeOverrides={setTimeframeOverrides} divisions={divisions} index={i} key={tfo._key} />;
 					})
 				}
 				<button type="button" onClick={_ => {

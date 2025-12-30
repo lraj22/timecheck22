@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { stringToLuxonDuration } from "../clockdata";
 import { DateTime } from "luxon";
+import DivisionSelector from "./DivisionSelector";
 
-export default function FdoBlock ({ fullDayOverrides, setFullDayOverrides, index, timezone }) {
+export default function FdoBlock ({ fullDayOverrides, setFullDayOverrides, divisions, index, timezone }) {
 	let thisFdo = fullDayOverrides[index];
 	const contextFormat = "yyyy-MM-dd";
 	let { s, e } = stringToLuxonDuration(thisFdo.applies[0]);
@@ -61,6 +62,12 @@ export default function FdoBlock ({ fullDayOverrides, setFullDayOverrides, index
 			setFullDayOverrides(fullDayOverrides.filter((_, i) => i !== idx));
 	}
 	
+	let [divisionId, setDivisionId] = useState(thisFdo._division_id);
+	function proxySetDivisionId (newDivisionId) {
+		thisFdo._division_id = newDivisionId;
+		setDivisionId(newDivisionId);
+	}
+	
 	return (
 		<details className="announcement">
 			<summary>
@@ -77,7 +84,9 @@ export default function FdoBlock ({ fullDayOverrides, setFullDayOverrides, index
 			<span> (excluded)</span><br /><br />
 			
 			<span>Schedule ID: </span>
-			<input type="text" value={thisFdo.schedule} name="fdoSchedule" onChange={e => setSchedule(e.target.value)} />
+			<input type="text" value={thisFdo.schedule} name="fdoSchedule" onChange={e => setSchedule(e.target.value)} /><br />
+			
+			<DivisionSelector divisions={divisions} divisionId={thisFdo._division_id} setDivisionId={proxySetDivisionId} />
 		</details>
 	);
 }

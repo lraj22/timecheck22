@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { luxonToDatetimelocal } from "../util";
 import { stringToLuxonDuration } from "../clockdata";
 import { DateTime } from "luxon";
+import DivisionSelector from "./DivisionSelector";
 
-export default function AnnouncementBlock ({ announcements, setAnnouncements, index, timezone }) {
+export default function AnnouncementBlock ({ announcements, setAnnouncements, index, divisions, timezone }) {
 	let thisAnnouncement = announcements[index];
 	let { s, e } = stringToLuxonDuration(thisAnnouncement.applies[0]);
 	let [start, setStart] = useState(luxonToDatetimelocal(s));
@@ -48,6 +49,12 @@ export default function AnnouncementBlock ({ announcements, setAnnouncements, in
 		} : announcement));
 	}
 	
+	let [divisionId, setDivisionId] = useState(thisAnnouncement._division_id);
+	function proxySetDivisionId (newDivisionId) {
+		thisAnnouncement._division_id = newDivisionId;
+		setDivisionId(newDivisionId);
+	}
+	
 	function removeAnnouncement (idx) {
 		if (confirm("Are you sure you want to remove this announcement?"))
 			setAnnouncements(announcements.filter((_, i) => i !== idx));
@@ -62,6 +69,8 @@ export default function AnnouncementBlock ({ announcements, setAnnouncements, in
 			<input type="datetime-local" value={start} name="announcementStart" onChange={e => setStartISO(e.target.value)} />
 			<span> to </span>
 			<input type="datetime-local" value={end} name="announcementEnd" onChange={e => setEndISO(e.target.value)} /><br /><br />
+			
+			<DivisionSelector divisions={divisions} divisionId={thisAnnouncement._division_id} setDivisionId={proxySetDivisionId} /><br />
 			
 			<button type="button" onClick={_ => removeAnnouncement(index)} className="danger">Delete announcement</button>
 		</div>

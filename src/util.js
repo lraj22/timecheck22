@@ -147,7 +147,10 @@ export function setClockdata (newClockdata) { // when context is fetched, the ne
 			});
 			if (!pickedOne) {
 				dom.divisionSelect.classList.add("element-highlight");
-				dom.divisionSelect.addEventListener("click", removeHighlight);
+				dom.divisionSelect.addEventListener("click", _ => {
+					state.savedDivisions[settings.schoolId] = selectedDivisionId;
+					removeHighlight(dom.divisionSelect);
+				});
 			}
 		}
 	}
@@ -237,9 +240,9 @@ dom?.scheduleSelect?.addEventListener("change", updateTimingsTable);
 
 
 // misc functions
-export function removeHighlight () {
-	this.classList.remove("element-highlight");
-	this.removeEventListener("click", removeHighlight);
+export function removeHighlight (el) {
+	(el || this).classList.remove("element-highlight");
+	(el || this).removeEventListener("click", removeHighlight);
 }
 export function popup (message) {
 	let popupEl = document.createElement("div");

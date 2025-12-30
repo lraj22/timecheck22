@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { stringToLuxonDuration } from "../clockdata";
 import { DateTime } from "luxon";
 import { luxonToDatetimelocal } from "../util";
+import DivisionSelector from "./DivisionSelector";
 
-export default function TfoBlock ({ timeframeOverrides, setTimeframeOverrides, index, timezone }) {
+export default function TfoBlock ({ timeframeOverrides, setTimeframeOverrides, divisions, index, timezone }) {
 	let thisTfo = timeframeOverrides[index];
 	const contextFormat = "yyyy-MM-dd/HH:mm";
 	let { s, e } = stringToLuxonDuration(thisTfo.applies[0]);
@@ -62,6 +63,12 @@ export default function TfoBlock ({ timeframeOverrides, setTimeframeOverrides, i
 			setTimeframeOverrides(timeframeOverrides.filter((_, i) => i !== idx));
 	}
 	
+	let [divisionId, setDivisionId] = useState(thisTfo._division_id);
+	function proxySetDivisionId (newDivisionId) {
+		thisTfo._division_id = newDivisionId;
+		setDivisionId(newDivisionId);
+	}
+	
 	return (
 		<details className="announcement">
 			<summary>
@@ -78,6 +85,8 @@ export default function TfoBlock ({ timeframeOverrides, setTimeframeOverrides, i
 			<input type="datetime-local" value={start} name="tfoStart" onChange={e => setStartISO(e.target.value)} />
 			<span> to </span>
 			<input type="datetime-local" value={end} name="tfoEnd" onChange={e => setEndISO(e.target.value)} /><br /><br />
+			
+			<DivisionSelector divisions={divisions} divisionId={thisTfo._division_id} setDivisionId={proxySetDivisionId} />
 		</details>
 	);
 }
