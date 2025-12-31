@@ -7,12 +7,11 @@ import {
 	msToTimeDiff,
 	appliesStrarrListify,
 	popup,
-	ENVIRONMENT,
-	schoolIdMappings,
 } from "./util";
 import { stringToLuxonDuration } from "./clockdata";
 import {
 	settings,
+	reidentifyUser,
 } from "./settings";
 import "./main.css";
 import "./sidebar";
@@ -281,17 +280,7 @@ dom.evalBtn.addEventListener("click", _ => {
 });
 
 // analytics
-let userInfo = {};
-if (ENVIRONMENT === "dev") {
-	userInfo.env = "dev";
-	userInfo.profile = localStorage.getItem("profile");
-} else {
-	if (location.hostname === "timecheck22.lraj22.xyz") userInfo.env = "prod";
-	else userInfo.env = `unknown (${location.host})`;
-}
-userInfo.schoolId = settings.schoolId;
-userInfo.schoolName = schools[schoolIdMappings[settings.schoolId]]?.name;
-umami.identify(userInfo);
+reidentifyUser();
 
 // all underlay managing code is here
 import "./underlays";

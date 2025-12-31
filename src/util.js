@@ -147,9 +147,17 @@ export function setClockdata (newClockdata) { // when context is fetched, the ne
 			});
 			if (!pickedOne) {
 				dom.divisionSelect.classList.add("element-highlight");
-				dom.divisionSelect.addEventListener("click", _ => {
+				dom.divisionSelect.addEventListener("click", function setAndRemoveOnce () {
 					state.savedDivisions[settings.schoolId] = selectedDivisionId;
 					removeHighlight(dom.divisionSelect);
+					dom.divisionSelect.removeEventListener("click", setAndRemoveOnce);
+					
+					umami.track("division-selected", {
+						"schoolName": schools[schoolIdMappings[settings.schoolId]].name,
+						"schoolId": settings.schoolId,
+						"divisionName": clockdata.getDivisionData(selectedDivisionId)?.details?.division_name,
+						"divisionId": selectedDivisionId,
+					});
 				});
 			}
 		}

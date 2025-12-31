@@ -3,6 +3,7 @@
 import audio from "./audio";
 import {
 	addObj,
+	clockdataSetYet,
 	cloneObj,
 	ENVIRONMENT,
 	schoolIdMappings,
@@ -183,9 +184,24 @@ function applySettings (fetchAfterwards) {
 	if (fetchAfterwards) fetchContext();
 }
 export async function updateSettings (fetchAfterwards, updatedSettings) {
-	if (updatedSettings) settings = cloneObj(updateSettings);
+	if (updatedSettings) settings = cloneObj(updatedSettings);
 	await localforage.setItem("settings", settings);
 	applySettings(fetchAfterwards);
 }
 
 applySettings(true); // true = fetch context
+
+// analytics
+export function reidentifyUser () {
+	let userInfo = {};
+	if (ENVIRONMENT === "dev") {
+		userInfo.env = "dev";
+		userInfo.profile = localStorage.getItem("profile");
+	} else {
+		if (location.hostname === "timecheck22.lraj22.xyz") userInfo.env = "prod";
+		else userInfo.env = `unknown (${location.host})`;
+	}
+	userInfo.schoolId = settings.schoolId;
+	userInfo.schoolName = schools[schoolIdMappings[settings.schoolId]]?.name;
+	umami.identify(userInfo);
+}

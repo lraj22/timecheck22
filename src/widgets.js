@@ -346,7 +346,7 @@ function saveWidgetStates () {
 	state.widgets.stopwatch.total = stopwatchData.total + (stopwatchData.running ? (perfNow - stopwatchData.startTime) : 0);
 	state.widgets.timer.timeRemaining = timerData.total - (timerData.running ? (perfNow - timerData.startTime) : 0);
 	
-	if (editor && ((lastChanged + 500) < Date.now())) {
+	if (editor && lastChanged && ((lastChanged + 500) < Date.now())) {
 		lastChanged = null;
 		state.widgets.notes.content = editor.getContents().ops;
 		dom.notesStatus.textContent = "Changes saved.";

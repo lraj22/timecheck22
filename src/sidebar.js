@@ -1,4 +1,4 @@
-import { settings, updateSettings } from "./settings";
+import { settings, updateSettings, reidentifyUser } from "./settings";
 import { clockdata, dom, schoolIdMappings, schools, updateState } from "./util";
 
 const pageIdsToName = {
@@ -113,10 +113,14 @@ schools.forEach(({ id, name, repo, category }) => {
 dom.schoolSelect.addEventListener("change", function () {
 	settings.schoolId = dom.schoolSelect.selectedOptions[0].getAttribute("data-school-id");
 	updateSettings(true);
+	reidentifyUser();
 	
 	umami.track("school-selected", {
-		"name": schools[schoolIdMappings[settings.schoolId]].name,
+		"schoolName": schools[schoolIdMappings[settings.schoolId]].name,
 		"schoolId": settings.schoolId,
+		// new divisions probably aren't loaded yet, let's not risk accidentally loading the old ones
+		// "divisionName": clockdata.getDivisionData(divisionId)?.details?.division_name,
+		// "divisionId": divisionId,
 	});
 });
 // update division state when changed
@@ -125,6 +129,13 @@ dom.divisionSelect.addEventListener("change", _ => {
 	state.savedDivisions[settings.schoolId] = divisionId;
 	clockdata.setDivisionId(dom.divisionSelect.selectedOptions[0].value);
 	updateState();
+	
+	umami.track("division-selected", {
+		"schoolName": schools[schoolIdMappings[settings.schoolId]].name,
+		"schoolId": settings.schoolId,
+		"divisionName": clockdata.getDivisionData(divisionId)?.details?.division_name,
+		"divisionId": divisionId,
+	});
 });
 
 // enable clicking the middle status text
