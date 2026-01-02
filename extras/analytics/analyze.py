@@ -64,8 +64,14 @@ user_we_events = user_we_events[~( # old notes-updated events fired too much bef
 )]
 
 # Get country names from Umami source data (ISO 3166-1 alpha-2 country codes)
+country_subset = user_we_events[['session_id', 'country']].drop_duplicates()
 cc = coco.CountryConverter()
-countries = cc.convert(names=we_df['country'].unique(), to="name")
+country_codes = country_subset['country'].unique()
+countries = []
+for country_code in country_codes:
+	country_name = cc.convert(names=country_code, to="name")
+	country_count = len(country_subset[country_subset['country'] == country_code])
+	countries.append(f'{country_name} ({country_count})')
 
 """
 Notes:
@@ -76,7 +82,8 @@ Notes:
 
 # Show initial data
 total_user_sessions = len(user_we_events['session_id'].unique())
-total_user_visits = len(user_we_events['visit_id'].unique())
+visits_df = user_we_events[['session_id', 'visit_id']].drop_duplicates()
+total_user_visits = len(visits_df)
 total_user_views = len(user_we_events[user_we_events['event_type'] == 1])
 write("###")
 write("Processed", len(we_df), "records, removed", len(we_df) - len(user_we_events), "development/old/invalid events from that.")
@@ -91,7 +98,6 @@ write("---")
 write()
 
 # Count number of repeat visitors
-visits_df = user_we_events[['session_id', 'visit_id']].drop_duplicates('visit_id')
 number_of_users = -1
 repeat_subset = visits_df.copy()
 repeats = []
@@ -147,16 +153,13 @@ with open(analytics_report_file_path, 'w') as report_file:
 # Check uniqueness (dev)
 exit(0) # only for developers!
 col_a = 'visit_id'
-col_b = 'referrer_domain'
-unique_counts = we_df.groupby(col_a)[col_b]
+col_b = 'session_id'
+df = we_df[['session_id', 'visit_id']]
+unique_counts = df.groupby(col_a)[col_b].nunique()
+those_with_multiple = unique_counts[unique_counts > 1]
 
-print(unique_counts.apply(lambda device: (device == 'laptop').any()))
-
-unique_counts = unique_counts.nunique()
-ids_with_multiple_names = unique_counts[unique_counts > 1]
-
-list_of_multiple = ids_with_multiple_names.index.tolist()
-print(f"[{col_a}]s with multiple [{col_b}]s:", list_of_multiple)
+list_of_multiple = those_with_multiple.index.tolist()
+print(f"[{col_a}]s with multiple [{col_b}]s: {list_of_multiple} ({col_a})")
 for item in list_of_multiple:
-	print(we_df[we_df[col_a] == item])
-	print(we_df[we_df[col_a] == item][col_b].unique())
+	print(f'{col_a} == {item}:\n', df[df[col_a] == item])
+	print(f'Associated {col_b} values:', df[df[col_a] == item][col_b].unique())

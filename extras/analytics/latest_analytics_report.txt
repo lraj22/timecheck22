@@ -4,14 +4,14 @@ The following statistics are based on the remaining 739 real user events.
 From the first record at 2025-12-13 15:43:53 to the last record at 2025-12-31 18:42:52 in UTC
 ###
 Number of unique real people: 82
-They come from 17 different countries: United States, Australia, India, Netherlands, United Kingdom, Sweden, Poland, Ireland, Pakistan, Canada, Finland, Egypt, Germany, Bangladesh, Philippines, Spain, Nepal
-Number of real user page visits: 96
+They come from 15 different countries: United States (43), Australia (3), India (9), Netherlands (1), United Kingdom (9), Sweden (2), Poland (2), Canada (5), Pakistan (1), Finland (1), Egypt (1), Germany (1), Bangladesh (1), Philippines (2), Spain (1)
+Number of real user page visits: 98
 Number of real user page views: 108
 ---
 
 == Repeat visitors ==
 74 people visited exactly 1 time
-3 people visited exactly 2 times
+4 people visited exactly 2 times
 2 people visited exactly 3 times
 1 person visited exactly 4 times
 0 people visited exactly 5 times
