@@ -1,35 +1,38 @@
 ###
-Processed 4674 records, removed 3935 development/old/invalid events from that.
-The following statistics are based on the remaining 739 real user events.
+Processed 4674 records, removed 4010 development/old/invalid events from that.
+The following statistics are based on the remaining 664 real user events.
 From the first record at 2025-12-13 15:43:53 to the last record at 2025-12-31 18:42:52 in UTC
 ###
-Number of unique real people: 82
-They come from 15 different countries: United States (43), Australia (3), India (9), Netherlands (1), United Kingdom (9), Sweden (2), Poland (2), Canada (5), Pakistan (1), Finland (1), Egypt (1), Germany (1), Bangladesh (1), Philippines (2), Spain (1)
-Number of real user page visits: 98
-Number of real user page views: 108
+Number of unique real people: 81
+They come from 15 different countries: United States (42), Australia (3), India (9), Netherlands (1), United Kingdom (9), Sweden (2), Poland (2), Canada (5), Pakistan (1), Finland (1), Egypt (1), Germany (1), Bangladesh (1), Philippines (2), Spain (1)
+Number of real user page visits: 94
+Number of real user page views: 104
 ---
 
 == Repeat visitors ==
 74 people visited exactly 1 time
 4 people visited exactly 2 times
 2 people visited exactly 3 times
-1 person visited exactly 4 times
+0 people visited exactly 4 times
 0 people visited exactly 5 times
 1 person visited exactly 6 times
 
 == Devices used ==
-54 users are using a laptop
+53 users are using a laptop
 18 users are using a mobile
 10 users are using a desktop
 1 user is using a tablet
-Note that one user can use multiple devices, so total may not add to 82 (total # of users)
+Note that one user can use multiple devices, so total may not add to 81 (total # of users)
 
 == Visitor referrals ==
-68 users visited TC22 directly (not referred)
+64 users visited TC22 directly (not referred)
 17 users reached TC22 via Siege (via Hack Club)
 6 users reached TC22 via Slack App
 2 users reached TC22 via Instagram
 2 users reached TC22 via Google
 2 users reached TC22 via Facebook
 1 user reached TC22 via GitHub
-Note that one user can use visit multiple times, so total may not add to 82 (total # of users)
+Note that one user can use visit multiple times, so total may not add to 81 (total # of users)
+
+== Events overview ==
+There are 81 users, and on average, each user does about 7.57 events. This is more than 69.14% of users. 75% of users have at least 1.0 events, 50% of users have at least 4.0 events, and 25% of users have at least 10.0 events. The user with the most events has 70 events.
