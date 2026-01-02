@@ -1,6 +1,6 @@
 ###
-Processed 4674 records, removed 3944 development/old/invalid events from that.
-The following statistics are based on the remaining 730 real user events.
+Processed 4674 records, removed 3935 development/old/invalid events from that.
+The following statistics are based on the remaining 739 real user events.
 From the first record at 2025-12-13 15:43:53 to the last record at 2025-12-31 18:42:52 in UTC
 ###
 Number of unique real people: 82
