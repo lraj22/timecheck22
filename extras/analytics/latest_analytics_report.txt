@@ -1,31 +1,33 @@
 ###
-Report generated at 2026-01-03 07:17:54. This report is based on data collected by and exported from Umami analytics. The earliest record in this export is from 2025-10-09 05:52:20 while the latest record is from 2025-12-31 00:48:38. Detailed Umami analytics (i.e. including events and not just page views) was added for the public on 2025-12-13 09:30:00, so records from before then are dropped, even though they may have been valid user visits.
+Report generated at 2026-01-03 23:27:56. This report is based on data collected by and exported from Umami analytics. The earliest record in this export is from 2025-10-09 05:52:20 while the latest record is from 2025-12-31 00:48:38. Detailed Umami analytics (i.e. including events and not just page views) was added for the public on 2025-12-13 09:30:00, so records from before then are dropped, even though they may have been valid user visits.
 You can find the current public Umami analytics dashboard at <https://cloud.umami.is/share/b0K7JX1ecA9aZJPP>.
 ---
 Processed 5842 records, removed 4329 development/old/invalid events from that.
 The following statistics are based on the remaining 1513 real user events.
 From the first record at 2025-12-13 15:43:53 to the last record at 2025-12-31 18:42:52 in UTC.
 ###
+
+== Users, visits, and views ==
 Number of unique real people: 81
 They come from 15 different countries: United States (42), Australia (3), India (9), Netherlands (1), United Kingdom (9), Sweden (2), Poland (2), Canada (5), Pakistan (1), Finland (1), Egypt (1), Germany (1), Bangladesh (1), Philippines (2), Spain (1)
 Number of real user page visits: 94
 Number of real user page views: 104
----
 
 == Repeat visitors ==
-74 people visited exactly 1 time
-4 people visited exactly 2 times
-2 people visited exactly 3 times
-0 people visited exactly 4 times
-0 people visited exactly 5 times
-1 person visited exactly 6 times
+74 people visited exactly 1 time. They accounted for 570 events.
+4 people visited exactly 2 times. They accounted for 35 events.
+2 people visited exactly 3 times. They accounted for 18 events.
+0 people visited exactly 4 times. They accounted for 0 events.
+0 people visited exactly 5 times. They accounted for 0 events.
+1 person visited exactly 6 times. They accounted for 41 events.
+Note that events here includes page views and so will be higher than the events in the events overview/in detail below.
 
 == Devices used ==
-53 users are using a laptop
-18 users are using a mobile
-10 users are using a desktop
-1 user is using a tablet
-Note that one user can use multiple devices, so total may not add to 81 (total # of users)
+53 users are using a laptop.
+18 users are using a mobile.
+10 users are using a desktop.
+1 user is using a tablet.
+Note that one user can use multiple devices, so total may not add to 81 (total # of users).
 
 == Visitor referrals ==
 64 users visited TC22 directly (not referred)
@@ -35,7 +37,7 @@ Note that one user can use multiple devices, so total may not add to 81 (total #
 2 users reached TC22 via Google
 2 users reached TC22 via Facebook
 1 user reached TC22 via GitHub
-Note that one user can use visit multiple times, so total may not add to 81 (total # of users)
+Note that one user can use visit multiple times, so total may not add to 81 (total # of users).
 
 == Events overview ==
 There are 81 users, and on average, each user does about 7.57 events. This is more than 69.14% of users. 75% of users have at least 1.0 events, 50% of users have at least 4.0 events, and 25% of users have at least 10.0 events. The user with the most events has 70 events.
@@ -47,7 +49,7 @@ There are 81 users, and on average, each user does about 7.57 events. This is mo
 5 users have between 31 and 999 events.
 
 == Events in detail ==
-Users went to a sidebar page 164 times. The top 3 pages navigated to were home (123), school (17), and schedules (10).
+Users went to a sidebar page 164 times. The top 5 pages navigated to were home (123), school (17), schedules (10), settings (10), and keyboardShortcuts (3).
 Users toggled the sidebar 89 times.
 Users entered the simulated fullscreen mode 77 times. The top 3 elements entered were time (43), timeLeft (24), and timeOver (6).
 Users exited the simulated fullscreen mode 66 times.
@@ -56,7 +58,7 @@ Users clicked the school name in the bottom middle 32 times. This was 31 users' 
 Users toggled fullscreen 24 times. They entered fullscreen 15 times and exited fullscreen 9 times.
 Users toggled the notes widget 16 times.
 Users changed their settings 15 times. The top 5 settings changed were colonBlinkEnabled (4), themeUnderlay (4), backgroundTheme (4), font (2), and hourFormat (1).
-Users clicked the "Get App" button 8 times. The app download was accepted 1 time and dismissed 7 times.
+Users clicked the "Get app" button 8 times. The app download was accepted 1 time and dismissed 7 times.
 Users edited their notes 8 times. The longest note was 44.0 characters.
 Users toggled the timer widget 7 times.
 Users toggled the stopwatch widget 4 times.

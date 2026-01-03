@@ -14,10 +14,10 @@ def write (*args):
 
 # Find CSVs
 script_dir = os.path.dirname(__file__)
-csv_base = "tc22-umami-data-2026-jan-1/"
-session_data_csv_path = os.path.join(script_dir, csv_base + "session_data.csv")
-event_data_csv_path = os.path.join(script_dir, csv_base + "event_data.csv")
-website_event_csv_path = os.path.join(script_dir, csv_base + "website_event.csv")
+csv_base = 'tc22-umami-data-2026-jan-1/'
+session_data_csv_path = os.path.join(script_dir, csv_base + 'session_data.csv')
+event_data_csv_path = os.path.join(script_dir, csv_base + 'event_data.csv')
+website_event_csv_path = os.path.join(script_dir, csv_base + 'website_event.csv')
 analytics_report_file_path = os.path.join(script_dir, 'latest_analytics_report.txt')
 
 # Load session data
@@ -86,16 +86,16 @@ cc = coco.CountryConverter()
 country_codes = country_subset['country'].unique()
 countries = []
 for country_code in country_codes:
-	country_name = cc.convert(names=country_code, to="name")
+	country_name = cc.convert(names=country_code, to='name')
 	country_count = len(country_subset[country_subset['country'] == country_code])
 	countries.append(f'{country_name} ({country_count})')
 
-"""
+'''
 Notes:
 	- Session = (hopefully unique) person/visitor/user
 	- Visit = a length of time where a user interacts with the website. Comes under session, aka a user can have many visits
 	- View = when a page is viewed. Comes under visit, so in one visit, a page can be viewed multiple times
-"""
+'''
 
 
 
@@ -116,11 +116,12 @@ write(f'Processed {total_records} records, removed {total_records - total_valid_
 write(f'The following statistics are based on the remaining {total_valid_records} real user events.')
 write(f'From the first record at {user_we_events['created_at'].min()} to the last record at {user_we_events['created_at'].max()} in UTC.')
 write('###')
+write()
+write('== Users, visits, and views ==')
 write('Number of unique real people:', total_user_sessions)
 write(f'They come from {len(countries)} different countries: {', '.join(countries)}')
 write('Number of real user page visits:', total_user_visits)
 write('Number of real user page views:', total_user_views)
-write('---')
 write()
 
 
@@ -129,47 +130,47 @@ write()
 number_of_users = -1
 repeat_subset = visits_df.copy()
 repeats = []
-def times (quantity, words="time", pluralizer='s'):
+def times (quantity, words='time', pluralizer=None):
 	if isinstance(words, str):
 		single = words
+		if pluralizer == None: pluralizer = 's'
 		plural = words + pluralizer
 	else:
 		single = words[0]
-		plural = words[1]
+		if pluralizer == None: pluralizer = ''
+		plural = words[1] + pluralizer
 	return str(quantity) + ' ' + (single if quantity == 1 else plural)
 
 while len(repeat_subset) != 0:
-	number_of_users = len(repeat_subset[~repeat_subset.duplicated('session_id', keep=False)])
-	repeats.append(number_of_users)
+	repeat_users_subset = repeat_subset[~repeat_subset.duplicated('session_id', keep=False)]
+	repeat_users_session_ids = repeat_users_subset['session_id']
+	repeat_users_events = user_we_events[user_we_events['session_id'].isin(repeat_users_session_ids)]['event_id'].unique()
+	repeats.append([len(repeat_users_subset), len(repeat_users_events)])
 	
 	repeat_subset = repeat_subset[repeat_subset.duplicated('session_id')]
 
 repeat_count = 1
-write("== Repeat visitors ==")
-for amount in repeats:
-	write(amount, "person" if amount == 1 else "people", "visited exactly", times(repeat_count))
+write('== Repeat visitors ==')
+for user_count, event_count in repeats:
+	write(f'{times(user_count, words=['person', 'people'])} visited exactly {times(repeat_count)}. They accounted for {times(event_count, words='event')}.')
 	repeat_count += 1
+write('Note that events here includes page views and so will be higher than the events in the events overview/in detail below.')
 write()
 
 
 
 # Check what kinds of devices are used
-write("== Devices used ==")
+write('== Devices used ==')
 devices_by_session_id = user_we_events.groupby('session_id')['device'].unique()
 for device, count in devices_by_session_id.explode().value_counts().items():
-	write(count, "user is" if count == 1 else "users are", "using a", device)
-write("Note that one user can use multiple devices, so total may not add to", total_user_sessions, "(total # of users)")
+	write(f'{times(count, words=['user is', 'users are'])} using a {device}.')
+write(f'Note that one user can use multiple devices, so total may not add to {total_user_sessions} (total # of users).')
 write()
-
-# This one showed which users used device combos. I'm not sure how that's possible so I just commented it :>
-# write("-- Device usage combos --")
-# for devices, count in devices_by_session_id.value_counts().items():
-# 	write(count, "person uses" if count == 1 else "people use", "the following:", ' & '.join(devices))
 
 
 
 # Check where they came from
-write("== Visitor referrals ==")
+write('== Visitor referrals ==')
 referrer_map = {
 	'siege.hackclub.com': 'Siege (via Hack Club)',
 	'com.slack': 'Slack App',
@@ -181,10 +182,10 @@ referrer_map = {
 number_of_users_by_referrer = user_we_events.groupby('visit_id')['referrer_domain'].unique().explode().value_counts(dropna=False).items()
 for referrer, count in number_of_users_by_referrer:
 	if pd.isna(referrer):
-		write(times(count, words="user"), "visited TC22 directly (not referred)")
+		write(times(count, words='user'), 'visited TC22 directly (not referred)')
 	else:
-		write(times(count, words="user"), "reached TC22 via", referrer_map.get(referrer, referrer))
-write("Note that one user can use visit multiple times, so total may not add to", total_user_sessions, "(total # of users)")
+		write(times(count, words='user'), 'reached TC22 via', referrer_map.get(referrer, referrer))
+write('Note that one user can use visit multiple times, so total may not add to', total_user_sessions, '(total # of users).')
 write()
 
 
@@ -221,7 +222,7 @@ event_name_map = {
 	'setting-changed': 'Users changed their settings',
 	'toggle-fullscreen-clicked': 'Users toggled fullscreen',
 	'timer-toggled': 'Users toggled the timer widget',
-	'get-pwa-clicked': 'Users clicked the "Get App" button',
+	'get-pwa-clicked': 'Users clicked the "Get app" button',
 	'stopwatch-toggled': 'Users toggled the stopwatch widget',
 	'notes-updated': 'Users edited their notes',
 }
@@ -276,12 +277,12 @@ def get_auxiliary_event_info (event_name):
 		school_counts = [[schools_map.get(int(schoolId), 'School ID ' + schoolId), count] for schoolId, count in school_counts]
 		info = f'The top {times(total, words='school')} selected were {format_top_string_values(school_counts)}.'
 	elif event_name == 'sidebar-page-navigated':
-		total, page_counts = top_n_values(event_name, 'page', 3)
+		total, page_counts = top_n_values(event_name, 'page', 5)
 		info = f'The top {times(total, words='page')} navigated to were {format_top_string_values(page_counts)}.'
 	elif event_name == 'school-name-clicked':
 		no_school_count = len(get_unique_events_by_nkv(event_name, 'alreadySelected', 'false'))
 		already_school_count = len(get_unique_events_by_nkv(event_name, 'alreadySelected', 'true'))
-		info = f'This was {times(no_school_count, words=["user's", "users'"], pluralizer='')} first school selected and {times(already_school_count, words='user')} already had a school selected.'
+		info = f'This was {times(no_school_count, words=["user's", "users'"])} first school selected and {times(already_school_count, words='user')} already had a school selected.'
 	elif event_name == 'simulated-fullscreen-entered':
 		total, element_counts = top_n_values(event_name, 'id', 3)
 		info = f'The top {times(total, words='element')} entered were {format_top_string_values(element_counts)}.'
@@ -297,7 +298,7 @@ def get_auxiliary_event_info (event_name):
 			(valid_ed_events['event_name'] == event_name) &
 			(valid_ed_events['data_key'] == 'length')
 		)]['string_value'].max())
-		info = f'The longest note was {times(longest_note_length, words="character")}.'
+		info = f'The longest note was {times(longest_note_length, words='character')}.'
 	# elif event_name in {'stopwatch-toggled', 'timer-toggled', 'notes-toggled'}:
 	# 	opened_count = len(get_unique_events_by_nkv(event_name, 'newState', 'open'))
 	# 	closed_count = len(get_unique_events_by_nkv(event_name, 'newState', 'closed'))
@@ -342,7 +343,7 @@ unique_counts = df.groupby(col_a)[col_b].nunique()
 those_with_multiple = unique_counts[unique_counts > 1]
 
 list_of_multiple = those_with_multiple.index.tolist()
-print(f"[{col_a}]s with multiple [{col_b}]s: {list_of_multiple} ({col_a})")
+print(f'[{col_a}]s with multiple [{col_b}]s: {list_of_multiple} ({col_a})')
 for item in list_of_multiple:
 	print(f'{col_a} == {item}:\n', df[df[col_a] == item])
 	print(f'Associated {col_b} values:', df[df[col_a] == item][col_b].unique())
