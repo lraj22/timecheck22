@@ -2,6 +2,7 @@ import pandas as pd
 from scipy import stats
 import country_converter as coco
 import os
+from datetime import datetime, UTC
 
 # Declare logging/file-writing/printing handler
 does_write_print = True
@@ -40,8 +41,10 @@ we_df = pd.read_csv(website_event_csv_path, parse_dates=['created_at'])
 we_df = we_df.drop(columns=['website_id', 'url_query', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'referrer_path', 'referrer_query', 'page_title', 'gclid', 'fbclid', 'msclkid', 'ttclid', 'li_fat_id', 'twclid', 'tag', 'distinct_id', 'job_id'])
 
 # Get developer/old visits
+# analytics events were added in commit e2eebadce74aefe153aef4a71d7b4bf931cc5861, although theoretically older visits COULD still be valid
+ANALYTICS_ADDED_TS = '2025-12-13 09:30:00'
 bad_we_visits_mask = (
-	(we_df['created_at'] < '2025-12-13 09:30:00') | # analytics events were added in commit e2eebadce74aefe153aef4a71d7b4bf931cc5861, although theoretically older visits COULD still be valid
+	(we_df['created_at'] < ANALYTICS_ADDED_TS) |
 	(we_df['session_id'].isin(dev_ids))
 )
 bad_we_visits = we_df[bad_we_visits_mask]
@@ -101,16 +104,23 @@ total_user_sessions = len(user_we_events['session_id'].unique())
 visits_df = user_we_events[['session_id', 'visit_id']].drop_duplicates()
 total_user_visits = len(visits_df)
 total_user_views = len(user_we_events[user_we_events['event_type'] == 1])
-write("###")
-write("Processed", len(we_df), "records, removed", len(we_df) - len(user_we_events), "development/old/invalid events from that.")
-write("The following statistics are based on the remaining", len(user_we_events), "real user events.")
-write("From the first record at", user_we_events['created_at'].min(), "to the last record at", user_we_events['created_at'].max(), "in UTC")
-write("###")
-write("Number of unique real people:", total_user_sessions)
-write("They come from", len(countries), "different countries:", ', '.join(countries))
-write("Number of real user page visits:", total_user_visits)
-write("Number of real user page views:", total_user_views)
-write("---")
+earlist_record = min(ed_df['created_at'].min(), sd_df['created_at'].min(), we_df['created_at'].min())
+latest_record = min(ed_df['created_at'].max(), sd_df['created_at'].max(), we_df['created_at'].max())
+total_records = len(ed_df) + len(sd_df) + len(we_df)
+total_valid_records = len(valid_ed_events) + len(user_sessions) + len(user_we_events)
+write('###')
+write(f'Report generated at {datetime.now(UTC).strftime('%Y-%m-%d %H:%M:%S')}. This report is based on data collected by and exported from Umami analytics. The earliest record in this export is from {earlist_record} while the latest record is from {latest_record}. Detailed Umami analytics (i.e. including events and not just page views) was added for the public on {ANALYTICS_ADDED_TS}, so records from before then are dropped, even though they may have been valid user visits.')
+write('You can find the current public Umami analytics dashboard at <https://cloud.umami.is/share/b0K7JX1ecA9aZJPP>.')
+write('---')
+write(f'Processed {total_records} records, removed {total_records - total_valid_records} development/old/invalid events from that.')
+write(f'The following statistics are based on the remaining {total_valid_records} real user events.')
+write(f'From the first record at {user_we_events['created_at'].min()} to the last record at {user_we_events['created_at'].max()} in UTC.')
+write('###')
+write('Number of unique real people:', total_user_sessions)
+write(f'They come from {len(countries)} different countries: {', '.join(countries)}')
+write('Number of real user page visits:', total_user_visits)
+write('Number of real user page views:', total_user_views)
+write('---')
 write()
 
 
@@ -119,6 +129,14 @@ write()
 number_of_users = -1
 repeat_subset = visits_df.copy()
 repeats = []
+def times (quantity, words="time", pluralizer='s'):
+	if isinstance(words, str):
+		single = words
+		plural = words + pluralizer
+	else:
+		single = words[0]
+		plural = words[1]
+	return str(quantity) + ' ' + (single if quantity == 1 else plural)
 
 while len(repeat_subset) != 0:
 	number_of_users = len(repeat_subset[~repeat_subset.duplicated('session_id', keep=False)])
@@ -129,7 +147,7 @@ while len(repeat_subset) != 0:
 repeat_count = 1
 write("== Repeat visitors ==")
 for amount in repeats:
-	write(amount, "person" if amount == 1 else "people", "visited exactly", repeat_count, "time" if repeat_count == 1 else "times")
+	write(amount, "person" if amount == 1 else "people", "visited exactly", times(repeat_count))
 	repeat_count += 1
 write()
 
@@ -163,9 +181,9 @@ referrer_map = {
 number_of_users_by_referrer = user_we_events.groupby('visit_id')['referrer_domain'].unique().explode().value_counts(dropna=False).items()
 for referrer, count in number_of_users_by_referrer:
 	if pd.isna(referrer):
-		write(count, "user" if count == 1 else "users", "visited TC22 directly (not referred)")
+		write(times(count, words="user"), "visited TC22 directly (not referred)")
 	else:
-		write(count, "user" if count == 1 else "users", "reached TC22 via", referrer_map.get(referrer, referrer))
+		write(times(count, words="user"), "reached TC22 via", referrer_map.get(referrer, referrer))
 write("Note that one user can use visit multiple times, so total may not add to", total_user_sessions, "(total # of users)")
 write()
 
@@ -179,10 +197,130 @@ percentile_of_avg_events = round(stats.percentileofscore(event_names_by_session_
 quantile_values = event_names_by_session_id.quantile([0.25, 0.5, 0.75]).tolist()
 write('== Events overview ==')
 write(f'There are {total_user_sessions} users, and on average, each user does about {avg_events_per_user} events. This is more than {percentile_of_avg_events}% of users. 75% of users have at least {quantile_values[0]} events, 50% of users have at least {quantile_values[1]} events, and 25% of users have at least {quantile_values[2]} events. The user with the most events has {event_names_by_session_id.max()} events.')
+write()
+
+# Events in detail
+write('== Events in detail ==')
+events_map = valid_ed_events.drop_duplicates('event_id')['event_name'].value_counts().items()
+event_name_map = {
+	'sidebar-page-navigated': 'Users went to a sidebar page',
+	'sidebar-toggled': 'Users toggled the sidebar',
+	'simulated-fullscreen-entered': 'Users entered the simulated fullscreen mode',
+	'simulated-fullscreen-exited': 'Users exited the simulated fullscreen mode',
+	'school-selected': 'Users picked their school',
+	'school-name-clicked': 'Users clicked the school name in the bottom middle',
+	'notes-toggled': 'Users toggled the notes widget',
+	'setting-changed': 'Users changed their settings',
+	'toggle-fullscreen-clicked': 'Users toggled fullscreen',
+	'timer-toggled': 'Users toggled the timer widget',
+	'get-pwa-clicked': 'Users clicked the "Get App" button',
+	'stopwatch-toggled': 'Users toggled the stopwatch widget',
+	'notes-updated': 'Users edited their notes',
+}
+schools_map = {
+	-2: 'Always High School',
+	-1: 'None',
+	1: 'Chino Hills High School',
+	2: 'Cal Aero Preserve Academy JH',
+	3: 'Ayala High School',
+	4: 'Ruth Fox Middle School',
+}
+
+def get_event_nkv_mask (name, key, values):
+	if isinstance(values, str):
+		values = {values}
+	return (
+		(valid_ed_events['event_name'] == name) &
+		(valid_ed_events['data_key'] == key) &
+		(valid_ed_events['string_value'].isin(values))
+	)
+
+def get_unique_events_by_nkv (name, key, values):
+	return valid_ed_events[get_event_nkv_mask(name, key, values)].drop_duplicates('event_id')
+
+def top_n_values (name, key, n):
+	settings_changed = valid_ed_events[(
+		(valid_ed_events['event_name'] == name) &
+		(valid_ed_events['data_key'] == key)
+	)]['string_value'].value_counts().items()
+	total = 0
+	result = []
+	for setting, count in settings_changed:
+		result.append([setting, count])
+		total += 1
+		if total >= n: break
+	return [total, result]
+
+def format_top_string_values (result):
+	if len(result) > 1: result[-1][0] = 'and ' + result[-1][0]
+	return (', ' if len(result) > 2 else ' ').join(map(lambda combined: f'{combined[0]} ({combined[1]})', result))
+print(valid_ed_events[valid_ed_events['data_key'] == 'alreadySelected']['string_value'].unique())
+
+def get_auxiliary_event_info (event_name):
+	info = ''
+	
+	if 0: pass # it looks nicer when the other ones are all 'elif' :]
+	# By the way, I've commented events because the information isn't that useful to know. I'd rather a cleaner output with useful information that a messy one with all the information.
+	elif event_name == 'setting-changed':
+		total, setting_counts = top_n_values(event_name, 'setting', 5)
+		info = f'The top {times(total, words='setting')} changed were {format_top_string_values(setting_counts)}.'
+	elif event_name == 'school-selected':
+		total, school_counts = top_n_values(event_name, 'schoolId', 3)
+		school_counts = [[schools_map.get(int(schoolId), 'School ID ' + schoolId), count] for schoolId, count in school_counts]
+		info = f'The top {times(total, words='school')} selected were {format_top_string_values(school_counts)}.'
+	elif event_name == 'sidebar-page-navigated':
+		total, page_counts = top_n_values(event_name, 'page', 3)
+		info = f'The top {times(total, words='page')} navigated to were {format_top_string_values(page_counts)}.'
+	elif event_name == 'school-name-clicked':
+		no_school_count = len(get_unique_events_by_nkv(event_name, 'alreadySelected', 'false'))
+		already_school_count = len(get_unique_events_by_nkv(event_name, 'alreadySelected', 'true'))
+		info = f'This was {times(no_school_count, words=["user's", "users'"], pluralizer='')} first school selected and {times(already_school_count, words='user')} already had a school selected.'
+	elif event_name == 'simulated-fullscreen-entered':
+		total, element_counts = top_n_values(event_name, 'id', 3)
+		info = f'The top {times(total, words='element')} entered were {format_top_string_values(element_counts)}.'
+	# elif event_name == 'simulated-fullscreen-exited':
+	# 	total, element_counts = top_n_string_values(event_name, 'id', 3)
+	# 	info = f'The top {times(total, words='element')} exited were {format_top_string_values(element_counts)}.'
+	elif event_name == 'get-pwa-clicked':
+		no_school_count = len(get_unique_events_by_nkv(event_name, 'outcome', 'dismissed'))
+		already_school_count = len(get_unique_events_by_nkv(event_name, 'outcome', 'accepted'))
+		info = f'The app download was accepted {times(already_school_count)} and dismissed {times(no_school_count)}.'
+	elif event_name == 'notes-updated':
+		longest_note_length = float(valid_ed_events[(
+			(valid_ed_events['event_name'] == event_name) &
+			(valid_ed_events['data_key'] == 'length')
+		)]['string_value'].max())
+		info = f'The longest note was {times(longest_note_length, words="character")}.'
+	# elif event_name in {'stopwatch-toggled', 'timer-toggled', 'notes-toggled'}:
+	# 	opened_count = len(get_unique_events_by_nkv(event_name, 'newState', 'open'))
+	# 	closed_count = len(get_unique_events_by_nkv(event_name, 'newState', 'closed'))
+	# 	info = f'It was opened {times(opened_count)} and closed {times(closed_count)}.'
+	# elif event_name == 'sidebar-toggled':
+	# 	opened_count = len(get_unique_events_by_nkv(event_name, 'isOpenNow', 'true'))
+	# 	closed_count = len(get_unique_events_by_nkv(event_name, 'isOpenNow', 'false'))
+	# 	info = f'It was toggled open {times(closed_count)} and closed {times(opened_count)}.'
+	elif event_name == 'toggle-fullscreen-clicked':
+		entered_count = len(get_unique_events_by_nkv(event_name, 'attemptedNewState', 'fullscreen'))
+		exited_count = len(get_unique_events_by_nkv(event_name, 'attemptedNewState', 'no-fullscreen'))
+		info = f'They entered fullscreen {times(entered_count)} and exited fullscreen {times(exited_count)}.'
+	
+	return info
+
+for event_name, count in events_map:
+	event_description = event_name_map.get(event_name)
+	auxiliary_info = get_auxiliary_event_info(event_name)
+	auxiliary_info = (' ' + auxiliary_info) if auxiliary_info else ''
+	if event_description:
+		write(f'{event_description} {times(count)}.{auxiliary_info}')
+	else:
+		write(f'The {event_name} event happened {times(count)}.{auxiliary_info}')
+write()
 
 
 
 # Write to analytics report file
+write('End of report')
+write('###')
 with open(analytics_report_file_path, 'w') as report_file:
 	report_file.writelines(lines_to_write)
 
