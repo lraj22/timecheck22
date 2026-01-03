@@ -5,7 +5,7 @@ import os
 from datetime import datetime, UTC
 
 # Declare logging/file-writing/printing handler
-does_write_print = True
+does_write_print = False
 lines_to_write = []
 def write (*args):
 	if does_write_print: print(*args)
@@ -197,6 +197,14 @@ percentile_of_avg_events = round(stats.percentileofscore(event_names_by_session_
 quantile_values = event_names_by_session_id.quantile([0.25, 0.5, 0.75]).tolist()
 write('== Events overview ==')
 write(f'There are {total_user_sessions} users, and on average, each user does about {avg_events_per_user} events. This is more than {percentile_of_avg_events}% of users. 75% of users have at least {quantile_values[0]} events, 50% of users have at least {quantile_values[1]} events, and 25% of users have at least {quantile_values[2]} events. The user with the most events has {event_names_by_session_id.max()} events.')
+event_count_ranges = ((0, 1), (2, 5), (6, 10), (11, 20), (21, 30), (31, 999))
+for event_count_range in event_count_ranges:
+	users_in_range_count = len(event_names_by_session_id[(
+		(event_names_by_session_id >= event_count_range[0]) &
+		(event_names_by_session_id <= event_count_range[1])
+	)])
+	single = (event_count_range[0] == event_count_range[1])
+	write(f'{times(users_in_range_count, words='user')} have {event_count_range[0] if single else (f'between {event_count_range[0]} and {event_count_range[1]}')} {'event' if (single and (event_count_range[0] == 1)) else 'events'}.')
 write()
 
 # Events in detail
@@ -254,7 +262,6 @@ def top_n_values (name, key, n):
 def format_top_string_values (result):
 	if len(result) > 1: result[-1][0] = 'and ' + result[-1][0]
 	return (', ' if len(result) > 2 else ' ').join(map(lambda combined: f'{combined[0]} ({combined[1]})', result))
-print(valid_ed_events[valid_ed_events['data_key'] == 'alreadySelected']['string_value'].unique())
 
 def get_auxiliary_event_info (event_name):
 	info = ''

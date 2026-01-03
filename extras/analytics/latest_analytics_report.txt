@@ -1,5 +1,5 @@
 ###
-Report generated at 2026-01-03 05:58:20. This report is based on data collected by and exported from Umami analytics. The earliest record in this export is from 2025-10-09 05:52:20 while the latest record is from 2025-12-31 00:48:38. Detailed Umami analytics (i.e. including events and not just page views) was added for the public on 2025-12-13 09:30:00, so records from before then are dropped, even though they may have been valid user visits.
+Report generated at 2026-01-03 07:17:54. This report is based on data collected by and exported from Umami analytics. The earliest record in this export is from 2025-10-09 05:52:20 while the latest record is from 2025-12-31 00:48:38. Detailed Umami analytics (i.e. including events and not just page views) was added for the public on 2025-12-13 09:30:00, so records from before then are dropped, even though they may have been valid user visits.
 You can find the current public Umami analytics dashboard at <https://cloud.umami.is/share/b0K7JX1ecA9aZJPP>.
 ---
 Processed 5842 records, removed 4329 development/old/invalid events from that.
@@ -39,6 +39,12 @@ Note that one user can use visit multiple times, so total may not add to 81 (tot
 
 == Events overview ==
 There are 81 users, and on average, each user does about 7.57 events. This is more than 69.14% of users. 75% of users have at least 1.0 events, 50% of users have at least 4.0 events, and 25% of users have at least 10.0 events. The user with the most events has 70 events.
+22 users have between 0 and 1 events.
+25 users have between 2 and 5 events.
+14 users have between 6 and 10 events.
+15 users have between 11 and 20 events.
+0 users have between 21 and 30 events.
+5 users have between 31 and 999 events.
 
 == Events in detail ==
 Users went to a sidebar page 164 times. The top 3 pages navigated to were home (123), school (17), and schedules (10).
