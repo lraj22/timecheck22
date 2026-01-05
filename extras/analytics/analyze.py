@@ -5,7 +5,7 @@ import os
 from datetime import datetime, UTC
 
 # Declare logging/file-writing/printing handler
-does_write_print = False
+does_write_print = True
 lines_to_write = []
 def write (*args):
 	if does_write_print: print(*args)
@@ -14,7 +14,7 @@ def write (*args):
 
 # Find CSVs
 script_dir = os.path.dirname(__file__)
-csv_base = 'tc22-umami-data-2026-jan-1/'
+csv_base = 'tc22-umami-data-2026-jan-4/'
 session_data_csv_path = os.path.join(script_dir, csv_base + 'session_data.csv')
 event_data_csv_path = os.path.join(script_dir, csv_base + 'event_data.csv')
 website_event_csv_path = os.path.join(script_dir, csv_base + 'website_event.csv')
@@ -175,9 +175,10 @@ referrer_map = {
 	'siege.hackclub.com': 'Siege (via Hack Club)',
 	'com.slack': 'Slack App',
 	'l.instagram.com': 'Instagram',
-	'm.facebook.com': 'Facebook',
+	'm.facebook.com': 'Facebook (Mobile)',
 	'google.com': 'Google',
 	'github.com': 'GitHub',
+	'facebook.com': 'Facebook',
 }
 number_of_users_by_referrer = user_we_events.groupby('visit_id')['referrer_domain'].unique().explode().value_counts(dropna=False).items()
 for referrer, count in number_of_users_by_referrer:
@@ -191,7 +192,7 @@ write()
 
 
 # Events overview
-event_names_by_session_id = valid_ed_events.groupby('session_id')['event_name'].count()
+event_names_by_session_id = valid_ed_events.drop_duplicates('event_id').groupby('session_id')['event_name'].count()
 event_names_by_session_id = pd.concat([event_names_by_session_id, pd.Series([0] * (total_user_sessions - len(event_names_by_session_id)))]) # Fill with 0-event users until proper number of users achieved
 avg_events_per_user = round(event_names_by_session_id.mean(), 2)
 percentile_of_avg_events = round(stats.percentileofscore(event_names_by_session_id, event_names_by_session_id.mean()), 2)
@@ -225,6 +226,7 @@ event_name_map = {
 	'get-pwa-clicked': 'Users clicked the "Get app" button',
 	'stopwatch-toggled': 'Users toggled the stopwatch widget',
 	'notes-updated': 'Users edited their notes',
+	'timer-used': 'Users interacted with the timer widget',
 }
 schools_map = {
 	-2: 'Always High School',
@@ -311,6 +313,13 @@ def get_auxiliary_event_info (event_name):
 		entered_count = len(get_unique_events_by_nkv(event_name, 'attemptedNewState', 'fullscreen'))
 		exited_count = len(get_unique_events_by_nkv(event_name, 'attemptedNewState', 'no-fullscreen'))
 		info = f'They entered fullscreen {times(entered_count)} and exited fullscreen {times(exited_count)}.'
+	elif event_name == 'timer-used':
+		started_count = len(get_unique_events_by_nkv(event_name, 'event', 'start'))
+		stopped_count = len(get_unique_events_by_nkv(event_name, 'event', 'stop'))
+		muted_count = len(get_unique_events_by_nkv(event_name, 'event', 'mute'))
+		unmuted_count = len(get_unique_events_by_nkv(event_name, 'event', 'unmute'))
+		resetted_count = len(get_unique_events_by_nkv(event_name, 'event', 'reset'))
+		info = f'They started it {times(started_count)}, stopped it {times(stopped_count)}, muted it {times(muted_count)}, unmuted it {times(unmuted_count)}, and reset it {times(resetted_count)}.'
 	
 	return info
 

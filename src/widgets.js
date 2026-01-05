@@ -214,7 +214,7 @@ dom.timerBtnReset.addEventListener("click", function () {
 	dom.timerBtnReset.classList.toggle("hidden", true);
 	dom.timerBtnStart.focus();
 	
-	umami.track("timer-reset", {
+	umami.track("timer-used", {
 		"event": "reset",
 		"currentTime": timeDiffToMsInverse(timerData.total),
 	});
