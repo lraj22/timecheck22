@@ -14,7 +14,7 @@ def write (*args):
 
 # Find CSVs
 script_dir = os.path.dirname(__file__)
-csv_base = 'tc22-umami-data-2026-jan-4/'
+csv_base = 'tc22-umami-data-2026-jan-5/'
 session_data_csv_path = os.path.join(script_dir, csv_base + 'session_data.csv')
 event_data_csv_path = os.path.join(script_dir, csv_base + 'event_data.csv')
 website_event_csv_path = os.path.join(script_dir, csv_base + 'website_event.csv')
@@ -174,11 +174,12 @@ write('== Visitor referrals ==')
 referrer_map = {
 	'siege.hackclub.com': 'Siege (via Hack Club)',
 	'com.slack': 'Slack App',
-	'l.instagram.com': 'Instagram',
+	'l.instagram.com': 'Instagram (Mobile)',
 	'm.facebook.com': 'Facebook (Mobile)',
 	'google.com': 'Google',
 	'github.com': 'GitHub',
 	'facebook.com': 'Facebook',
+	'instagram.com': 'Instagram',
 }
 number_of_users_by_referrer = user_we_events.groupby('visit_id')['referrer_domain'].unique().explode().value_counts(dropna=False).items()
 for referrer, count in number_of_users_by_referrer:
@@ -227,6 +228,7 @@ event_name_map = {
 	'stopwatch-toggled': 'Users toggled the stopwatch widget',
 	'notes-updated': 'Users edited their notes',
 	'timer-used': 'Users interacted with the timer widget',
+	'stopwatch-used': 'Users interacted with the stopwatch widget',
 }
 schools_map = {
 	-2: 'Always High School',
@@ -313,6 +315,11 @@ def get_auxiliary_event_info (event_name):
 		entered_count = len(get_unique_events_by_nkv(event_name, 'attemptedNewState', 'fullscreen'))
 		exited_count = len(get_unique_events_by_nkv(event_name, 'attemptedNewState', 'no-fullscreen'))
 		info = f'They entered fullscreen {times(entered_count)} and exited fullscreen {times(exited_count)}.'
+	elif event_name == 'stopwatch-used':
+		started_count = len(get_unique_events_by_nkv(event_name, 'event', 'start'))
+		stopped_count = len(get_unique_events_by_nkv(event_name, 'event', 'stop'))
+		resetted_count = len(get_unique_events_by_nkv(event_name, 'event', 'reset'))
+		info = f'They started it {times(started_count)}, stopped it {times(stopped_count)}, and reset it {times(resetted_count)}.'
 	elif event_name == 'timer-used':
 		started_count = len(get_unique_events_by_nkv(event_name, 'event', 'start'))
 		stopped_count = len(get_unique_events_by_nkv(event_name, 'event', 'stop'))
