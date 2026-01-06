@@ -241,6 +241,10 @@ select {
 	cursor: pointer;
 }
 
+.bluelink {
+	color: oklch(from var(--theme-fg) calc(l - calc(var(--l-change-multiplier) * 0.1)) 0.25 250);
+}
+
 input[type="range"] {
 	width: 200px;
 	display: block;

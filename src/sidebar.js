@@ -1,5 +1,5 @@
 import { settings, updateSettings, reidentifyUser } from "./settings";
-import { clockdata, dom, schoolIdMappings, schools, updateState } from "./util";
+import { clockdata, dom, removeHighlight, schoolIdMappings, schools, updateState } from "./util";
 
 const pageIdsToName = {
 	"home": "Home",
@@ -7,6 +7,7 @@ const pageIdsToName = {
 	"school": "School",
 	"schedules": "Schedules",
 	"keyboardShortcuts": "Keyboard shortcuts",
+	"addSchool": "Add school",
 	"about": "About",
 	"scheduleManagers": "For Schedule Managers",
 	"dev": "Developers",
@@ -196,6 +197,7 @@ dom.disableAnalytics.addEventListener("click", _ => {
 	alert("Analytics disabled.");
 });
 
-navigateToSidebarPage("home", {
+navigateToSidebarPage("addSchool", {
 	"noAnalytics": true, // this should not count as navigating to a page (it happens every page load)
 });
+toggleSidebar(true);
