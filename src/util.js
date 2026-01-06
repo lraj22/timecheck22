@@ -75,12 +75,12 @@ export const schools = [
 		"repo": "ilovecats567/ayalahs-clockdata",
 		"category": "high",
 	},
-	// {
-	// 	"id": 6,
-	// 	"name": "Chino High School/BST (California)",
-	// 	"repo": "~/chsbst-clockdata",
-	// 	"category": "high",
-	// },
+	{
+		"id": 6,
+		"name": "Chino High School/BST (California)",
+		"repo": "lraj22/chsbst-clockdata",
+		"category": "high",
+	},
 	
 	// middle schools
 	{
