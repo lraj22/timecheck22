@@ -197,7 +197,6 @@ dom.disableAnalytics.addEventListener("click", _ => {
 	alert("Analytics disabled.");
 });
 
-navigateToSidebarPage("addSchool", {
+navigateToSidebarPage("home", {
 	"noAnalytics": true, // this should not count as navigating to a page (it happens every page load)
 });
-toggleSidebar(true);
