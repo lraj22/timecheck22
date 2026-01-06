@@ -25,15 +25,16 @@ button {
 
 body {
 	margin: 0;
-	width: 100vw;
-	height: 100vh;
+	width: 100%;
+	height: 100%;
 }
 
 #app {
 	display: flex;
 	flex-flow: column;
-	width: 100vw;
-	height: 100vh;
+	width: 100%;
+	height: 100%;
+	position: fixed;
 }
 
 #consoleView {
@@ -297,15 +298,15 @@ tbody:empty::after {
 @media (max-width: 900px) {
 	aside {
 		position: absolute;
-		height: 100vh;
+		height: 100%;
 	}
 }
 
 @media (max-width: 400px) {
 	aside {
 		position: absolute;
-		width: 100vw;
-		height: 100vh;
+		width: 100%;
+		height: 100%;
 	}
 	#statusLeft {
 		display: none;
@@ -472,8 +473,8 @@ main {
 /* fullscreener */
 #fullscreen.fullscreenPresent {
 	font-size: calc(10px + 10vw)!important;
-	width: 100vw!important;
-	height: 100vh!important;
+	width: 100%!important;
+	height: 100%!important;
 	display: flex!important;
 	justify-content: center!important;
 	align-items: center!important;
@@ -533,7 +534,7 @@ body:has(#fullscreen.fullscreenPresent) .simFullscreenHide:not(#fullscreen *) {
 	min-width: 100px;
 	min-height: 50px;
 	width: 200px;
-	max-width: 100vw;
+	max-width: 100%;
 	box-sizing: border-box;
 	z-index: 20;
 }
@@ -717,8 +718,8 @@ body:has(#fullscreen.fullscreenPresent) .simFullscreenHide:not(#fullscreen *) {
 	position: fixed;
 	top: 0;
 	left: 0;
-	width: 100vw;
-	height: 100vh;
+	width: 100%;
+	height: 100%;
 	pointer-events: none;
 }
 
