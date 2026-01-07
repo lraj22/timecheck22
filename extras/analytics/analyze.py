@@ -5,7 +5,7 @@ import os
 from datetime import datetime, UTC
 
 # Declare logging/file-writing/printing handler
-does_write_print = False
+does_write_print = True
 lines_to_write = []
 def write (*args):
 	if does_write_print: print(*args)
