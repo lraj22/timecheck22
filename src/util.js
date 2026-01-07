@@ -155,7 +155,7 @@ export function setClockdata (newClockdata) { // when context is fetched, the ne
 					umami.track("division-selected", {
 						"schoolName": schools[schoolIdMappings[settings.schoolId]].name,
 						"schoolId": settings.schoolId,
-						"divisionName": clockdata.getDivisionData(selectedDivisionId)?.details?.division_name,
+						"divisionLabel": clockdata.getDivisionData(selectedDivisionId)?.details?.division_label,
 						"divisionId": selectedDivisionId,
 					});
 				});

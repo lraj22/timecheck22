@@ -134,7 +134,7 @@ dom.divisionSelect.addEventListener("change", _ => {
 	umami.track("division-selected", {
 		"schoolName": schools[schoolIdMappings[settings.schoolId]].name,
 		"schoolId": settings.schoolId,
-		"divisionName": clockdata.getDivisionData(divisionId)?.details?.division_name,
+		"divisionLabel": clockdata.getDivisionData(divisionId)?.details?.division_label,
 		"divisionId": divisionId,
 	});
 });

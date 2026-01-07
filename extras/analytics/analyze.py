@@ -5,7 +5,7 @@ import os
 from datetime import datetime, UTC
 
 # Declare logging/file-writing/printing handler
-does_write_print = True
+does_write_print = False
 lines_to_write = []
 def write (*args):
 	if does_write_print: print(*args)
@@ -14,7 +14,7 @@ def write (*args):
 
 # Find CSVs
 script_dir = os.path.dirname(__file__)
-csv_base = 'tc22-umami-data-2026-jan-5/'
+csv_base = 'tc22-umami-data-2026-jan-6/'
 session_data_csv_path = os.path.join(script_dir, csv_base + 'session_data.csv')
 event_data_csv_path = os.path.join(script_dir, csv_base + 'event_data.csv')
 website_event_csv_path = os.path.join(script_dir, csv_base + 'website_event.csv')
@@ -77,6 +77,19 @@ user_we_events = user_we_events[~(
 )]
 # Remove bad events as defined above
 valid_ed_events = valid_ed_events[~valid_ed_events['event_id'].isin(bad_we_event_ids)]
+# Filter out spam events
+sorted_ed = ed_df.sort_values(['session_id', 'created_at'])
+sorted_ed['time_delta'] = sorted_ed.groupby(['session_id', 'event_name', 'data_key', 'string_value'])['created_at'].diff()
+event_spam_threshold = pd.Timedelta(seconds=1)
+spam_event_ids = sorted_ed[~((sorted_ed['time_delta'].isna()) | (sorted_ed['time_delta'] > event_spam_threshold))]['event_id'].unique()
+valid_ed_events = valid_ed_events[~valid_ed_events['event_id'].isin(spam_event_ids)]
+user_we_events = user_we_events[~user_we_events['event_id'].isin(spam_event_ids)]
+# Filter out spam views
+sorted_we = we_df.sort_values(['session_id', 'created_at'])
+sorted_we['time_delta'] = sorted_we.groupby(['session_id', 'event_type'])['created_at'].diff()
+view_spam_threshold = pd.Timedelta(seconds=10)
+spam_view_event_ids = sorted_we[~((sorted_we['time_delta'].isna()) | (sorted_we['time_delta'] > view_spam_threshold) | (sorted_we['event_type'] == 2))]['event_id'].unique()
+user_we_events = user_we_events[~user_we_events['event_id'].isin(spam_view_event_ids)]
 
 
 
@@ -180,13 +193,14 @@ referrer_map = {
 	'github.com': 'GitHub',
 	'facebook.com': 'Facebook',
 	'instagram.com': 'Instagram',
+	'com.google.android.googlequicksearchbox': 'Android Google Search (System Package)'
 }
 number_of_users_by_referrer = user_we_events.groupby('visit_id')['referrer_domain'].unique().explode().value_counts(dropna=False).items()
 for referrer, count in number_of_users_by_referrer:
 	if pd.isna(referrer):
-		write(times(count, words='user'), 'visited TC22 directly (not referred)')
+		write(f'{times(count, words='user')} visited TC22 directly (not referred).')
 	else:
-		write(times(count, words='user'), 'reached TC22 via', referrer_map.get(referrer, referrer))
+		write(f'{times(count, words='user')} reached TC22 via {referrer_map.get(referrer, referrer)}.')
 write('Note that one user can use visit multiple times, so total may not add to', total_user_sessions, '(total # of users).')
 write()
 
@@ -229,6 +243,7 @@ event_name_map = {
 	'notes-updated': 'Users edited their notes',
 	'timer-used': 'Users interacted with the timer widget',
 	'stopwatch-used': 'Users interacted with the stopwatch widget',
+	'division-selected': 'Users picked their division',
 }
 schools_map = {
 	-2: 'Always High School',
@@ -265,6 +280,7 @@ def top_n_values (name, key, n):
 	return [total, result]
 
 def format_top_string_values (result):
+	if len(result) == 0: return '(none)'
 	if len(result) > 1: result[-1][0] = 'and ' + result[-1][0]
 	return (', ' if len(result) > 2 else ' ').join(map(lambda combined: f'{combined[0]} ({combined[1]})', result))
 
@@ -291,8 +307,11 @@ def get_auxiliary_event_info (event_name):
 		total, element_counts = top_n_values(event_name, 'id', 3)
 		info = f'The top {times(total, words='element')} entered were {format_top_string_values(element_counts)}.'
 	# elif event_name == 'simulated-fullscreen-exited':
-	# 	total, element_counts = top_n_string_values(event_name, 'id', 3)
+	# 	total, element_counts = top_n_values(event_name, 'id', 3)
 	# 	info = f'The top {times(total, words='element')} exited were {format_top_string_values(element_counts)}.'
+	elif event_name == 'division-selected':
+		division_total, division_counts = top_n_values(event_name, 'divisionLabel', 3)
+		info = f'The top {times(division_total, words='division')} were {format_top_string_values(division_counts)}.'
 	elif event_name == 'get-pwa-clicked':
 		no_school_count = len(get_unique_events_by_nkv(event_name, 'outcome', 'dismissed'))
 		already_school_count = len(get_unique_events_by_nkv(event_name, 'outcome', 'accepted'))
