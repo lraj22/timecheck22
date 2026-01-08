@@ -14,7 +14,7 @@ def write (*args):
 
 # Find CSVs
 script_dir = os.path.dirname(__file__)
-csv_base = 'tc22-umami-data-2026-jan-6/'
+csv_base = 'tc22-umami-data-2026-jan-7/'
 session_data_csv_path = os.path.join(script_dir, csv_base + 'session_data.csv')
 event_data_csv_path = os.path.join(script_dir, csv_base + 'event_data.csv')
 website_event_csv_path = os.path.join(script_dir, csv_base + 'website_event.csv')
