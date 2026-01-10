@@ -14,7 +14,7 @@ def write (*args):
 
 # Find CSVs
 script_dir = os.path.dirname(__file__)
-csv_base = 'tc22-umami-data-2026-jan-7/'
+csv_base = 'tc22-umami-data-2026-jan-9/'
 session_data_csv_path = os.path.join(script_dir, csv_base + 'session_data.csv')
 event_data_csv_path = os.path.join(script_dir, csv_base + 'event_data.csv')
 website_event_csv_path = os.path.join(script_dir, csv_base + 'website_event.csv')
@@ -187,20 +187,31 @@ write('== Visitor referrals ==')
 referrer_map = {
 	'siege.hackclub.com': 'Siege (via Hack Club)',
 	'com.slack': 'Slack App',
-	'l.instagram.com': 'Instagram (Mobile)',
-	'm.facebook.com': 'Facebook (Mobile)',
+	'l.instagram.com': 'Instagram',
+	'm.facebook.com': 'Facebook',
 	'google.com': 'Google',
 	'github.com': 'GitHub',
 	'facebook.com': 'Facebook',
 	'instagram.com': 'Instagram',
-	'com.google.android.googlequicksearchbox': 'Android Google Search (System Package)'
+	'com.google.android.googlequicksearchbox': 'Android Google Search (System Package)',
+	'classroom.google.com': 'Google Classroom',
 }
 number_of_users_by_referrer = user_we_events.groupby('visit_id')['referrer_domain'].unique().explode().value_counts(dropna=False).items()
+number_by_referrer_combined = {}
+
 for referrer, count in number_of_users_by_referrer:
 	if pd.isna(referrer):
+		number_by_referrer_combined[''] = count
+	else:
+		referrer_name = referrer_map.get(referrer, referrer)
+		number_by_referrer_combined[referrer_name] = number_by_referrer_combined.get(referrer_name, 0) + count
+
+for referrer_name, count in number_by_referrer_combined.items():
+	if referrer_name == '':
 		write(f'{times(count, words='user')} visited TC22 directly (not referred).')
 	else:
-		write(f'{times(count, words='user')} reached TC22 via {referrer_map.get(referrer, referrer)}.')
+		write(f'{times(count, words='user')} reached TC22 via {referrer_name}.')
+
 write('Note that one user can use visit multiple times, so total may not add to', total_user_sessions, '(total # of users).')
 write()
 
