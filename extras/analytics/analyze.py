@@ -14,7 +14,7 @@ def write (*args):
 
 # Find CSVs
 script_dir = os.path.dirname(__file__)
-csv_base = 'tc22-umami-data-2026-jan-9/'
+csv_base = 'tc22-umami-data-2026-jan-11/'
 session_data_csv_path = os.path.join(script_dir, csv_base + 'session_data.csv')
 event_data_csv_path = os.path.join(script_dir, csv_base + 'event_data.csv')
 website_event_csv_path = os.path.join(script_dir, csv_base + 'website_event.csv')
@@ -165,7 +165,7 @@ while len(repeat_subset) != 0:
 repeat_count = 1
 write('== Repeat visitors ==')
 for user_count, event_count in repeats:
-	write(f'{times(user_count, words=['person', 'people'])} visited exactly {times(repeat_count)}. They accounted for {times(event_count, words='event')}.')
+	write(f'{times(user_count, words=['person', 'people'])} visited exactly {times(repeat_count)}. Total: {times(event_count, words='event')}. Avg. per user: {times(round(event_count / user_count, 1), words='event') if (user_count > 0) else 'n/a'}.')
 	repeat_count += 1
 write('Note that events here includes page views and so will be higher than the events in the events overview/in detail below.')
 write()
@@ -225,7 +225,7 @@ percentile_of_avg_events = round(stats.percentileofscore(event_names_by_session_
 quantile_values = event_names_by_session_id.quantile([0.25, 0.5, 0.75]).tolist()
 write('== Events overview ==')
 write(f'There are {total_user_sessions} users, and on average, each user does about {avg_events_per_user} events. This is more than {percentile_of_avg_events}% of users. 75% of users have at least {quantile_values[0]} events, 50% of users have at least {quantile_values[1]} events, and 25% of users have at least {quantile_values[2]} events. The user with the most events has {event_names_by_session_id.max()} events.')
-event_count_ranges = ((0, 1), (2, 5), (6, 10), (11, 20), (21, 30), (31, 999))
+event_count_ranges = ((0, 1), (2, 5), (6, 10), (11, 20), (21, 30), (31, 50), (50, 999))
 for event_count_range in event_count_ranges:
 	users_in_range_count = len(event_names_by_session_id[(
 		(event_names_by_session_id >= event_count_range[0]) &
