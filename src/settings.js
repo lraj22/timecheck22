@@ -12,6 +12,7 @@ import {
 	state,
 	updateState,
 } from "./util";
+import localforage from "localforage";
 import snowStorm from "../lib/snowstorm";
 
 const defaultSettings = {
