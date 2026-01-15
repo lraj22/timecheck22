@@ -39,6 +39,10 @@
 	--theme-bg: oklch(0.99 0.0053 16);
 }
 
+.showWhenFullTheme {
+	display: none;
+}
+
 /* system background theme */
 @media (prefers-color-scheme: dark) {
 	[data-setting-backgroundTheme="system"] {

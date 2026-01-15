@@ -15,8 +15,8 @@
 	display: none;
 }
 
-html:not([data-setting-backgroundTheme="spooky"]) .showWhenFullTheme {
-	display: none;
+html[data-setting-backgroundTheme="spooky"] .showWhenFullTheme {
+	display: block;
 }
 
 /* spooky animation-ing */
