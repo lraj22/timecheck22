@@ -177,6 +177,17 @@ aside.sidebarVisible {
 	float: right;
 }
 
+html:not(.experimentsEverEnabled) #experimentsOption {
+	display: none;
+}
+
+#disablingExperimentsReloadWarning {
+	display: none;
+}
+html.experimentsEverEnabled[data-setting-experimentsEnabled="false"] #disablingExperimentsReloadWarning {
+	display: block;
+}
+
 .element-highlight {
 	animation-name: highlight-flash;
 	animation-duration: 0.5s;
@@ -245,6 +256,10 @@ select {
 	color: oklch(from var(--theme-fg) calc(l - calc(var(--l-change-multiplier) * 0.1)) 0.25 250);
 }
 
+.danger {
+	color: red;
+}
+
 input[type="range"] {
 	width: 200px;
 	display: block;
@@ -256,6 +271,11 @@ datalist {
 	justify-content: space-between;
 	writing-mode: vertical-lr;
 	width: 200px;
+}
+
+details[open] {
+	border: 1px solid oklch(from var(--theme-fg) l 0 h);
+	padding: 0.5rem;
 }
 
 #scheduleManagersAccess {

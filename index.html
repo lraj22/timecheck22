@@ -90,6 +90,7 @@
 								<div class="sbOption" data-navigate-to="settings" id="settingsOption">Settings</div>
 								<div class="sbOption" data-navigate-to="school" id="schoolOption">Set school</div>
 								<div class="sbOption" data-navigate-to="schedules" id="schedulesOption">View schedules</div>
+								<div class="sbOption" data-navigate-to="experiments" id="experimentsOption">🧪 Experiments</div>
 							</div>
 							
 							<!-- bottom -->
@@ -186,6 +187,15 @@
 							
 							<hr>
 							<p>Want to choose or change your school? Go to the <span tabindex="0" role="link" class="linklike" data-navigate-to="school" data-js-on-click="true">Schools page</span>.</p>
+							
+							<hr><br>
+							<details>
+								<summary>Advanced settings</summary>
+								<br>
+								
+								<input type="checkbox" id="settingExperimentsEnabled" data-setting-name="experimentsEnabled"><label for="settingExperimentsEnabled">Enable experiments</label>
+								<p>Please note, if you disable the experiments tab, you will need to reload this page for it to take effect.</p>
+							</details>
 						</div>
 						<div class="sbPage" data-page-name="school">
 							<p>Welcome! Select your school here. This will set the clock to the current schedule.</p>
@@ -221,6 +231,15 @@
 								</tbody>
 							</table>
 							<div id="scheduleMessage"></div>
+						</div>
+						<div class="sbPage" data-page-name="experiments">
+							<p class="danger" id="disablingExperimentsReloadWarning"><b>Disabling experiments requires you to fully reload this page!</b></p>
+							<p>Welcome! Here you will find features in development, early testing, or limited availability. Enable these <b>at your own risk</b>.</p>
+							<p>There is no guarantee any of them work, and they may cause the website to not function as expected. You have been warned!</p>
+							<hr><br>
+							
+							<input type="checkbox" id="experiment-2026-01-15-test" data-experiment-id="2026-01-15-test"><label for="experiment-2026-01-15-test">Experiment test</label><br>
+							<label for="experiment-2026-01-15-test">Test message: </label><input type="text" id="experiment-2026-01-15-test-data-message" data-associated-experiment-id="2026-01-15-test" data-experiment-data-key="message"><br>
 						</div>
 						<div class="sbPage" data-page-name="keyboardShortcuts">
 							<h2>General</h2>
@@ -287,7 +306,7 @@
 							<small>P.S.: If you just want to help keep your school's schedules up to date, you can still fill it out, but select something other than 'Add school' in the form or GitHub.</small>
 						</div>
 						<div class="sbPage" data-page-name="about">
-							<p><span>TimeCheck 22, aka TC22.</span><br><small>Last updated January 7, 2026.</small></p>
+							<p><span>TimeCheck 22, aka TC22.</span><br><small>Last updated January 15, 2026.</small></p>
 							
 							<h2>Introduction</h2>
 							<p>Welcome to the about page! Not many people pass by here. You'll find information about the app, links to "secret" pages, and credits.</p>

@@ -24,6 +24,7 @@ const defaultSettings = {
 	"font": "default",
 	"timerRing": "timerEndHarp",
 	"timerRingVolume": "100",
+	"experimentsEnabled": false,
 };
 export var settings = await localforage.getItem("settings");
 if (!settings) {
@@ -167,6 +168,10 @@ function applySettings (fetchAfterwards) {
 	
 	if ("timerRingVolume" in settings) {
 		audio.setVolume("timerRing", parseInt(settings.timerRingVolume) / 100);
+	}
+	
+	if (settings.experimentsEnabled) {
+		import("./experiments"); // only really imports once due to caching
 	}
 	
 	if (settings.backgroundTheme === "winter") {

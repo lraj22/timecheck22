@@ -192,6 +192,7 @@ const defaultState = {
 		}
 	},
 	"savedDivisions": {},
+	"experiments": [],
 };
 export var state = await localforage.getItem("state");
 if (!state) {
