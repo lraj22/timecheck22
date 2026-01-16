@@ -12,6 +12,7 @@ import {
 	state,
 	updateState,
 } from "./util";
+const experimentsImport = import.meta.glob("./experiments.js");
 import localforage from "localforage";
 import snowStorm from "../lib/snowstorm";
 
@@ -172,7 +173,8 @@ function applySettings (fetchAfterwards) {
 	}
 	
 	if (settings.experimentsEnabled) {
-		import("./experiments"); // only really imports once due to caching
+		let experimentsPath = Object.keys(experimentsImport)[0];
+		experimentsImport[experimentsPath](); // import the experiments.js file (only really imports once due to caching)
 	}
 	
 	if (settings.backgroundTheme === "winter") {

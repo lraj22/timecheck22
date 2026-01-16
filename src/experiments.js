@@ -1,6 +1,7 @@
 // experiments.js - contains various utilities available in the experiments tab
 
 import { logVisible, state, updateState } from "./util";
+export const experimentsModules = import.meta.glob("./experiments/*.js");
 
 export function getExperimentData (id) {
 	return (state.experiments?.find(experiment => experiment.id === id)?.data) || {};
@@ -48,7 +49,10 @@ function setExperimentEnabled (id, enabled, data) {
 
 function externalExperimentFunction (experimentId, functionName) {
 	return async function () {
-		if (!(experimentId in loadedExperiments)) loadedExperiments[experimentId] = await import("./experiments/" + experimentId);
+		if (!(experimentId in loadedExperiments)) {
+			let experimentPath = Object.keys(experimentsModules).find(modulePath => modulePath.includes(experimentId + ".js"));
+			loadedExperiments[experimentId] = await experimentsModules[experimentPath]();
+		}
 		loadedExperiments[experimentId]?.[functionName]?.();
 	};
 }
