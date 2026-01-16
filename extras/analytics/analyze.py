@@ -14,7 +14,7 @@ def write (*args):
 
 # Find CSVs
 script_dir = os.path.dirname(__file__)
-csv_base = 'tc22-umami-data-2026-jan-11/'
+csv_base = 'tc22-umami-data-2026-jan-15/'
 session_data_csv_path = os.path.join(script_dir, csv_base + 'session_data.csv')
 event_data_csv_path = os.path.join(script_dir, csv_base + 'event_data.csv')
 website_event_csv_path = os.path.join(script_dir, csv_base + 'website_event.csv')
@@ -225,7 +225,7 @@ percentile_of_avg_events = round(stats.percentileofscore(event_names_by_session_
 quantile_values = event_names_by_session_id.quantile([0.25, 0.5, 0.75]).tolist()
 write('== Events overview ==')
 write(f'There are {total_user_sessions} users, and on average, each user does about {avg_events_per_user} events. This is more than {percentile_of_avg_events}% of users. 75% of users have at least {quantile_values[0]} events, 50% of users have at least {quantile_values[1]} events, and 25% of users have at least {quantile_values[2]} events. The user with the most events has {event_names_by_session_id.max()} events.')
-event_count_ranges = ((0, 1), (2, 5), (6, 10), (11, 20), (21, 30), (31, 50), (50, 999))
+event_count_ranges = ((0, 1), (2, 5), (6, 10), (11, 20), (21, 30), (31, 40), (41, 50), (51, 999))
 for event_count_range in event_count_ranges:
 	users_in_range_count = len(event_names_by_session_id[(
 		(event_names_by_session_id >= event_count_range[0]) &
@@ -322,7 +322,7 @@ def get_auxiliary_event_info (event_name):
 	# 	info = f'The top {times(total, words='element')} exited were {format_top_string_values(element_counts)}.'
 	elif event_name == 'division-selected':
 		division_total, division_counts = top_n_values(event_name, 'divisionLabel', 3)
-		info = f'The top {times(division_total, words='division')} were {format_top_string_values(division_counts)}.'
+		info = f'The top {times(division_total, words=['division was', 'divisions were'])} {format_top_string_values(division_counts)}.'
 	elif event_name == 'get-pwa-clicked':
 		no_school_count = len(get_unique_events_by_nkv(event_name, 'outcome', 'dismissed'))
 		already_school_count = len(get_unique_events_by_nkv(event_name, 'outcome', 'accepted'))
