@@ -23,6 +23,8 @@ export default class Clockdata {
 	 * @returns {void}
 	 */
 	constructor (cd) {
+		this.stringToLuxonTime = this.stringToLuxonTime.bind(this);
+		this.stringToLuxonDuration = this.stringToLuxonDuration.bind(this);
 		if (typeof cd === "object") {
 			this.clockdata = cloneObj(cd);
 			
@@ -97,7 +99,7 @@ export default class Clockdata {
 		
 		return this.getAnnouncements().filter(
 			announcement => announcement.applies.some(
-				appliesItem => stringToLuxonDuration(appliesItem).contains(now)
+				appliesItem => this.stringToLuxonDuration(appliesItem).contains(now)
 			)
 		);
 	}
@@ -156,7 +158,7 @@ export default class Clockdata {
 		
 		for (let override of this.getFullDayOverrides()) {
 			for (let applyRule of override.applies) { // each FDO can have multiple apply blocks, go through them all
-				let appliesRange = (this.intervalParser || stringToLuxonDuration)(applyRule, this.getTimezone());
+				let appliesRange = (this.intervalParser || this.stringToLuxonDuration)(applyRule);
 				if (!appliesRange.contains(now)) continue; // if this applies block doesn't work, continue to next
 				
 				return cloneObj(override);
@@ -175,7 +177,7 @@ export default class Clockdata {
 		let now = this.getNowLuxon(time);
 		return this.getTimeframeOverrides().find(
 			tfo => tfo.applies.find(
-				appliesItem => stringToLuxonDuration(appliesItem).contains(now)
+				appliesItem => this.stringToLuxonDuration(appliesItem).contains(now)
 			)
 		) || null;
 	}
@@ -215,7 +217,7 @@ export default class Clockdata {
 					"isOverride": false,
 				}];
 		}).flat(1);
-		let activeTiming = timings.find(timing => stringToLuxonDuration(timing.applies).contains(now));
+		let activeTiming = timings.find(timing => this.stringToLuxonDuration(timing.applies).contains(now));
 		if (activeTiming) return activeTiming;
 		
 		return null;
@@ -239,7 +241,7 @@ export default class Clockdata {
 					console.error("Provided Clockdata.instantParser function threw an error:", e, "Argument passed:", dt);
 				}
 			} else {
-				return stringToLuxonTime(dt, this.getTimezone());
+				return this.stringToLuxonTime(dt);
 			}
 		}
 		
@@ -379,6 +381,28 @@ export default class Clockdata {
 			"isOverride": false,
 		});
 	}
+	
+	/**
+	 * stringToLuxonTimeGeneric wrapper that automatically fills timezone.
+	 * @param {string} time - time, something like "2025-09-13/06:07:41.123 AM | e" but with any amount of information included
+	 * @param {string} timezone - timezone parseable by Luxon
+	 * @param {boolean} onlyParsedInfo - dictates what information is returned
+	 * @returns {object | DateTime} If onlyParsedInfo is truthy, this function returns an object with the parsed information. Otherwise, it returns the DateTime object associated with the given time and timezone.
+	 */
+	stringToLuxonTime (time, timezone, onlyParsedInfo) {
+		return stringToLuxonTimeGeneric(time, timezone || this.getTimezone(), onlyParsedInfo);
+	}
+	
+	/**
+	 * stringToLuxonDurationGeneric wrapper that automatically fills timezone.
+	 * @param {string} durationString - given duration (one parseable time, or two parseable times with "--" in between)
+	 * @param {string} timezone - timezone parseable by Luxon
+	 * @returns {Interval} Returns the interval associated with the given duration string.
+	 */
+	stringToLuxonDuration (durationString, timezone) {
+		if (!this) console.trace();
+		return stringToLuxonDurationGeneric(durationString, timezone || this.getTimezone());
+	}
 }
 
 export const noneSchedule = {
@@ -389,7 +413,7 @@ export const noneSchedule = {
 
 export const allPartNames = ["year", "month", "day", "hour", "minute", "second", "millisecond"];
 
-export function stringToLuxonTime(time, timezone, onlyParsedInfo) {
+export function stringToLuxonTimeGeneric(time, timezone, onlyParsedInfo) {
 	// something like "2025-09-13/06:07:41.123 AM | e" but with any amount of information included
 	time = time.toString() || "";
 
@@ -466,7 +490,7 @@ export function stringToLuxonTime(time, timezone, onlyParsedInfo) {
 
 	return onlyParsedInfo ? parsedInfo : luxonTime;
 }
-export function stringToLuxonDuration(durationString, timezone) {
+export function stringToLuxonDurationGeneric(durationString, timezone) {
 	durationString = (durationString || "").toString() || "";
 	durationString = durationString.trim();
 	let separated = durationString.split("--");
@@ -478,14 +502,14 @@ export function stringToLuxonDuration(durationString, timezone) {
 	}
 
 	// calculate the start time & specificity
-	let startTimeParts = stringToLuxonTime(separated[0], timezone, true);
+	let startTimeParts = stringToLuxonTimeGeneric(separated[0], timezone, true);
 	let startLeastSignificant = allPartNames.filter(partName => partName in startTimeParts).slice(-1)[0];
 	let startTime = DateTime.fromObject(startTimeParts, {
 		"zone": timezone,
 	});
 
 	// calculate the end time & specificity
-	let endTimeParts = stringToLuxonTime(separated[1], timezone, true);
+	let endTimeParts = stringToLuxonTimeGeneric(separated[1], timezone, true);
 	let endLeastSignificant = allPartNames.filter(partName => partName in endTimeParts).slice(-1)[0];
 	let endTime = DateTime.fromObject(endTimeParts, {
 		"zone": timezone,

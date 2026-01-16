@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { stringToLuxonDuration } from "../clockdata";
+import { stringToLuxonDurationGeneric } from "../clockdata";
 import { DateTime } from "luxon";
 import { luxonToDatetimelocal } from "../util";
 import DivisionSelector from "./DivisionSelector";
@@ -7,7 +7,7 @@ import DivisionSelector from "./DivisionSelector";
 export default function TfoBlock ({ timeframeOverrides, setTimeframeOverrides, divisions, index, timezone }) {
 	let thisTfo = timeframeOverrides[index];
 	const contextFormat = "yyyy-MM-dd/HH:mm";
-	let { s, e } = stringToLuxonDuration(thisTfo.applies[0]);
+	let { s, e } = stringToLuxonDurationGeneric(thisTfo.applies[0]);
 	let [start, setStart] = useState(luxonToDatetimelocal(s));
 	let [end, setEnd] = useState(luxonToDatetimelocal(e));
 	

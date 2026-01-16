@@ -7,7 +7,7 @@ import SchedulingRuleBlock from "./SchedulingRuleBlock";
 import ScheduleBlock from "./ScheduleBlock";
 import FdoBlock from "./FdoBlock";
 import { DateTime } from "luxon";
-import { stringToLuxonDuration } from "../clockdata";
+import { stringToLuxonDurationGeneric } from "../clockdata";
 import TfoBlock from "./TfoBlock";
 import { transform_v1_to_v2 } from "../migrate-v1-to-v2";
 import DivisionBlock from "./DivisionBlock";
@@ -130,10 +130,10 @@ export default function ContextEditorApp () {
 	}
 	
 	function output () {
-		let sortedFdos = fullDayOverrides.slice().sort((fdo1, fdo2) => stringToLuxonDuration(fdo1.applies[0]).s - stringToLuxonDuration(fdo2.applies[0]).s);
+		let sortedFdos = fullDayOverrides.slice().sort((fdo1, fdo2) => stringToLuxonDurationGeneric(fdo1.applies[0]).s - stringToLuxonDurationGeneric(fdo2.applies[0]).s);
 		setFullDayOverrides(sortedFdos);
 		
-		let sortedTfos = timeframeOverrides.slice().sort((tfo1, tfo2) => stringToLuxonDuration(tfo1.applies[0]).s - stringToLuxonDuration(tfo2.applies[0]).s);
+		let sortedTfos = timeframeOverrides.slice().sort((tfo1, tfo2) => stringToLuxonDurationGeneric(tfo1.applies[0]).s - stringToLuxonDurationGeneric(tfo2.applies[0]).s);
 		setTimeframeOverrides(sortedTfos);
 		
 		// update last_updated_id here

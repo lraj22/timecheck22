@@ -1,6 +1,7 @@
 import {
 	clockdata,
 	dom,
+	getExperiment,
 	clockdataSetYet,
 	updateTimingsTable,
 	escapeHtml,
@@ -8,7 +9,6 @@ import {
 	appliesStrarrListify,
 	popup,
 } from "./util";
-import { stringToLuxonDuration } from "./clockdata";
 import {
 	settings,
 	reidentifyUser,
@@ -141,7 +141,7 @@ function tick () {
 		if (timeFound) {
 			setContent("period", timeFound.label);
 			
-			let duration = stringToLuxonDuration(timeFound.applies);
+			let duration = clockdata.stringToLuxonDuration(timeFound.applies);
 			if (timeFound.hideStart) setContent("timeOver", "");
 			else setContent("timeOver", msToTimeDiff(-duration.start.diffNow()) + " over");
 			if (timeFound.hideEnd) setContent("timeLeft", "");
@@ -182,6 +182,16 @@ function tick () {
 requestAnimationFrame(tick);
 
 // fullscreenable elements
+function createFullscreenPlaceholder () {
+	let placeholder = document.createElement("button");
+	placeholder.id = "fullscreenPlaceholder";
+	placeholder.textContent = "Click here to return content.";
+	placeholder.addEventListener("click", _ => {
+		unPipWindow();
+		window.documentPictureInPicture?.window?.close?.();
+	});
+	return placeholder;
+}
 dom.fullscreen.addEventListener("click", _ => {
 	let placeholder = document.getElementById("fullscreenPlaceholder");
 	if (!placeholder) return; // melody 'fx' clicks this, so we MUST check that it's actually open before closing it.
@@ -200,18 +210,77 @@ dom.fullscreen.addEventListener("click", _ => {
 	});
 });
 
+function unPipWindow () {
+	dom.fullscreenContainer.appendChild(dom.fullscreen);
+	dom.fullscreen.style.pointerEvents = "all";
+	document.body.appendChild(dom.closeBtn);
+	dom.fullscreen.click();
+}
 document.querySelectorAll("[data-fullscreenable]").forEach(el => {
-	el.addEventListener("click", _ => {
+	el.addEventListener("click", async _ => {
+		let pipExperiment = getExperiment("2026-01-15-pip") || {};
+		let pipData = pipExperiment?.data || {};
 		let placeholder = document.getElementById("fullscreenPlaceholder");
-		if (placeholder) return; // #fullscreen click handler will take care of it
+		if (placeholder && (!pipExperiment.enabled)) return; // #fullscreen click handler will take care of it
 		
 		// add placeholder for element later, move element to fullscreening area
-		placeholder = document.createElement("div");
-		placeholder.id = "fullscreenPlaceholder";
+		if (placeholder && pipExperiment.enabled) {
+			placeholder.after(dom.fullscreen.lastChild);
+			placeholder.remove();
+		}
+		placeholder = createFullscreenPlaceholder();
 		el.after(placeholder);
 		dom.fullscreen.append(el);
+		
+		if (pipExperiment.enabled && pipData.usePip && window.documentPictureInPicture) {
+			// experiment enabled, no window yet
+			if (!window.documentPictureInPicture?.window) {
+				const pipWindow = await window.documentPictureInPicture.requestWindow({
+					"width": 400,
+					"height": 200,
+				});
+				
+				pipWindow.addEventListener("pagehide", _ => {
+					unPipWindow();
+				});
+				
+				[...document.styleSheets].forEach((styleSheet) => {
+					try {
+						const cssRules = [...styleSheet.cssRules]
+							.map((rule) => rule.cssText)
+							.join("");
+						const style = document.createElement("style");
+
+						style.textContent = cssRules;
+						pipWindow.document.head.appendChild(style);
+					} catch (e) {
+						const link = document.createElement("link");
+
+						link.rel = "stylesheet";
+						link.type = styleSheet.type;
+						link.media = styleSheet.media;
+						link.href = styleSheet.href;
+						pipWindow.document.head.appendChild(link);
+					}
+				});
+				[...document.documentElement.attributes].forEach(attribute => pipWindow.document.documentElement.setAttribute(attribute.name, attribute.value));
+				dom.closeBtn.addEventListener("click", _ => {
+					unPipWindow();
+					window.documentPictureInPicture.window.close();
+				});
+
+				// Move the player to the Picture-in-Picture window.
+				pipWindow.document.body.appendChild(dom.fullscreen);
+				dom.fullscreen.style.pointerEvents = "none";
+				pipWindow.document.body.append(dom.closeBtn);
+			} else {
+				// experiment enabled, window exists
+			}
+		} else {
+			// no experiment
+			dom.buttonsBar.classList.add("hold-then-fade");
+		}
 		dom.fullscreen.classList.add("fullscreenPresent");
-		dom.buttonsBar.classList.add("hold-then-fade");
 		
 		umami.track("simulated-fullscreen-entered", {
 			"id": el.id,

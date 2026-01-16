@@ -238,8 +238,10 @@
 							<p>There is no guarantee any of them work, and they may cause the website to not function as expected. You have been warned!</p>
 							<hr><br>
 							
+							<input type="checkbox" id="experiment-2026-01-15-pip" data-experiment-id="2026-01-15-pip"><label for="experiment-2026-01-15-pip">PiP experiment</label><br><br>
+							
 							<input type="checkbox" id="experiment-2026-01-15-test" data-experiment-id="2026-01-15-test"><label for="experiment-2026-01-15-test">Experiment test</label><br>
-							<label for="experiment-2026-01-15-test">Test message: </label><input type="text" id="experiment-2026-01-15-test-data-message" data-associated-experiment-id="2026-01-15-test" data-experiment-data-key="message"><br>
+							<label for="experiment-2026-01-15-test">Test message: </label><input type="text" id="experiment-2026-01-15-test-data-message" data-associated-experiment-id="2026-01-15-test" data-experiment-data-key="message"><br><br>
 						</div>
 						<div class="sbPage" data-page-name="keyboardShortcuts">
 							<h2>General</h2>
@@ -445,7 +447,10 @@
 		</div>
 		
 		<!-- fullscreen area -->
-		<div id="fullscreen"></div>
+		<div id="fullscreenContainer">
+			<div id="fullscreen"></div>
+		</div>
+		<button id="closeBtn" class="flatBtn" data-icon="close"></button>
 		
 		<!-- lightspeed underlay -->
 		<canvas id="lightspeedCanvas"></canvas>

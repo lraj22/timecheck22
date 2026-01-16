@@ -521,6 +521,41 @@ body:has(#fullscreen.fullscreenPresent) .simFullscreenHide:not(#fullscreen *) {
 	position: static!important;
 }
 
+/* experiments */
+#fullscreenPlaceholder {
+	position: fixed;
+	top: 1rem;
+	left: 50%;
+	transform: translate(-50%, 0);
+	padding: 0.25rem 1rem;
+	margin: 1rem;
+	background-color: var(--theme-bg);
+	z-index: 999;
+	cursor: pointer;
+	border: 1px solid var(--theme-fg);
+	background-color: var(--theme-bg);
+}
+
+#closeBtn {
+	display: none;
+	position: fixed;
+	top: 0.5rem;
+	left: 0.5rem;
+	margin: 0;
+	background-color: oklch(from var(--theme-bg) calc(l + calc(var(--l-change-multiplier) * 0.1)) 0.2 0);
+}
+
+@media all and (display-mode: picture-in-picture) {
+	#closeBtn {
+		display: block!important;
+		opacity: 0;
+		transition: opacity 100ms;
+	}
+	html:hover #closeBtn {
+		opacity: 1;
+	}
+}
+
 /* custom sizing */
 #fullscreen.fullscreenPresent #period {
 	font-size: calc(10px + 6.7vw)!important; /* heh, yeah */

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { move } from "../util";
-import { stringToLuxonDuration } from "../clockdata";
+import { stringToLuxonDurationGeneric } from "../clockdata";
 
 export default function TimingBlock ({ schIndex, schedules, updateSchedule, index }) {
 	try {
 	let schedule = schedules[schIndex];
 	let timing = schedule.timings[index];
 	
-	let { s, e } = stringToLuxonDuration(timing.applies);
+	let { s, e } = stringToLuxonDurationGeneric(timing.applies);
 	let [start, setStart] = useState(s.toFormat("HH:mm"));
 	let [end, setEnd] = useState(e.toFormat("HH:mm"));
 	const contextFormat = "HH:mm";

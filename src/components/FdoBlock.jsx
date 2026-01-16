@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { stringToLuxonDuration } from "../clockdata";
+import { stringToLuxonDurationGeneric } from "../clockdata";
 import { DateTime } from "luxon";
 import DivisionSelector from "./DivisionSelector";
 
 export default function FdoBlock ({ fullDayOverrides, setFullDayOverrides, divisions, index, timezone }) {
 	let thisFdo = fullDayOverrides[index];
 	const contextFormat = "yyyy-MM-dd";
-	let { s, e } = stringToLuxonDuration(thisFdo.applies[0]);
+	let { s, e } = stringToLuxonDurationGeneric(thisFdo.applies[0]);
 	let [start, setStart] = useState(s.toFormat(contextFormat));
 	let [end, setEnd] = useState(e.toFormat(contextFormat));
 	

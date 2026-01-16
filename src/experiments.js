@@ -2,11 +2,11 @@
 
 import { logVisible, state, updateState } from "./util";
 
-function getExperimentData (id) {
+export function getExperimentData (id) {
 	return (state.experiments?.find(experiment => experiment.id === id)?.data) || {};
 }
 
-function setExperimentDataKey (id, key, value) {
+export function setExperimentDataKey (id, key, value) {
 	if (!Array.isArray(state.experiments)) state.experiments = [];
 	
 	if (state.experiments.find(experiment => experiment.id === id)) {
@@ -46,7 +46,15 @@ function setExperimentEnabled (id, enabled, data) {
 	updateState();
 }
 
+function externalExperimentFunction (experimentId, functionName) {
+	return async function () {
+		if (!(experimentId in loadedExperiments)) loadedExperiments[experimentId] = await import("./experiments/" + experimentId);
+		loadedExperiments[experimentId]?.[functionName]?.();
+	};
+}
+const loadedExperiments = {};
 const experiments = {
+	// Just a test experiment to ensure the experiments tab/API is functioning as intended!
 	"2026-01-15-test": {
 		"init": function () {
 			let data = getExperimentData("2026-01-15-test");
@@ -59,6 +67,12 @@ const experiments = {
 		"cleanup": function () {
 			logVisible("test experiment has cleaned up!");
 		},
+	},
+	
+	// PiP (Picture in Picture) experiment to allow users to pop out time/timeLeft/timeOver/etc. to a PiP window
+	"2026-01-15-pip": {
+		"init": externalExperimentFunction("2026-01-15-pip", "init"),
+		"cleanup": externalExperimentFunction("2026-01-15-pip", "cleanup"),
 	},
 };
 const experimentsList = Object.keys(experiments);

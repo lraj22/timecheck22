@@ -3,7 +3,7 @@
 import {
 	DateTime,
 } from "luxon"; // luxon is an exception because it is a globally available & reimportable library
-import Clockdata, { noneSchedule, stringToLuxonDuration } from "./clockdata";
+import Clockdata, { noneSchedule } from "./clockdata";
 import localforage from "localforage";
 
 
@@ -208,6 +208,9 @@ export async function updateState (updatedState) {
 	if (updatedState) state = cloneObj(updatedState);
 	await localforage.setItem("state", state);
 }
+export function getExperiment (id) {
+	return state.experiments.find(experiment => experiment.id === id);
+}
 
 
 
@@ -222,14 +225,14 @@ export function updateTimingsTable () {
 			for (const appliesBlock of period[1]) {
 				scheduleParts.push({
 					"label": period[0],
-					"applies": stringToLuxonDuration(appliesBlock),
+					"applies": clockdata.stringToLuxonDuration(appliesBlock),
 				});
 			}
 		});
 	else
 		scheduleParts = schedule.map(timing => ({
 			"label": timing.label,
-			"applies": stringToLuxonDuration(timing.applies),
+			"applies": clockdata.stringToLuxonDuration(timing.applies),
 		}));
 	scheduleParts = scheduleParts.sort((period1, period2) => period1.applies.start - period2.applies.start); // sort by starting time
 	
@@ -298,7 +301,7 @@ export function appliesStrarrListify (appliesBlock) {
 		if (applies.indexOf("/") !== -1) format = DateTime.DATETIME_MED_WITH_SECONDS;
 		else if (applies.includes("-") || /^[0-9]{4}$/.test(applies)) format = DateTime.DATE_MED;
 		else format = DateTime.TIME_WITH_SECONDS;
-		return stringToLuxonDuration(applies).toLocaleString(format);
+		return clockdata.stringToLuxonDuration(applies).toLocaleString(format);
 	}));
 }
 

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { luxonToDatetimelocal } from "../util";
-import { stringToLuxonDuration } from "../clockdata";
+import { stringToLuxonDurationGeneric } from "../clockdata";
 import { DateTime } from "luxon";
 import DivisionSelector from "./DivisionSelector";
 
 export default function AnnouncementBlock ({ announcements, setAnnouncements, index, divisions, timezone }) {
 	let thisAnnouncement = announcements[index];
-	let { s, e } = stringToLuxonDuration(thisAnnouncement.applies[0]);
+	let { s, e } = stringToLuxonDurationGeneric(thisAnnouncement.applies[0]);
 	let [start, setStart] = useState(luxonToDatetimelocal(s));
 	let [end, setEnd] = useState(luxonToDatetimelocal(e));
 	const contextFormat = "yyyy-MM-dd/HH:mm";
