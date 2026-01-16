@@ -551,7 +551,7 @@ body:has(#fullscreen.fullscreenPresent) .simFullscreenHide:not(#fullscreen *) {
 		opacity: 0;
 		transition: opacity 100ms;
 	}
-	html:hover #closeBtn {
+	.windowFocused #closeBtn, #closeBtn:hover {
 		opacity: 1;
 	}
 }

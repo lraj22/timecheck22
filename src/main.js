@@ -268,6 +268,8 @@ document.querySelectorAll("[data-fullscreenable]").forEach(el => {
 					unPipWindow();
 					window.documentPictureInPicture.window.close();
 				});
+				pipWindow.addEventListener("focus", _ => pipWindow.document.documentElement.classList.add("windowFocused"));
+				pipWindow.addEventListener("blur", _ => pipWindow.document.documentElement.classList.remove("windowFocused"));
 
 				// Move the player to the Picture-in-Picture window.
 				pipWindow.document.body.appendChild(dom.fullscreen);
