@@ -14,7 +14,7 @@ dist-ssr
 
 # timecheck 22 specific
 clockdata
-**/analytics/**/
+**/analytics/exports/**/
 
 # Editor directories and files
 .vscode/*

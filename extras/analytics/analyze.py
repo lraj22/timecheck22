@@ -4,7 +4,7 @@ import country_converter as coco
 import os
 from datetime import datetime, UTC
 
-# Declare logging/file-writing/printing handler
+# Declare logging/file-writing/printing handler; define util functions & values
 does_write_print = True
 lines_to_write = []
 def write (*args):
@@ -12,9 +12,43 @@ def write (*args):
 	args = map(str, args)
 	lines_to_write.append(' '.join(args) + '\n')
 
+def times (quantity, words='time', pluralizer=None):
+	if isinstance(words, str):
+		single = words
+		if pluralizer == None: pluralizer = 's'
+		plural = words + pluralizer
+	else:
+		single = words[0]
+		if pluralizer == None: pluralizer = ''
+		plural = words[1] + pluralizer
+	return str(quantity) + ' ' + (single if quantity == 1 else plural)
+
+UMAMI_TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
+
+# Get time bounds if necessary
+if __name__ == '__main__':
+	start_bound = input('Enter the starting bound date, if applicable: ')
+	if start_bound:
+		try: start_bound = datetime.strptime(start_bound, '%Y-%m-%d')
+		except ValueError: pass
+		try: start_bound = datetime.strptime(start_bound, UMAMI_TIMESTAMP_FORMAT)
+		except (ValueError, TypeError): pass # expected ValueError if invalid format, TypeError if already datetime
+		if isinstance(start_bound, str):
+			print('Invalid starting bound, exiting.')
+			exit(1)
+	end_bound = input('Enter the ending bound date, if applicable: ')
+	if end_bound:
+		try: end_bound = datetime.strptime(end_bound, '%Y-%m-%d')
+		except ValueError: pass
+		try: end_bound = datetime.strptime(end_bound, UMAMI_TIMESTAMP_FORMAT)
+		except (ValueError, TypeError): pass # expected ValueError if invalid format, TypeError if already datetime
+		if isinstance(end_bound, str):
+			print('Invalid ending bound, exiting.')
+			exit(1)
+
 # Find CSVs
 script_dir = os.path.dirname(__file__)
-csv_base = 'tc22-umami-data-2026-jan-15/'
+csv_base = 'exports/tc22-umami-data-2026-jan-21/'
 session_data_csv_path = os.path.join(script_dir, csv_base + 'session_data.csv')
 event_data_csv_path = os.path.join(script_dir, csv_base + 'event_data.csv')
 website_event_csv_path = os.path.join(script_dir, csv_base + 'website_event.csv')
@@ -23,6 +57,13 @@ analytics_report_file_path = os.path.join(script_dir, 'latest_analytics_report.t
 # Load session data
 sd_df = pd.read_csv(session_data_csv_path, parse_dates=['created_at'])
 sd_df = sd_df.drop(columns=['website_id', 'number_value', 'date_value', 'data_type', 'distinct_id', 'job_id'])
+
+# Remove out of range data
+user_sessions = sd_df
+if start_bound:
+	user_sessions = user_sessions[user_sessions['created_at'] > start_bound]
+if end_bound:
+	user_sessions = user_sessions[user_sessions['created_at'] < end_bound]
 
 # Get developer/old sessions
 cond_1 = ((sd_df['data_key'] == 'env') & (sd_df['string_value'] == 'dev')) # env=dev
@@ -33,12 +74,19 @@ dev_sessions = sd_df[dev_session_mask]
 dev_ids = dev_sessions['session_id'].unique()
 
 # Get user sessions
-user_sessions = sd_df[~sd_df['session_id'].isin(dev_ids)]
+user_sessions = user_sessions[~user_sessions['session_id'].isin(dev_ids)]
 user_ids = user_sessions['session_id'].unique()
 
 # Load website events data, drop extraneous/unnecessary columns
 we_df = pd.read_csv(website_event_csv_path, parse_dates=['created_at'])
 we_df = we_df.drop(columns=['website_id', 'url_query', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'referrer_path', 'referrer_query', 'page_title', 'gclid', 'fbclid', 'msclkid', 'ttclid', 'li_fat_id', 'twclid', 'tag', 'distinct_id', 'job_id'])
+
+# Remove out of range events
+user_we_events = we_df
+if start_bound:
+	user_we_events = user_we_events[user_we_events['created_at'] > start_bound]
+if end_bound:
+	user_we_events = user_we_events[user_we_events['created_at'] < end_bound]
 
 # Get developer/old visits
 # analytics events were added in commit e2eebadce74aefe153aef4a71d7b4bf931cc5861, although theoretically older visits COULD still be valid
@@ -52,11 +100,18 @@ bad_we_visit_ids = bad_we_visits['visit_id'].unique()
 bad_we_event_ids = bad_we_visits['event_id'].unique()
 
 # Get real valid user events
-user_we_events = we_df[~we_df['visit_id'].isin(bad_we_visit_ids)]
+user_we_events = user_we_events[~user_we_events['visit_id'].isin(bad_we_visit_ids)]
 
 # Load event data
 ed_df = pd.read_csv(event_data_csv_path, parse_dates=['created_at'])
 ed_df = ed_df.drop(columns=['website_id', 'url_path', 'number_value', 'date_value', 'data_type', 'job_id']) # note to self: remove 'url_path' from drop list when other pages get events on them
+
+# Remove out of range events
+valid_ed_events = ed_df
+if start_bound:
+	valid_ed_events = valid_ed_events[valid_ed_events['created_at'] > start_bound]
+if end_bound:
+	valid_ed_events = valid_ed_events[valid_ed_events['created_at'] < end_bound]
 
 # Filter out invalid data
 # old notes-updated events fired too much before a bugfix was committed (de24e77862d4dcc3c2a3340fdb6dabb60e06cacc)
@@ -65,10 +120,10 @@ valid_notes_updated_event_ids = ed_df[(
 	(ed_df['event_name'] == 'notes-updated') &
 	(ed_df['data_key'] == 'length')
 )][['session_id', 'event_id', 'string_value']].drop_duplicates(subset=['session_id', 'string_value'])['event_id'].unique()
-valid_ed_events = ed_df[~(
-	(ed_df['event_name'] == 'notes-updated') &
-	(ed_df['created_at'] < NOTES_UPDATED_OVERFIRE_FIXED_TS) &
-	(~ed_df['event_id'].isin(valid_notes_updated_event_ids))
+valid_ed_events = valid_ed_events[~(
+	(valid_ed_events['event_name'] == 'notes-updated') &
+	(valid_ed_events['created_at'] < NOTES_UPDATED_OVERFIRE_FIXED_TS) &
+	(~valid_ed_events['event_id'].isin(valid_notes_updated_event_ids))
 )]
 user_we_events = user_we_events[~(
 	(user_we_events['event_name'] == 'notes-updated') &
@@ -118,21 +173,27 @@ visits_df = user_we_events[['session_id', 'visit_id']].drop_duplicates()
 total_user_visits = len(visits_df)
 total_user_views = len(user_we_events[user_we_events['event_type'] == 1])
 earlist_record = min(ed_df['created_at'].min(), sd_df['created_at'].min(), we_df['created_at'].min())
+earlist_used_record = min(valid_ed_events['created_at'].min(), user_sessions['created_at'].min(), user_we_events['created_at'].min())
 latest_record = min(ed_df['created_at'].max(), sd_df['created_at'].max(), we_df['created_at'].max())
+latest_used_record = max(valid_ed_events['created_at'].max(), user_sessions['created_at'].max(), user_we_events['created_at'].max())
 total_records = len(ed_df) + len(sd_df) + len(we_df)
 total_valid_records = len(valid_ed_events) + len(user_sessions) + len(user_we_events)
 write('###')
-write(f'Report generated at {datetime.now(UTC).strftime('%Y-%m-%d %H:%M:%S')}. This report is based on data collected by and exported from Umami analytics. The earliest record in this export is from {earlist_record} while the latest record is from {latest_record}. Detailed Umami analytics (i.e. including events and not just page views) was added for the public on {ANALYTICS_ADDED_TS}, so records from before then are dropped, even though they may have been valid user visits.')
+write(f'Report generated at {datetime.now(UTC).strftime(UMAMI_TIMESTAMP_FORMAT)}. This report is based on data collected by and exported from Umami analytics. The earliest record in this export is from {earlist_record} while the latest record is from {latest_record}. Detailed Umami analytics (i.e. including events and not just page views) was added for the public on {ANALYTICS_ADDED_TS}, so records from before then are dropped, even though they may have been valid user visits.')
 write('You can find the current public Umami analytics dashboard at <https://cloud.umami.is/share/b0K7JX1ecA9aZJPP>.')
 write('---')
+if not start_bound and not end_bound:
+	write('The data was not filtered by time.')
+else:
+	write(f'The data was filtered by time. Start bound: {f'{start_bound:%B %d, %Y, %H:%M:%S}' if start_bound else '<no start bound>'}. End bound: {f'{end_bound:%B %d, %Y, %H:%M:%S}' if end_bound else '<no end bound>'}.')
 write(f'Processed {total_records} records, removed {total_records - total_valid_records} development/old/invalid events from that.')
 write(f'The following statistics are based on the remaining {total_valid_records} real user events.')
-write(f'From the first record at {user_we_events['created_at'].min()} to the last record at {user_we_events['created_at'].max()} in UTC.')
+write(f'From the first record at {earlist_used_record} to the last record at {latest_used_record} in UTC.')
 write('###')
 write()
 write('== Users, visits, and views ==')
 write('Number of unique real people:', total_user_sessions)
-write(f'They come from {len(countries)} different countries: {', '.join(countries)}')
+write(f'They come from {times(len(countries), words=['different country', 'different countries'])}: {', '.join(countries)}')
 write('Number of real user page visits:', total_user_visits)
 write('Number of real user page views:', total_user_views)
 write()
@@ -143,16 +204,6 @@ write()
 number_of_users = -1
 repeat_subset = visits_df.copy()
 repeats = []
-def times (quantity, words='time', pluralizer=None):
-	if isinstance(words, str):
-		single = words
-		if pluralizer == None: pluralizer = 's'
-		plural = words + pluralizer
-	else:
-		single = words[0]
-		if pluralizer == None: pluralizer = ''
-		plural = words[1] + pluralizer
-	return str(quantity) + ' ' + (single if quantity == 1 else plural)
 
 while len(repeat_subset) != 0:
 	repeat_users_subset = repeat_subset[~repeat_subset.duplicated('session_id', keep=False)]
