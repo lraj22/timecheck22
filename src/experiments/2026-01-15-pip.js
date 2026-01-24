@@ -23,7 +23,7 @@ export function init () {
 	togglePip.addEventListener("click", _ => {
 		let newState = togglePip.getAttribute("data-state") === "yes" ? false : true;
 		
-		if ((newState === true) && (!window.documentPictureInPicture)) {
+		if ((newState === true) && (!window.documentPictureInPicture) && (!document.pictureInPictureEnabled)) {
 			alert("You don't have the PiP feature available in your browser, so this cannot be enabled. Sorry!");
 			setExperimentDataKey(experimentId, "usePip", false);
 			return;

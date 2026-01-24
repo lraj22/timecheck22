@@ -192,49 +192,58 @@ function createFullscreenPlaceholder () {
 	});
 	return placeholder;
 }
+
+// this function handles the CLOSING of the simulated fullscreen
 dom.fullscreen.addEventListener("click", _ => {
+	simulatedFullscreenToggle(dom.fullscreen.lastChild);
+});
+
+function exitSimulatedFullscreen () {
 	let placeholder = document.getElementById("fullscreenPlaceholder");
-	if (!placeholder) return; // melody 'fx' clicks this, so we MUST check that it's actually open before closing it.
-	
-	// move element back to placeholder
-	let fullscreenedElId = dom.fullscreen.lastChild.id;
-	placeholder.before(dom.fullscreen.lastChild); // i.e., first and only child
-	placeholder.remove();
+	if (placeholder && dom.fullscreen.lastChild) {
+		placeholder.before(dom.fullscreen.lastChild); // i.e., first and only child
+		placeholder.remove();
+	}
 	dom.fullscreen.classList.remove("fullscreenPresent");
 	dom.buttonsBar.classList.remove("hold-then-fade");
 	let fadeOutAnim = dom.buttonsBar.getAnimations()[0];
 	if (fadeOutAnim) fadeOutAnim.cancel();
-	
-	umami.track("simulated-fullscreen-exited", {
-		"id": fullscreenedElId,
-	});
-});
-
-function unPipWindow () {
-	dom.fullscreenContainer.appendChild(dom.fullscreen);
-	dom.fullscreen.style.pointerEvents = "all";
-	document.body.appendChild(dom.closeBtn);
-	dom.fullscreen.click();
 }
-document.querySelectorAll("[data-fullscreenable]").forEach(el => {
-	el.addEventListener("click", async _ => {
-		let pipExperiment = getExperiment("2026-01-15-pip") || {};
-		let pipData = pipExperiment?.data || {};
-		let placeholder = document.getElementById("fullscreenPlaceholder");
-		if (placeholder && (!pipExperiment.enabled)) return; // #fullscreen click handler will take care of it
+
+async function simulatedFullscreenToggle (element) {
+	let pipExperiment = getExperiment("2026-01-15-pip") || {};
+	let pipData = pipExperiment?.data || {};
+	let placeholder = document.getElementById("fullscreenPlaceholder");
+	let mode = "display";
+	const isEntering = ((!placeholder) && (!window.documentPictureInPicture?.window));
+	const isExiting = ((placeholder) && (!window.documentPictureInPicture?.window));
+	if (isExiting && !(pipExperiment.enabled && pipData.usePip)) {
+		exitSimulatedFullscreen();
 		
-		// add placeholder for element later, move element to fullscreening area
-		if (placeholder && pipExperiment.enabled) {
-			placeholder.after(dom.fullscreen.lastChild);
-			placeholder.remove();
-		}
+		umami.track("simulated-fullscreen-exited", {
+			"id": element.id,
+			"mode": mode,
+		});
+		return;
+	}
+	
+	if (isEntering) {
 		placeholder = createFullscreenPlaceholder();
-		el.after(placeholder);
-		dom.fullscreen.append(el);
-		
-		if (pipExperiment.enabled && pipData.usePip && window.documentPictureInPicture) {
+		element.after(placeholder);
+		dom.fullscreen.append(element);
+		dom.buttonsBar.classList.add("hold-then-fade");
+		dom.fullscreen.classList.add("fullscreenPresent");
+	} else if (isExiting) {
+		dom.buttonsBar.classList.remove("hold-then-fade");
+		dom.fullscreen.classList.remove("fullscreenPresent");
+	}
+	
+	
+	if (pipExperiment.enabled && pipData.usePip) {
+		 if (0 && window.documentPictureInPicture) { // can do document pip! (dpip)
+			mode = "dpip";
 			// experiment enabled, no window yet
-			if (!window.documentPictureInPicture?.window) {
+			if (!window.documentPictureInPicture?.window) { // if no pip window (so, enter)
 				const pipWindow = await window.documentPictureInPicture.requestWindow({
 					"width": 400,
 					"height": 200,
@@ -275,18 +284,83 @@ document.querySelectorAll("[data-fullscreenable]").forEach(el => {
 				pipWindow.document.body.appendChild(dom.fullscreen);
 				dom.fullscreen.style.pointerEvents = "none";
 				pipWindow.document.body.append(dom.closeBtn);
-			} else {
-				// experiment enabled, window exists
+			} else { // if pip window (so, switch)
+				let fromId = dom.fullscreen.lastChild?.id;
+				placeholder.before(dom.fullscreen.lastChild);
+				element.after(placeholder);
+				dom.fullscreen.append(element);
+				
+				umami.track("simulated-fullscreen-switched", {
+					"from": fromId,
+					"to": element.id,
+					"mode": mode, // dpip
+				});
+				return;
 			}
-		} else {
-			// no experiment
-			dom.buttonsBar.classList.add("hold-then-fade");
+		} else if (document.pictureInPictureEnabled) { // can do video pip! (vpip)
+			mode = "vpip";
+			if (!document.pictureInPictureElement) { // if no pip window (so, enter)
+				if (!dom.pipVideo.srcObject) dom.pipVideo.srcObject = dom.pipCanvas.captureStream(24);
+				let ctx = dom.pipCanvas.getContext("2d");
+				let styles = getComputedStyle(document.documentElement);
+				ctx.fillStyle = styles.backgroundColor;
+				ctx.fillRect(0, 0, dom.pipCanvas.width, dom.pipCanvas.height);
+				ctx.textAlign = "center";
+				ctx.textBaseline = "middle";
+				ctx.fillStyle = styles.color;
+				function updateCanvas () {
+					ctx.fillStyle = styles.backgroundColor;
+					ctx.fillRect(0, 0, dom.pipCanvas.width, dom.pipCanvas.height);
+					ctx.fillStyle = styles.color;
+					utilExports.writeText(ctx, element.textContent);
+					window.pipCanvasAnimFrameNumber = requestAnimationFrame(updateCanvas);
+				}
+				window.pipCanvasAnimFrameNumber = requestAnimationFrame(updateCanvas);
+				function requestVPip () {
+					dom.pipVideo.requestPictureInPicture?.();
+				}
+				if (dom.pipVideo.readyState >= dom.pipVideo.HAVE_CURRENT_DATA) requestVPip();
+				else dom.pipVideo.addEventListener("loadedmetadata", _ => requestVPip());
+			} else { // if pip window (so, exit)
+				document.exitPictureInPicture();
+				cancelAnimationFrame(window.pipCanvasAnimFrameNumber);
+				exitSimulatedFullscreen();
+				
+				umami.track("simulated-fullscreen-exited", {
+					"id": element.id,
+					"mode": mode, // vpip
+				});
+				return;
+			}
 		}
-		dom.fullscreen.classList.add("fullscreenPresent");
-		
-		umami.track("simulated-fullscreen-entered", {
-			"id": el.id,
-		});
+	}
+	
+	if (!isEntering && placeholder) { // remove placeholder unless entering created it
+		placeholder.before(dom.fullscreen.lastChild); // i.e., first and only child
+		placeholder.remove();
+	}
+	
+	if (isEntering) umami.track("simulated-fullscreen-entered", {
+		"id": element.id,
+		"mode": mode,
+	});
+}
+
+function unPipWindow () {
+	dom.fullscreenContainer.appendChild(dom.fullscreen);
+	dom.fullscreen.style.pointerEvents = "all";
+	document.body.appendChild(dom.closeBtn);
+	exitSimulatedFullscreen();
+	
+	umami.track("simulated-fullscreen-exited", {
+		"id": "", // unPipWindow cannot know the element being removed
+		"mode": "dpip",
+	});
+}
+document.querySelectorAll("[data-fullscreenable]").forEach(el => {
+	// this function handles the OPENING of the simulated fullscreen
+	el.addEventListener("click", _ => {
+		simulatedFullscreenToggle(el);
 	});
 });
 

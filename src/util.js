@@ -274,6 +274,24 @@ export function doOnLoad (fn) {
 	else window.addEventListener("load", _ => requestAnimationFrame(fn));
 }
 
+function formatFontString (fontSize, fontFamily) {
+	return fontSize + "px " + fontFamily;
+}
+
+export function writeText (ctx, text) {
+	let fontSize = 1000;
+	let fontFamily = getComputedStyle(document.documentElement).fontFamily;
+	let maxIterations = 1000; // prevent infinite loop
+	while (maxIterations --> 0) {
+		ctx.font = formatFontString(fontSize, fontFamily);
+		let width = ctx.measureText(text).width;
+		if (width > (0.9 * ctx.canvas.width)) fontSize *= 0.8;
+		else break;
+	}
+	ctx.font = formatFontString(fontSize, fontFamily);
+	ctx.fillText(text, ctx.canvas.width / 2, ctx.canvas.height / 2);
+}
+
 
 
 // generic, absolutely dependency-less helpers

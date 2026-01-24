@@ -556,6 +556,15 @@ body:has(#fullscreen.fullscreenPresent) .simFullscreenHide:not(#fullscreen *) {
 	}
 }
 
+#pipVideo {
+	position: fixed;
+	visibility: hidden;
+}
+
+#pipCanvas {
+	display: none;
+}
+
 /* custom sizing */
 #fullscreen.fullscreenPresent #period {
 	font-size: calc(10px + 6.7vw)!important; /* heh, yeah */
@@ -563,6 +572,10 @@ body:has(#fullscreen.fullscreenPresent) .simFullscreenHide:not(#fullscreen *) {
 
 #fullscreen.fullscreenPresent #time {
 	font-size: calc(10px + 20vw)!important; /* times usually are pretty short */
+}
+
+#fullscreen.fullscreenPresent * {
+	pointer-events: none;
 }
 
 .hold-then-fade {
