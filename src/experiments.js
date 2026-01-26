@@ -74,10 +74,11 @@ const experiments = {
 	},
 	
 	// PiP (Picture in Picture) experiment to allow users to pop out time/timeLeft/timeOver/etc. to a PiP window
-	"2026-01-15-pip": {
-		"init": externalExperimentFunction("2026-01-15-pip", "init"),
-		"cleanup": externalExperimentFunction("2026-01-15-pip", "cleanup"),
-	},
+	// Graduated to user setting on 2026-01-26! Yay!
+	// "2026-01-15-pip": {
+	// 	"init": externalExperimentFunction("2026-01-15-pip", "init"),
+	// 	"cleanup": externalExperimentFunction("2026-01-15-pip", "cleanup"),
+	// },
 };
 const experimentsList = Object.keys(experiments);
 

@@ -278,6 +278,10 @@ function formatFontString (fontSize, fontFamily) {
 	return fontSize + "px " + fontFamily;
 }
 
+export function isVpipActive () {
+	return (document.pictureInPictureElement || (dom.pipVideo.webkitPresentationMode === "picture-in-picture"));
+}
+
 export function writeText (ctx, text) {
 	let fontSize = 1000;
 	let fontFamily = getComputedStyle(window.tc22.pipElement || document.documentElement).fontFamily;

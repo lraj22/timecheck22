@@ -1,7 +1,7 @@
 // 2026-01-15-pip.js - Contains PiP (Picture-in-Picture) experiment
 // Enables students to access the time/timeLeft/timeOver easier using PiP windows!
 
-import { getExperimentData, setExperimentDataKey } from "../experiments";
+import { getExperimentData, setExperimentDataKey } from "../../experiments";
 const experimentId = "2026-01-15-pip";
 
 function isValidPage () {

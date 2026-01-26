@@ -6,6 +6,7 @@ import {
 	clockdataSetYet,
 	cloneObj,
 	ENVIRONMENT,
+	isVpipActive,
 	schoolIdMappings,
 	schools,
 	setClockdata,
@@ -20,6 +21,7 @@ const defaultSettings = {
 	"schoolId": -1,
 	"hourFormat": "auto",
 	"colonBlinkEnabled": false,
+	"pipEnabled": false,
 	"backgroundTheme": "dark",
 	"themeUnderlay": "none",
 	"foregroundTheme": "auto",
@@ -154,6 +156,12 @@ function applySettings (fetchAfterwards) {
 	Object.entries(settings).forEach(([setting, value]) => {
 		document.documentElement.setAttribute("data-setting-" + setting, value);
 	});
+	
+	if (!settings.pipEnabled) {
+		if (isVpipActive()) document.exitPictureInPicture();
+		window.documentPictureInPicture?.window?.close?.();
+		// unPipWindow() is automatically handled by the 'pagehide' event handler already created
+	}
 	
 	if (settings.backgroundTheme === "system") {
 		updateDarkishLightish(systemTheme);

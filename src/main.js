@@ -8,11 +8,13 @@ import {
 	escapeHtml,
 	msToTimeDiff,
 	writeText,
+	isVpipActive,
 	appliesStrarrListify,
 	popup,
 } from "./util";
 import {
 	settings,
+	updateSettings,
 	reidentifyUser,
 } from "./settings";
 import "./main.css";
@@ -213,16 +215,24 @@ function exitSimulatedFullscreen () {
 }
 
 dom.pipVideo.srcObject = dom.pipCanvas.captureStream(24);
-const isVpipActive = _ => (document.pictureInPictureElement || (dom.pipVideo.webkitPresentationMode === "picture-in-picture"));
+if ((!window.documentPictureInPicture) && (!document.pictureInPictureEnabled)) {
+	dom.pipSettingDetails.textContent = "You don't have the PiP feature available in your browser, so this cannot be enabled. Sorry!";
+	dom.settingPipEnabled.disabled = true;
+	settings.pipEnabled = false;
+	updateSettings();
+} else if ((!window.documentPictureInPicture) && document.pictureInPictureEnabled && window.navigator.standalone) {
+	dom.pipSettingDetails.textContent = "Unfortunately, PiP doesn't work in the homescreen web app (what you are currently using). :( Try the browser?";
+	dom.settingPipEnabled.disabled = true;
+	settings.pipEnabled = false;
+	updateSettings();
+}
 
 async function simulatedFullscreenToggle (element) {
-	let pipExperiment = getExperiment("2026-01-15-pip") || {};
-	let pipData = pipExperiment?.data || {};
 	let placeholder = document.getElementById("fullscreenPlaceholder");
 	let mode = "display";
 	const isEntering = ((!placeholder) && (!window.documentPictureInPicture?.window));
 	const isExiting = ((placeholder) && (!window.documentPictureInPicture?.window));
-	if (isExiting && !(pipExperiment.enabled && pipData.usePip)) {
+	if (isExiting && !settings.pipEnabled) {
 		exitSimulatedFullscreen();
 		
 		umami.track("simulated-fullscreen-exited", {
@@ -244,8 +254,8 @@ async function simulatedFullscreenToggle (element) {
 	}
 	
 	
-	if (pipExperiment.enabled && pipData.usePip) {
-		 if (0 && window.documentPictureInPicture) { // can do document pip! (dpip)
+	if (settings.pipEnabled) {
+		 if (window.documentPictureInPicture) { // can do document pip! (dpip)
 			mode = "dpip";
 			// experiment enabled, no window yet
 			if (!window.documentPictureInPicture?.window) { // if no pip window (so, enter)
@@ -358,6 +368,7 @@ async function simulatedFullscreenToggle (element) {
 				return;
 			}
 		}
+	} else {
 	}
 	
 	if (!isEntering && placeholder) { // remove placeholder unless entering created it
@@ -472,7 +483,7 @@ export function loaded (weight) {
 		threshold = -1;
 	}
 }
-setTimeout(_ => loaded(999999), 5000); // after 5 seconds, force the site to load so user is not stuck on loading screen
+setTimeout(_ => loaded(999999), 3000); // after 3 seconds, force the site to load so user is not stuck on loading screen
 
 // on page load
 if (document.readyState === "complete") loaded();

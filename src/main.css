@@ -215,6 +215,10 @@ input[type=checkbox] {
 	margin-right: 0.5rem;
 }
 
+input:disabled, input:disabled + label {
+	opacity: 0.5;
+}
+
 #sidebarContent p {
 	margin: 0;
 	margin: 1rem 0;
