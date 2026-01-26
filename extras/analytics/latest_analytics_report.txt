@@ -1,83 +1,83 @@
 ###
-Report generated at 2026-01-22 08:08:10. This report is based on data collected by and exported from Umami analytics. The earliest record in this export is from 2025-10-09 05:52:20 while the latest record is from 2026-01-22 05:02:39. Detailed Umami analytics (i.e. including events and not just page views) was added for the public on 2025-12-13 09:30:00, so records from before then are dropped, even though they may have been valid user visits.
+Report generated at 2026-01-26 08:14:59. This report is based on data collected by and exported from Umami analytics. The earliest record in this export is from 2025-10-09 05:52:20 while the latest record is from 2026-01-26 07:20:54. Detailed Umami analytics (i.e. including events and not just page views) was added for the public on 2025-12-13 09:30:00, so records from before then are dropped, even though they may have been valid user visits.
 You can find the current public Umami analytics dashboard at <https://cloud.umami.is/share/b0K7JX1ecA9aZJPP>.
 ---
 The data was not filtered by time.
-Processed 20691 records, removed 6795 development/old/invalid events from that.
-The following statistics are based on the remaining 13896 real user events.
-From the first record at 2025-12-13 15:43:53 to the last record at 2026-01-22 07:26:18 in UTC.
+Processed 21965 records, removed 6963 development/old/invalid events from that.
+The following statistics are based on the remaining 15002 real user events.
+From the first record at 2025-12-13 15:43:53 to the last record at 2026-01-26 07:21:55 in UTC.
 ###
 
 == Users, visits, and views ==
-Number of unique real people: 573
-They come from 17 different countries: United States (518), United Kingdom (11), Canada (9), India (10), France (1), Germany (3), Sweden (3), Netherlands (2), Japan (3), Australia (4), Pakistan (1), Finland (1), Egypt (1), Bangladesh (1), Philippines (2), Spain (1), Poland (2)
-Number of real user page visits: 956
-Number of real user page views: 1069
+Number of unique real people: 589
+They come from 17 different countries: United States (533), Australia (4), India (11), Germany (3), Sweden (3), Netherlands (2), Japan (3), United Kingdom (11), Canada (9), France (1), Pakistan (1), Finland (1), Egypt (1), Bangladesh (1), Philippines (2), Spain (1), Poland (2)
+Number of real user page visits: 1027
+Number of real user page views: 1141
 
 == Repeat visitors ==
-419 people visited exactly 1 time. Total: 2676 events. Avg. per user: 6.4 events.
-74 people visited exactly 2 times. Total: 894 events. Avg. per user: 12.1 events.
-32 people visited exactly 3 times. Total: 501 events. Avg. per user: 15.7 events.
-10 people visited exactly 4 times. Total: 244 events. Avg. per user: 24.4 events.
-15 people visited exactly 5 times. Total: 753 events. Avg. per user: 50.2 events.
-6 people visited exactly 6 times. Total: 222 events. Avg. per user: 37.0 events.
-7 people visited exactly 7 times. Total: 272 events. Avg. per user: 38.9 events.
-5 people visited exactly 8 times. Total: 95 events. Avg. per user: 19.0 events.
-2 people visited exactly 9 times. Total: 148 events. Avg. per user: 74.0 events.
-1 person visited exactly 10 times. Total: 163 events. Avg. per user: 163.0 events.
-1 person visited exactly 11 times. Total: 44 events. Avg. per user: 44.0 events.
-0 people visited exactly 12 times. Total: 0 events. Avg. per user: n/a.
+428 people visited exactly 1 time. Total: 2869 events. Avg. per user: 6.7 events.
+71 people visited exactly 2 times. Total: 801 events. Avg. per user: 11.3 events.
+34 people visited exactly 3 times. Total: 587 events. Avg. per user: 17.3 events.
+12 people visited exactly 4 times. Total: 249 events. Avg. per user: 20.8 events.
+11 people visited exactly 5 times. Total: 477 events. Avg. per user: 43.4 events.
+12 people visited exactly 6 times. Total: 548 events. Avg. per user: 45.7 events.
+6 people visited exactly 7 times. Total: 244 events. Avg. per user: 40.7 events.
+9 people visited exactly 8 times. Total: 258 events. Avg. per user: 28.7 events.
+1 person visited exactly 9 times. Total: 32 events. Avg. per user: 32.0 events.
+2 people visited exactly 10 times. Total: 280 events. Avg. per user: 140.0 events.
+1 person visited exactly 11 times. Total: 80 events. Avg. per user: 80.0 events.
+1 person visited exactly 12 times. Total: 45 events. Avg. per user: 45.0 events.
 0 people visited exactly 13 times. Total: 0 events. Avg. per user: n/a.
 1 person visited exactly 14 times. Total: 71 events. Avg. per user: 71.0 events.
 Note that events here includes page views and so will be higher than the events in the events overview/in detail below.
 
 == Devices used ==
-353 users are using a mobile.
-205 users are using a laptop.
-13 users are using a desktop.
+357 users are using a mobile.
+216 users are using a laptop.
+14 users are using a desktop.
 3 users are using a tablet.
-Note that one user can use multiple devices, so total may not add to 573 (total # of users).
+Note that one user can use multiple devices, so total may not add to 589 (total # of users).
 
 == Visitor referrals ==
-655 users visited TC22 directly (not referred).
-253 users reached TC22 via Instagram.
+723 users visited TC22 directly (not referred).
+254 users reached TC22 via Instagram.
 17 users reached TC22 via Siege (via Hack Club).
 6 users reached TC22 via Slack App.
 5 users reached TC22 via Google.
-3 users reached TC22 via Google Classroom.
-2 users reached TC22 via lraj22.xyz.
+4 users reached TC22 via Google Classroom.
+3 users reached TC22 via lraj22.xyz.
 4 users reached TC22 via Facebook.
 1 user reached TC22 via GitHub.
 1 user reached TC22 via Android Google Search (System Package).
-Note that one user can use visit multiple times, so total may not add to 573 (total # of users).
+Note that one user can use visit multiple times, so total may not add to 589 (total # of users).
 
 == Events overview ==
-There are 573 users, and on average, each user does about 8.74 events. This is more than 68.06% of users. 75% of users have at least 0.0 events, 50% of users have at least 4.0 events, and 25% of users have at least 10.0 events. The user with the most events has 150 events.
-235 users have between 0 and 1 events.
-90 users have between 2 and 5 events.
-108 users have between 6 and 10 events.
+There are 589 users, and on average, each user does about 9.15 events. This is more than 71.31% of users. 75% of users have at least 0.0 events, 50% of users have at least 4.0 events, and 25% of users have at least 11.0 events. The user with the most events has 150 events.
+239 users have between 0 and 1 events.
+91 users have between 2 and 5 events.
+110 users have between 6 and 10 events.
 72 users have between 11 and 20 events.
-27 users have between 21 and 30 events.
+32 users have between 21 and 30 events.
 19 users have between 31 and 40 events.
-11 users have between 41 and 50 events.
-11 users have between 51 and 999 events.
+12 users have between 41 and 50 events.
+14 users have between 51 and 999 events.
 
 == Events in detail ==
-Users went to a sidebar page 1804 times. The top 5 pages navigated to were home (995), school (318), schedules (190), settings (167), and about (46).
-Users toggled the sidebar 870 times.
-Users changed their settings 551 times. The top 5 settings changed were backgroundTheme (142), font (119), themeUnderlay (88), foregroundTheme (83), and hourFormat (41).
-Users entered the simulated fullscreen mode 478 times. The top 3 elements entered were timeLeft (219), time (207), and timeOver (21).
-Users exited the simulated fullscreen mode 397 times.
-Users picked their school 278 times. The top 3 schools selected were Chino Hills High School (177), Ayala High School (33), and Always High School (32).
-Users clicked the school name in the bottom middle 205 times. This was 186 users' first school selected and 19 users already had a school selected.
-Users toggled the notes widget 76 times.
-Users toggled the stopwatch widget 74 times.
-Users interacted with the stopwatch widget 67 times. They started it 43 times, stopped it 19 times, and reset it 5 times.
-Users toggled the timer widget 56 times.
-Users toggled fullscreen 53 times. They entered fullscreen 34 times and exited fullscreen 19 times.
-Users edited their notes 44 times. The longest note was 84.0 characters.
-Users clicked the "Get app" button 30 times. The app download was accepted 14 times and dismissed 16 times.
-Users interacted with the timer widget 14 times. They started it 8 times, stopped it 6 times, muted it 0 times, unmuted it 0 times, and reset it 0 times.
+Users went to a sidebar page 1885 times. The top 5 pages navigated to were home (1039), school (330), schedules (196), settings (177), and about (47).
+Users toggled the sidebar 910 times.
+Users changed their settings 616 times. The top 5 settings changed were backgroundTheme (161), font (139), themeUnderlay (100), foregroundTheme (96), and hourFormat (41).
+Users entered the simulated fullscreen mode 521 times. The top 3 elements entered were timeLeft (236), time (225), and timeOver (26).
+Users exited the simulated fullscreen mode 433 times.
+Users picked their school 288 times. The top 3 schools selected were Chino Hills High School (185), Ayala High School (33), and Always High School (32).
+Users clicked the school name in the bottom middle 213 times. This was 194 users' first school selected and 19 users already had a school selected.
+Users toggled the stopwatch widget 90 times.
+Users toggled the notes widget 89 times.
+Users interacted with the stopwatch widget 83 times. They started it 57 times, stopped it 20 times, and reset it 6 times.
+Users toggled fullscreen 76 times. They entered fullscreen 48 times and exited fullscreen 28 times.
+Users edited their notes 61 times. The longest note was 98.0 characters.
+Users toggled the timer widget 59 times.
+Users clicked the "Get app" button 32 times. The app download was accepted 14 times and dismissed 18 times.
+Users interacted with the timer widget 27 times. They started it 10 times, stopped it 10 times, muted it 1 time, unmuted it 0 times, and reset it 6 times.
 Users picked their division 9 times. The top 2 divisions were Chino High School (5) and Biomedical Science & Technology Academy (1).
 
 End of report
