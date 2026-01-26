@@ -558,7 +558,8 @@ body:has(#fullscreen.fullscreenPresent) .simFullscreenHide:not(#fullscreen *) {
 
 #pipVideo {
 	position: fixed;
-	visibility: hidden;
+	opacity: 0;
+	pointer-events: none;
 }
 
 #pipCanvas {

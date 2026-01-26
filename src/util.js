@@ -280,7 +280,7 @@ function formatFontString (fontSize, fontFamily) {
 
 export function writeText (ctx, text) {
 	let fontSize = 1000;
-	let fontFamily = getComputedStyle(document.documentElement).fontFamily;
+	let fontFamily = getComputedStyle(window.tc22.pipElement || document.documentElement).fontFamily;
 	let maxIterations = 1000; // prevent infinite loop
 	while (maxIterations --> 0) {
 		ctx.font = formatFontString(fontSize, fontFamily);

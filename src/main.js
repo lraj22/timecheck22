@@ -1,3 +1,4 @@
+window.tc22 = {};
 import {
 	clockdata,
 	dom,
@@ -6,6 +7,7 @@ import {
 	updateTimingsTable,
 	escapeHtml,
 	msToTimeDiff,
+	writeText,
 	appliesStrarrListify,
 	popup,
 } from "./util";
@@ -210,6 +212,9 @@ function exitSimulatedFullscreen () {
 	if (fadeOutAnim) fadeOutAnim.cancel();
 }
 
+dom.pipVideo.srcObject = dom.pipCanvas.captureStream(24);
+const isVpipActive = _ => (document.pictureInPictureElement || (dom.pipVideo.webkitPresentationMode === "picture-in-picture"));
+
 async function simulatedFullscreenToggle (element) {
 	let pipExperiment = getExperiment("2026-01-15-pip") || {};
 	let pipData = pipExperiment?.data || {};
@@ -299,7 +304,7 @@ async function simulatedFullscreenToggle (element) {
 			}
 		} else if (document.pictureInPictureEnabled) { // can do video pip! (vpip)
 			mode = "vpip";
-			if (!document.pictureInPictureElement) { // if no pip window (so, enter)
+			if (isEntering && !isVpipActive()) { // if no pip window (so, enter)
 				if (!dom.pipVideo.srcObject) dom.pipVideo.srcObject = dom.pipCanvas.captureStream(24);
 				let ctx = dom.pipCanvas.getContext("2d");
 				let styles = getComputedStyle(document.documentElement);
@@ -308,22 +313,42 @@ async function simulatedFullscreenToggle (element) {
 				ctx.textAlign = "center";
 				ctx.textBaseline = "middle";
 				ctx.fillStyle = styles.color;
+				
+				let cancelTime = 0;
 				function updateCanvas () {
 					ctx.fillStyle = styles.backgroundColor;
 					ctx.fillRect(0, 0, dom.pipCanvas.width, dom.pipCanvas.height);
 					ctx.fillStyle = styles.color;
-					utilExports.writeText(ctx, element.textContent);
-					window.pipCanvasAnimFrameNumber = requestAnimationFrame(updateCanvas);
+					writeText(ctx, element.textContent);
+					
+					// if in vpip, schedule next frame :D
+					window.tc22.vpipAnimFrameId = requestAnimationFrame(updateCanvas);
+					if (isVpipActive()) {
+						cancelTime = 0;
+					} else {
+						// not in vpip? give it 5 seconds to load
+						if (cancelTime === 0) {
+							cancelTime = Date.now() + 5000;
+						}
+						// it's been 5 seconds? cancel the updating to save energy
+						else if (Date.now() > cancelTime) cancelAnimationFrame(window.tc22.vpipAnimFrameId);
+					}
 				}
-				window.pipCanvasAnimFrameNumber = requestAnimationFrame(updateCanvas);
 				function requestVPip () {
-					dom.pipVideo.requestPictureInPicture?.();
+					if (isVpipActive()) return;
+					
+					window.tc22.pipElement = element;
+					if (dom.pipVideo.webkitSupportsPresentationMode && typeof dom.pipVideo.webkitSetPresentationMode === "function") {
+						dom.pipVideo.webkitSetPresentationMode("picture-in-picture");
+						window.tc22.vpipAnimFrameId = requestAnimationFrame(updateCanvas);
+					} else {
+						dom.pipVideo.requestPictureInPicture?.()?.then(_ => window.tc22.vpipAnimFrameId = requestAnimationFrame(updateCanvas));
+					}
 				}
 				if (dom.pipVideo.readyState >= dom.pipVideo.HAVE_CURRENT_DATA) requestVPip();
 				else dom.pipVideo.addEventListener("loadedmetadata", _ => requestVPip());
 			} else { // if pip window (so, exit)
-				document.exitPictureInPicture();
-				cancelAnimationFrame(window.pipCanvasAnimFrameNumber);
+				if (isVpipActive()) document.exitPictureInPicture();
 				exitSimulatedFullscreen();
 				
 				umami.track("simulated-fullscreen-exited", {

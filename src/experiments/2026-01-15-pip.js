@@ -23,10 +23,16 @@ export function init () {
 	togglePip.addEventListener("click", _ => {
 		let newState = togglePip.getAttribute("data-state") === "yes" ? false : true;
 		
-		if ((newState === true) && (!window.documentPictureInPicture) && (!document.pictureInPictureEnabled)) {
-			alert("You don't have the PiP feature available in your browser, so this cannot be enabled. Sorry!");
-			setExperimentDataKey(experimentId, "usePip", false);
-			return;
+		if (newState === true) {
+			if ((!window.documentPictureInPicture) && (!document.pictureInPictureEnabled)) {
+				alert("You don't have the PiP feature available in your browser, so this cannot be enabled. Sorry!");
+				setExperimentDataKey(experimentId, "usePip", false);
+				return;
+			} else if ((!window.documentPictureInPicture) && document.pictureInPictureEnabled && window.navigator.standalone) {
+				alert("Unfortunately, the PiP feature is not available in the homescreen web app (what you are currently using). :(\n\nYou will need the browser to use PiP.");
+				setExperimentDataKey(experimentId, "usePip", false);
+				return;
+			}
 		}
 		
 		setExperimentDataKey(experimentId, "usePip", newState);
