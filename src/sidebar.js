@@ -1,3 +1,9 @@
+// sidebar.js - manages sidebar operations on the main clock page
+
+if (document.documentElement.getAttribute("data-page-id") !== "index") {
+	throw new Error("sidebar.js only works on the main clock page.");
+}
+
 import { settings, updateSettings, reidentifyUser } from "./settings";
 import { clockdata, dom, removeHighlight, schoolIdMappings, schools, updateState } from "./util";
 
