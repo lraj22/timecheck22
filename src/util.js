@@ -279,6 +279,7 @@ function formatFontString (fontSize, fontFamily) {
 }
 
 export function isVpipActive () {
+	if (!dom.pipVideo) return false;
 	return (document.pictureInPictureElement || (dom.pipVideo.webkitPresentationMode === "picture-in-picture"));
 }
 
